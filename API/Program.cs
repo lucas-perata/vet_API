@@ -1,6 +1,8 @@
 using API.Entities.Identity;
 using API.Extensions;
 using API.Identity;
+using API.Interfaces;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,8 @@ builder.Services.AddDbContext<AppIdentityDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -22,7 +26,8 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider; 
+var services = scope.ServiceProvider;  
+
 
 var identityContext = services.GetRequiredService<AppIdentityDbContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();

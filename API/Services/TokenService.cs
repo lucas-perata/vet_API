@@ -35,6 +35,8 @@ namespace API.Services
                 Issuer = _config["Token:Issuer"],
             }; 
 
+         
+
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

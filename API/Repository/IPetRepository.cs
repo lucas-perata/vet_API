@@ -16,6 +16,17 @@ namespace API.Repository
             _context = context;
             _mapper = mapper;
         }
+
+        public void AddPet(Pet pet)
+        {
+           _context.Pets.Add(pet);
+        }
+
+        public async Task<bool> Complete()
+        {
+             return await _context.SaveChangesAsync() > 0; 
+        }
+
         public async Task<PetDto> GetPet(int id)
         {
            var pet = await _context.Pets.FindAsync(id);

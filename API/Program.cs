@@ -1,7 +1,10 @@
+using API.Data;
+using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
 using API.Identity;
 using API.Interfaces;
+using API.Repository;
 using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +16,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddScoped<IPetRepository, IPetRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 builder.Services.AddDbContext<AppIdentityDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 builder.Services.AddScoped<ITokenService, TokenService>();
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -59,11 +69,25 @@ var services = scope.ServiceProvider;
 
 
 var identityContext = services.GetRequiredService<AppIdentityDbContext>();
+var dataContext = services.GetRequiredService<DataContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
 try
 {
     await identityContext.Database.MigrateAsync();
+    await dataContext.Database.MigrateAsync();
+    
     await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
+
+     if (!dataContext.Pets.Any())
+    {
+        var user = await userManager.FindByEmailAsync("juan@test.com");
+
+        dataContext.Pets.AddRange(
+            new Pet { Id = 1, Name = "Buddy", OwnerId = user.Id },
+            new Pet { Id = 2, Name = "Lucy", OwnerId = user.Id }
+        );
+        await dataContext.SaveChangesAsync();
+    }
 }
 catch (Exception ex)
 {

@@ -1,0 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using API.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace API.Data
+{
+    public class DataContext : DbContext
+    {
+        public DataContext(DbContextOptions options) : base(options)
+        {
+            
+        }
+
+        public DbSet<Pet> Pets { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Pet>()
+                .ToTable("Pet")
+                .HasKey(p => p.Id);
+            modelBuilder.Entity<Pet>()
+                .HasOne(p => p.Owner);
+        }
+    }
+}

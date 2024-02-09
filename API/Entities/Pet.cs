@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entities.Identity;
 
-namespace API.Dtos
+namespace API.Entities
 {
-    public class PetDto
+    public class Pet
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -16,5 +17,6 @@ namespace API.Dtos
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }
         public string OwnerId { get; set; }
+        public AppUser Owner { get; set; }
     }
 }

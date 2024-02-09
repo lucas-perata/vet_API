@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos;
 using API.Entities;
 using AutoMapper;
@@ -13,6 +9,7 @@ namespace API.Helpers
         public MappingProfiles()
         {
             CreateMap<Pet, PetDto>();
+            CreateMap<UpdatePetDto, Pet>();
         }
     }
 }

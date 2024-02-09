@@ -83,8 +83,8 @@ try
         var user = await userManager.FindByEmailAsync("juan@test.com");
 
         dataContext.Pets.AddRange(
-            new Pet { Id = 1, Name = "Buddy", OwnerId = user.Id },
-            new Pet { Id = 2, Name = "Lucy", OwnerId = user.Id }
+            new Pet { Name = "Buddy", OwnerId = user.Id },
+            new Pet { Name = "Lucy", OwnerId = user.Id }
         );
         await dataContext.SaveChangesAsync();
     }

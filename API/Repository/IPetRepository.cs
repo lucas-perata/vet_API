@@ -16,23 +16,36 @@ namespace API.Repository
             _context = context;
             _mapper = mapper;
         }
-        public async Task<PetDto> GetPet(int id)
+
+        public void AddPet(Pet pet)
         {
-           var pet = await _context.Pets.FindAsync(id);
-            return new PetDto
-            {
-                Id = pet.Id,
-                Name = pet.Name, 
-                Breed = pet.Breed,
-                DateOfBirth = pet.DateOfBirth,
-                Color = pet.Color,
-                OwnerId = pet.OwnerId
-            }; 
+           _context.Pets.Add(pet);
+        }
+
+        public async Task<bool> Complete()
+        {
+             return await _context.SaveChangesAsync() > 0; 
+        }
+
+        public bool DeletePet(Pet pet)
+        {
+            _context.Remove(pet);
+            return _context.SaveChanges() > 0;
+        }
+
+        public async Task<Pet> GetPet(int id)
+        {
+           return await _context.Pets.FindAsync(id);
         }
 
         public Task<List<Pet>> GetPets()
         {
             throw new NotImplementedException();
+        }
+
+        public void UpdatePet(Pet pet)
+        {
+            _context.Entry(pet).State = EntityState.Modified;
         }
     }
 }

@@ -10,6 +10,9 @@ namespace API.Identity
         {
         }
 
+        public DbSet<Owner> Owners { get; set; }
+        public DbSet<Vet> Vets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

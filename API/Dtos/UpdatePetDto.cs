@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Dtos
 {
-    public class CreatePetDto
+    public class UpdatePetDto
     {
         public string Name { get; set; }
         public string Breed { get; set; }

@@ -27,23 +27,25 @@ namespace API.Repository
              return await _context.SaveChangesAsync() > 0; 
         }
 
-        public async Task<PetDto> GetPet(int id)
+        public bool DeletePet(Pet pet)
         {
-           var pet = await _context.Pets.FindAsync(id);
-            return new PetDto
-            {
-                Id = pet.Id,
-                Name = pet.Name, 
-                Breed = pet.Breed,
-                DateOfBirth = pet.DateOfBirth,
-                Color = pet.Color,
-                OwnerId = pet.OwnerId
-            }; 
+            _context.Remove(pet);
+            return _context.SaveChanges() > 0;
+        }
+
+        public async Task<Pet> GetPet(int id)
+        {
+           return await _context.Pets.FindAsync(id);
         }
 
         public Task<List<Pet>> GetPets()
         {
             throw new NotImplementedException();
+        }
+
+        public void UpdatePet(Pet pet)
+        {
+            _context.Entry(pet).State = EntityState.Modified;
         }
     }
 }

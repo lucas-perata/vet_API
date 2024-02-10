@@ -12,6 +12,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PetController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -35,7 +36,6 @@ namespace API.Controllers
             };
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<PetDto>> CreatePet(CreatePetDto createPetDto)
         {
@@ -60,7 +60,6 @@ namespace API.Controllers
             return BadRequest("Failed to create pet");
         }
 
-        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePet(int id, UpdatePetDto updatePetDto)
         {
@@ -83,7 +82,6 @@ namespace API.Controllers
 
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
 
         public async Task<ActionResult> DeletePet(int id)

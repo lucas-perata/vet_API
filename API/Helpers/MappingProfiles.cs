@@ -16,6 +16,7 @@ namespace API.Helpers
             CreateMap<MedicalHistory, CreateMedicalHistoryDto>(); 
             CreateMap<UpdateMedicalHistoryDto, MedicalHistory>(); 
             CreateMap<MedicalHistoryDto, CreateMedicalHistoryDto>(); 
+            CreateMap<MedicalHistory, MedicalHistoryDto>();
         }
     }
 }

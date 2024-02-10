@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository
 {
-    public class IPetRepository : IPetInterface
+    public class PetRepository : IPetInterface
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
-        public IPetRepository(DataContext context, IMapper mapper)
+        public PetRepository(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

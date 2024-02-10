@@ -16,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
-builder.Services.AddScoped<IPetRepository, IPetRepository>();
+builder.Services.AddScoped<PetRepository>();
+builder.Services.AddScoped<MedicalHistoryRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 

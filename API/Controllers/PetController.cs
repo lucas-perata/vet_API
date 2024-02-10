@@ -15,9 +15,9 @@ namespace API.Controllers
     public class PetController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IPetRepository _petRepository; 
+        private readonly PetRepository _petRepository; 
         private readonly IMapper _mapper;
-        public PetController(IMapper mapper,IPetRepository petRepository, UserManager<AppUser> userManager)
+        public PetController(IMapper mapper,PetRepository petRepository, UserManager<AppUser> userManager)
         {
             _petRepository = petRepository;
             _userManager = userManager; 

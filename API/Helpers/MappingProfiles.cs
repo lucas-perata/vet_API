@@ -8,8 +8,14 @@ namespace API.Helpers
     {
         public MappingProfiles()
         {
+            // Pets DTO
             CreateMap<Pet, PetDto>();
             CreateMap<UpdatePetDto, Pet>();
+
+            // Medical History DTO
+            CreateMap<MedicalHistory, CreateMedicalHistoryDto>(); 
+            CreateMap<UpdateMedicalHistoryDto, MedicalHistory>(); 
+            CreateMap<MedicalHistoryDto, CreateMedicalHistoryDto>(); 
         }
     }
 }

@@ -16,6 +16,7 @@ namespace API.Data
         }
 
         public DbSet<Pet> Pets { get; set; }
+        public DbSet<MedicalHistory> MedicalHistories {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,11 @@ namespace API.Data
                 .HasKey(p => p.Id);
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.Owner);
+            modelBuilder.Entity<MedicalHistory>()
+                .ToTable("MedicalHistory")  
+                .HasKey(p => p.Id); 
+            modelBuilder.Entity<MedicalHistory>()
+                .HasOne(p => p.Pet); 
         }
     }
 }

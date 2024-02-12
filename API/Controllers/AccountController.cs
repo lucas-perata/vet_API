@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using API.Data;
 using API.Dtos;
 using API.Entities;
 using API.Entities.Identity;
@@ -16,13 +17,13 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly AppIdentityDbContext _context;
+        private readonly DataContext _context;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-        ITokenService tokenService, IMapper mapper, AppIdentityDbContext context)
+        ITokenService tokenService, IMapper mapper, DataContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;

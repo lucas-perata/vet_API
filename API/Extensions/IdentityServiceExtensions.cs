@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using API.Data;
 
 namespace API.Extensions
 {
@@ -13,16 +14,12 @@ namespace API.Extensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<AppIdentityDbContext>(options =>
-            {
-                options.UseNpgsql(config.GetConnectionString("DefaultConnection"));
-            });
 
             services.AddIdentityCore<AppUser>(options =>
             {
                 // Identity options here
             })
-                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddEntityFrameworkStores<DataContext>()
                 .AddSignInManager<SignInManager<AppUser>>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

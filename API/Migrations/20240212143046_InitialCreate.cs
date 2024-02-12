@@ -217,6 +217,63 @@ namespace API.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Adoption",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PetId = table.Column<int>(type: "integer", nullable: false),
+                    IsNeutered = table.Column<bool>(type: "boolean", nullable: false),
+                    IsVaccinated = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeworm = table.Column<bool>(type: "boolean", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Adoption", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Adoption_Pet_PetId",
+                        column: x => x.PetId,
+                        principalTable: "Pet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MedicalHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Treatment = table.Column<string>(type: "text", nullable: true),
+                    VetName = table.Column<string>(type: "text", nullable: true),
+                    PetId = table.Column<int>(type: "integer", nullable: false),
+                    AdoptionId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicalHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MedicalHistory_Adoption_AdoptionId",
+                        column: x => x.AdoptionId,
+                        principalTable: "Adoption",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MedicalHistory_Pet_PetId",
+                        column: x => x.PetId,
+                        principalTable: "Pet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Adoption_PetId",
+                table: "Adoption",
+                column: "PetId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -255,6 +312,16 @@ namespace API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicalHistory_AdoptionId",
+                table: "MedicalHistory",
+                column: "AdoptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalHistory_PetId",
+                table: "MedicalHistory",
+                column: "PetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Owners_UserId",
                 table: "Owners",
                 column: "UserId");
@@ -289,16 +356,22 @@ namespace API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Owners");
+                name: "MedicalHistory");
 
             migrationBuilder.DropTable(
-                name: "Pet");
+                name: "Owners");
 
             migrationBuilder.DropTable(
                 name: "Vets");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Adoption");
+
+            migrationBuilder.DropTable(
+                name: "Pet");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

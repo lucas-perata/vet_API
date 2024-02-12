@@ -16,15 +16,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
+
+// REPOS 
 builder.Services.AddScoped<PetRepository>();
 builder.Services.AddScoped<MedicalHistoryRepository>();
+builder.Services.AddScoped<AdoptionRepository>(); 
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
-builder.Services.AddDbContext<AppIdentityDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -69,12 +68,10 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;  
 
 
-var identityContext = services.GetRequiredService<AppIdentityDbContext>();
 var dataContext = services.GetRequiredService<DataContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
 try
 {
-    await identityContext.Database.MigrateAsync();
     await dataContext.Database.MigrateAsync();
     
     await AppIdentityDbContextSeed.SeedUsersAsync(userManager);

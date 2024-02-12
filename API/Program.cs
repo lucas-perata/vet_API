@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using API.Data;
 using API.Entities;
 using API.Entities.Identity;
@@ -16,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
+/* builder.Services.AddControllers().AddJsonOptions(x => 
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); */
 
 // REPOS 
 builder.Services.AddScoped<PetRepository>();
@@ -66,6 +69,7 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;  
+
 
 
 var dataContext = services.GetRequiredService<DataContext>();

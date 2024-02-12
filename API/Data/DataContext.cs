@@ -39,7 +39,9 @@ namespace API.Data
                 .ToTable("Adoption")
                 .HasKey(p => p.Id); 
             modelBuilder.Entity<Adoption>()
-                .HasOne(p => p.Pet); 
+                .HasOne(p => p.Pet);
+            modelBuilder.Entity<Adoption>() 
+                .HasOne(a => a.AppUser); 
         }
     }
 }

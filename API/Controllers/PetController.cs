@@ -87,13 +87,13 @@ namespace API.Controllers
         public async Task<ActionResult> DeletePet(int id)
         {
             var pet = await _petRepository.GetPet(id); 
+            
+            if(pet == null) return NotFound(); 
 
             var email = User.FindFirstValue(ClaimTypes.Email); 
             var user = await _userManager.FindByEmailAsync(email); 
 
             if(pet.OwnerId != user.Id) return BadRequest("Not your pet"); 
-
-            if(pet == null) return NotFound(); 
 
             var result = _petRepository.DeletePet(pet);
 

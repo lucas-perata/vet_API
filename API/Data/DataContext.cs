@@ -20,6 +20,7 @@ namespace API.Data
         public DbSet<Adoption> Adoptions {get; set;}
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Vet> Vets { get; set; }
+        public DbSet<VetService> VetServices {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +43,14 @@ namespace API.Data
                 .HasOne(p => p.Pet);
             modelBuilder.Entity<Adoption>() 
                 .HasOne(a => a.AppUser); 
+             modelBuilder.Entity<VetService>()
+                .HasOne(vs => vs.Vet)
+                .WithMany(v => v.VetServices)
+                .HasForeignKey(vs => vs.VetId);
+            modelBuilder.Entity<VetService>()
+                .HasOne(vs => vs.Service)
+                .WithMany()
+                .HasForeignKey(vs => vs.ServiceId);
         }
     }
 }

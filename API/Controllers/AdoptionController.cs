@@ -3,6 +3,8 @@ using API.Dtos;
 using API.Dtos.Adoption;
 using API.Entities;
 using API.Entities.Identity;
+using API.Extensions;
+using API.Helpers;
 using API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -37,9 +39,12 @@ namespace API.Controllers
         }
 
         [HttpGet("/all-adoptions")]
-        public async Task<ActionResult<List<AdoptionDto>>> GetAdoptions()
+        public async Task<ActionResult<PagedList<AdoptionDto>>> GetAdoptions([FromQuery] UserParams userParams)
         {
-            var adoptions = await _adoptionRepository.GetAdoptions(); 
+            var adoptions = await _adoptionRepository.GetAdoptions(userParams); 
+
+            Response.AddPaginationHeader(new PaginationHeader(adoptions.CurrentPage, adoptions.PageSize, adoptions.TotalCount, adoptions.TotalPages));
+            
             return Ok(adoptions);
         }
 

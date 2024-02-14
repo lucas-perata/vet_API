@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Data;
+using API.Dtos.Adoption;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository
@@ -12,9 +12,11 @@ namespace API.Repository
     public class AdoptionRepository : IAdoptionInterface
     {
         private readonly DataContext _context; 
-        public AdoptionRepository(DataContext context)
+        private readonly IMapper _mapper; 
+        public AdoptionRepository(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<bool> Complete()
         {
@@ -39,16 +41,18 @@ namespace API.Repository
                             .FirstOrDefaultAsync(a => a.Id == id);    
         }
 
-        public async Task<List<Adoption>> GetAdoptions()
-        {
-            return await _context.Adoptions
-                            .Include(p => p.Pet)
-                            .ToListAsync(); 
-        }
-
         public void UpdateAdoption(Adoption adoption)
         {
             _context.Entry(adoption).State = EntityState.Modified;
+        }
+
+        public async Task<PagedList<AdoptionDto>> GetAdoptions(UserParams userParams)
+        {
+            var query = _context.Adoptions
+                            .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                            .AsNoTracking();
+            
+            return await PagedList<AdoptionDto>.CreateAsync(query, userParams.PageNumber, userParams.PageSize); 
         }
     }
 }

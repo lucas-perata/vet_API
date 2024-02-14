@@ -11,9 +11,8 @@ namespace API.Dtos.Adoption
     {
         public int Id { get; set; }
         public int PetId { get; set; }
-        public Pet Pet { get; set; }
+        public PetDto Pet { get; set; }
         public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
         public bool IsNeutered { get; set; }
         public bool IsVaccinated { get; set; }
         public bool IsDeworm {get; set;}

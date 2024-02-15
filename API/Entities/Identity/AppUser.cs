@@ -7,6 +7,7 @@ namespace API.Entities.Identity
         public string DisplayName { get; set; }
         public ICollection<Pet> Pets { get; set; }
         public ICollection<VetService> VetServices { get; set; }
-
+        public ICollection<Appointment> OwnerAppointments { get; set; }
+        public ICollection<Appointment> VetAppointments { get; set; }
     }
 }

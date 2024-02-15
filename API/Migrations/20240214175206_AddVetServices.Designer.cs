@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240214175206_AddVetServices")]
+    partial class AddVetServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,8 +178,7 @@ namespace API.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("VetId", "ServiceId")
-                        .IsUnique();
+                    b.HasIndex("VetId");
 
                     b.ToTable("VetServices");
                 });
@@ -277,33 +279,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Service", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Description 1",
-                            Duration = 60,
-                            Name = "Service 1",
-                            Price = 100f
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Description 2",
-                            Duration = 120,
-                            Name = "Service 2",
-                            Price = 200f
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Description 3",
-                            Duration = 180,
-                            Name = "Service 3",
-                            Price = 300f
-                        });
+                    b.ToTable("Service");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -476,7 +452,7 @@ namespace API.Migrations
             modelBuilder.Entity("API.Entities.Identity.VetService", b =>
                 {
                     b.HasOne("API.Entities.Service", "Service")
-                        .WithMany("VetServices")
+                        .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -574,11 +550,6 @@ namespace API.Migrations
                 {
                     b.Navigation("Pets");
 
-                    b.Navigation("VetServices");
-                });
-
-            modelBuilder.Entity("API.Entities.Service", b =>
-                {
                     b.Navigation("VetServices");
                 });
 #pragma warning restore 612, 618

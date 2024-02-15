@@ -24,6 +24,7 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddScoped<PetRepository>();
 builder.Services.AddScoped<MedicalHistoryRepository>();
 builder.Services.AddScoped<AdoptionRepository>(); 
+builder.Services.AddScoped<ServiceRepository>(); 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -80,13 +81,13 @@ try
     
     await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
 
-     if (!dataContext.Pets.Any())
+     if (!dataContext.Services.Any())
     {
-        var user = await userManager.FindByEmailAsync("juan@test.com");
-
-        dataContext.Pets.AddRange(
-            new Pet { Name = "Buddy", OwnerId = user.Id },
-            new Pet { Name = "Lucy", OwnerId = user.Id }
+        
+        dataContext.Services.AddRange(
+            new Service { Id = 1, Name = "Service 1", Description = "Description 1", Price = 100.0f, Duration = 60 },
+            new Service { Id = 2, Name = "Service 2", Description = "Description 2", Price = 200.0f, Duration = 120 },
+            new Service { Id = 3, Name = "Service 3", Description = "Description 3", Price = 300.0f, Duration = 180 }
         );
         await dataContext.SaveChangesAsync();
     }

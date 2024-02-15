@@ -92,7 +92,7 @@ namespace API.Controllers
 
             var isVet = await _context.Vets.AnyAsync(v => v.User.Id == user.Id); 
 
-            if (!isVet) return Unauthorized("You are not allowed to login here");
+            if (isVet) return Unauthorized("You are not allowed to login here");
 
             return new UserDto
             {
@@ -115,7 +115,7 @@ namespace API.Controllers
 
             var isOwner = await _context.Vets.AnyAsync(v => v.User.Id == user.Id);
 
-            if(!isOwner) return Unauthorized("You are not allowed to login here"); 
+            if(isOwner) return Unauthorized("You are not allowed to login here"); 
 
             return new UserDto
             {

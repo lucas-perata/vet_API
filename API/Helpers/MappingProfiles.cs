@@ -1,6 +1,8 @@
 using API.Dtos;
 using API.Dtos.Adoption;
+using API.Dtos.Service;
 using API.Entities;
+using API.Entities.Identity;
 using AutoMapper;
 
 namespace API.Helpers
@@ -24,6 +26,9 @@ namespace API.Helpers
             CreateMap<Adoption, CreateAdoptionDto>(); 
             CreateMap<Adoption, UpdateAdoptionDto>();
             CreateMap<UpdateAdoptionDto, Adoption>(); 
+
+            // Services 
+            CreateMap<VetService, AddVetServiceDto>();
         }
     }
 }

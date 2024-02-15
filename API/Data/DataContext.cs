@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
 using API.Entities.Identity;
+using API.Extensions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,14 +22,17 @@ namespace API.Data
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Vet> Vets { get; set; }
         public DbSet<VetService> VetServices {get; set;}
+        public DbSet<Service> Services { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<Pet>()
                 .ToTable("Pet")
                 .HasKey(p => p.Id);
+            modelBuilder.Entity<Service>()
+                .ToTable("Service")
+                .HasKey(s => s.Id);
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.Owner);
             modelBuilder.Entity<MedicalHistory>()
@@ -49,8 +53,14 @@ namespace API.Data
                 .HasForeignKey(vs => vs.VetId);
             modelBuilder.Entity<VetService>()
                 .HasOne(vs => vs.Service)
-                .WithMany()
+                .WithMany(s => s.VetServices)
                 .HasForeignKey(vs => vs.ServiceId);
+            modelBuilder.Entity<VetService>()
+                .HasIndex(vs => new { vs.VetId, vs.ServiceId })
+                .IsUnique();
+            
+            modelBuilder.Seed();
+
         }
     }
 }

@@ -61,7 +61,7 @@ namespace API.Controllers
                 OwnerId = user.Id,
                 Name = createAdoptionWithPetDto.CreatePetDto.Name,
                 Breed = createAdoptionWithPetDto.CreatePetDto.Breed, 
-                DateOfBirth = createAdoptionWithPetDto.CreatePetDto.DateOfBirth.ToUniversalTime(),
+                DateOfBirth = createAdoptionWithPetDto.CreatePetDto.DateOfBirth,
                 Color = createAdoptionWithPetDto.CreatePetDto.Color,
                 Gender = createAdoptionWithPetDto.CreatePetDto.Gender,
                 Weight = createAdoptionWithPetDto.CreatePetDto.Weight

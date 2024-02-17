@@ -54,7 +54,7 @@ namespace API.Controllers
             if(pet == null) return NotFound("Pet not found"); 
 
             var medicalHistory = new MedicalHistory {
-                Date = createMedicalHistoryDto.Date.ToUniversalTime(),
+                Date = createMedicalHistoryDto.Date,
                 Description = createMedicalHistoryDto.Description,
                 Treatment = createMedicalHistoryDto.Treatment,
                 VetName = createMedicalHistoryDto.VetName,

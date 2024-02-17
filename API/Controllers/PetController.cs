@@ -46,7 +46,7 @@ namespace API.Controllers
                 OwnerId = user.Id,
                 Name = createPetDto.Name,
                 Breed = createPetDto.Breed,
-                DateOfBirth = createPetDto.DateOfBirth.ToUniversalTime(),
+                DateOfBirth = createPetDto.DateOfBirth,
                 Color = createPetDto.Color,
                 Gender = createPetDto.Gender,
                 Weight = createPetDto.Weight,

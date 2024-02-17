@@ -1,5 +1,6 @@
 using API.Dtos;
 using API.Dtos.Adoption;
+using API.Dtos.Appointment;
 using API.Dtos.Service;
 using API.Entities;
 using API.Entities.Identity;
@@ -29,6 +30,10 @@ namespace API.Helpers
 
             // Services 
             CreateMap<VetService, AddVetServiceDto>();
+
+            // Appointments 
+            CreateMap<Appointment, AppointmentDto>();
+            CreateMap<Appointment, RequestAppointmentDto>(); 
         }
     }
 }

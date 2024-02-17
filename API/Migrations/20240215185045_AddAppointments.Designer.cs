@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240215185045_AddAppointments")]
+    partial class AddAppointments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,12 +77,6 @@ namespace API.Migrations
                     b.Property<int>("PetId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
                     b.Property<string>("VetId")
                         .HasColumnType("text");
 
@@ -88,8 +85,6 @@ namespace API.Migrations
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("PetId");
-
-                    b.HasIndex("ServiceId");
 
                     b.HasIndex("VetId");
 
@@ -506,12 +501,6 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.Service", "Service")
-                        .WithMany("Appointments")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("API.Entities.Identity.AppUser", "Vet")
                         .WithMany("VetAppointments")
                         .HasForeignKey("VetId");
@@ -519,8 +508,6 @@ namespace API.Migrations
                     b.Navigation("Owner");
 
                     b.Navigation("Pet");
-
-                    b.Navigation("Service");
 
                     b.Navigation("Vet");
                 });
@@ -653,8 +640,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Entities.Service", b =>
                 {
-                    b.Navigation("Appointments");
-
                     b.Navigation("VetServices");
                 });
 #pragma warning restore 612, 618

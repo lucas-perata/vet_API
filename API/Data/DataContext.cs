@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
@@ -23,6 +19,7 @@ namespace API.Data
         public DbSet<Vet> Vets { get; set; }
         public DbSet<VetService> VetServices {get; set;}
         public DbSet<Service> Services { get; set; }
+        public DbSet<Appointment> Appointments {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,9 +55,25 @@ namespace API.Data
             modelBuilder.Entity<VetService>()
                 .HasIndex(vs => new { vs.VetId, vs.ServiceId })
                 .IsUnique();
-            
+            modelBuilder.Entity<Appointment>()
+                .ToTable("Appointment")
+                .HasKey(a => a.Id); 
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Service)
+                .WithMany(s => s.Appointments)
+                .HasForeignKey(a => a.ServiceId); 
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Owner)
+                .WithMany(u => u.OwnerAppointments)
+                .HasForeignKey(a => a.OwnerId);
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Vet)
+                .WithMany(u => u.VetAppointments)
+                .HasForeignKey(a => a.VetId);
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Pet);
+                
             modelBuilder.Seed();
-
         }
     }
 }

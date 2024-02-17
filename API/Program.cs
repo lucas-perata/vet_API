@@ -3,6 +3,7 @@ using API.Data;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
+using API.Helpers;
 using API.Identity;
 using API.Interfaces;
 using API.Repository;
@@ -15,7 +16,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+    });
 builder.Services.AddIdentityServices(builder.Configuration);
 /* builder.Services.AddControllers().AddJsonOptions(x => 
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); */
@@ -25,6 +31,7 @@ builder.Services.AddScoped<PetRepository>();
 builder.Services.AddScoped<MedicalHistoryRepository>();
 builder.Services.AddScoped<AdoptionRepository>(); 
 builder.Services.AddScoped<ServiceRepository>(); 
+builder.Services.AddScoped<AppointmentRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

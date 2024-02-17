@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Entities.Identity;
 
 namespace API.Entities
@@ -16,5 +12,16 @@ namespace API.Entities
         public AppUser Vet { get; set; }
         public int PetId { get; set; }
         public Pet Pet { get; set; }
+        public AppointmentStatus Status { get; set; }
+        public int ServiceId { get; set; }
+        public Service Service { get; set; }
+    }
+
+    public enum AppointmentStatus
+    {
+        Requested,
+        Accepted,
+        Rejected,
+        DateChangeRequested
     }
 }

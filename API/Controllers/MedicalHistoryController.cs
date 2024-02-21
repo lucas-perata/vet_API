@@ -26,6 +26,7 @@ namespace API.Controllers
         public async Task<ActionResult<MedicalHistoryDto>> GetMedicalHistory(int id)
         {
             var medicalHistory = await _mRepository.GetMedicalHistory(id); 
+            if (medicalHistory is null) return NotFound();
             return new MedicalHistoryDto
             {
                 Date = medicalHistory.Date,

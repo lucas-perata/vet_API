@@ -20,6 +20,7 @@ namespace API.Data
         public DbSet<VetService> VetServices {get; set;}
         public DbSet<Service> Services { get; set; }
         public DbSet<Appointment> Appointments {get; set;}
+        public DbSet<Review> Reviews {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,11 +33,13 @@ namespace API.Data
                 .HasKey(s => s.Id);
             modelBuilder.Entity<Pet>()
                 .HasOne(p => p.Owner);
+                
             modelBuilder.Entity<MedicalHistory>()
                 .ToTable("MedicalHistory")  
                 .HasKey(p => p.Id); 
             modelBuilder.Entity<MedicalHistory>()
                 .HasOne(p => p.Pet); 
+
             modelBuilder.Entity<Adoption>()
                 .ToTable("Adoption")
                 .HasKey(p => p.Id); 
@@ -44,6 +47,7 @@ namespace API.Data
                 .HasOne(p => p.Pet);
             modelBuilder.Entity<Adoption>() 
                 .HasOne(a => a.AppUser); 
+
              modelBuilder.Entity<VetService>()
                 .HasOne(vs => vs.Vet)
                 .WithMany(v => v.VetServices)
@@ -55,6 +59,7 @@ namespace API.Data
             modelBuilder.Entity<VetService>()
                 .HasIndex(vs => new { vs.VetId, vs.ServiceId })
                 .IsUnique();
+
             modelBuilder.Entity<Appointment>()
                 .ToTable("Appointment")
                 .HasKey(a => a.Id); 
@@ -72,7 +77,19 @@ namespace API.Data
                 .HasForeignKey(a => a.VetId);
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Pet);
-                
+
+            modelBuilder.Entity<Review>()
+                .ToTable("Review")
+                .HasKey(r => r.Id);
+            modelBuilder.Entity<Review>()
+                .HasOne(a => a.Owner)
+                .WithMany(u => u.OwnerReviews)
+                .HasForeignKey(a => a.OwnerId);
+            modelBuilder.Entity<Review>()
+                .HasOne(a => a.Vet)
+                .WithMany(u => u.VetReviews)
+                .HasForeignKey(a => a.VetId);
+
             modelBuilder.Seed();
         }
     }

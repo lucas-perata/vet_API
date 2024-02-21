@@ -21,6 +21,7 @@ namespace API.Data
         public DbSet<Service> Services { get; set; }
         public DbSet<Appointment> Appointments {get; set;}
         public DbSet<Review> Reviews {get; set;}
+        public DbSet<Message> Messages {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -89,6 +90,15 @@ namespace API.Data
                 .HasOne(a => a.Vet)
                 .WithMany(u => u.VetReviews)
                 .HasForeignKey(a => a.VetId);
+            
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Recipient)
+                .WithMany(m => m.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Seed();
         }

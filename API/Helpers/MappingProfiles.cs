@@ -1,6 +1,7 @@
 using API.Dtos;
 using API.Dtos.Adoption;
 using API.Dtos.Appointment;
+using API.Dtos.Message;
 using API.Dtos.Review;
 using API.Dtos.Service;
 using API.Entities;
@@ -41,6 +42,10 @@ namespace API.Helpers
             CreateMap<Review, CreateReviewDto>();
             CreateMap<Review, UpdateReviewDto>(); 
             CreateMap<UpdateReviewDto, Review>();
+
+            // Messages 
+            CreateMap<Message, MessageDto>();
+            CreateMap<Message, CreateMessageDto>();
         }
     }
 }

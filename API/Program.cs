@@ -33,7 +33,7 @@ builder.Services.AddScoped<AdoptionRepository>();
 builder.Services.AddScoped<ServiceRepository>(); 
 builder.Services.AddScoped<AppointmentRepository>();
 builder.Services.AddScoped<ReviewRepository>();
-builder.Services.AddScoped<IMessageInterface, MessageRepository>();
+builder.Services.AddScoped<MessageRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

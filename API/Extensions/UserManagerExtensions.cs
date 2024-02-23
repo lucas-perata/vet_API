@@ -23,5 +23,10 @@ namespace API.Extensions
             return await userManager.Users.SingleOrDefaultAsync(x => x.Email == user.FindFirstValue(ClaimTypes.Email));
         }
 
+        public static string GetUsername(this ClaimsPrincipal user)
+        {
+            return user.FindFirst(ClaimTypes.Name)?.Value;
+        }
+
     }
 }

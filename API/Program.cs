@@ -8,6 +8,7 @@ using API.Identity;
 using API.Interfaces;
 using API.Repository;
 using API.Services;
+using API.SignalIR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -121,5 +122,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MessageHub>("hubs/message");
 
 app.Run();

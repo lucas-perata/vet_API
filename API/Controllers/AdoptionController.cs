@@ -34,7 +34,8 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AdoptionDto>> GetAdoption(int id)
         {
-            var adoption = await _adoptionRepository.GetAdoption(id); 
+            var adoption = await _adoptionRepository.GetAdoption(id);
+            if(adoption is null)  return NotFound();
             return Ok(_mapper.Map<AdoptionDto>(adoption));
         }
 

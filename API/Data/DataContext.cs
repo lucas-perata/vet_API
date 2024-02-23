@@ -23,6 +23,7 @@ namespace API.Data
         public DbSet<Message> Messages {get; set;}
         public DbSet<Group> Groups { get; set; }
         public DbSet<Connection> Connections { get; set; }
+        public DbSet<Spending> Spendings {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -100,6 +101,18 @@ namespace API.Data
                 .HasOne(u => u.Sender)
                 .WithMany(m => m.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<AppUser>()
+                .HasMany(u => u.Spendings)
+                .WithOne(s => s.Owner)
+                .HasForeignKey(s => s.OwnerId);
+            
+            modelBuilder.Entity<Pet>()
+                .HasMany(p => p.Spendings)
+                .WithOne(s => s.Pet)
+                .HasForeignKey(s => s.PetId)
+                .IsRequired(false);
+
 
             modelBuilder.Seed();
         }

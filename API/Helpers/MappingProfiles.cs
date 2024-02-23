@@ -4,6 +4,7 @@ using API.Dtos.Appointment;
 using API.Dtos.Message;
 using API.Dtos.Review;
 using API.Dtos.Service;
+using API.Dtos.Spending;
 using API.Entities;
 using API.Entities.Identity;
 using AutoMapper;
@@ -46,6 +47,12 @@ namespace API.Helpers
             // Messages 
             CreateMap<Message, MessageDto>();
             CreateMap<Message, CreateMessageDto>();
+
+            // Spendings 
+            CreateMap<Spending, SpendingDto>();
+            CreateMap<Spending, CreateSpendingDto>(); 
+            CreateMap<Spending, UpdateSpendingDto>();
+            CreateMap<UpdateSpendingDto, Spending>();
         }
     }
 }

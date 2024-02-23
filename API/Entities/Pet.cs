@@ -18,5 +18,6 @@ namespace API.Entities
         public bool IsNeutered { get; set; }
         public string OwnerId { get; set; }
         public AppUser Owner { get; set; }
+        public ICollection<Spending> Spendings {get; set;}
     }
 }

@@ -35,6 +35,7 @@ builder.Services.AddScoped<ServiceRepository>();
 builder.Services.AddScoped<AppointmentRepository>();
 builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<MessageRepository>();
+builder.Services.AddScoped<SpendingRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -58,7 +59,7 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer" // must be lowercase
+        Scheme = "Bearer" // must be lowercase
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement

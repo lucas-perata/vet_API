@@ -13,5 +13,6 @@ namespace API.Entities.Identity
         public ICollection<Review> VetReviews { get; set; }
         public List<Message> MessagesSent { get; set; }
         public List<Message> MessagesReceived { get; set; }
+        public ICollection<Spending> Spendings {get; set;}
     }
 }

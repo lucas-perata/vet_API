@@ -11,5 +11,7 @@ namespace API.Entities.Identity
         public ICollection<Appointment> VetAppointments { get; set; }
         public ICollection<Review> OwnerReviews {get; set;}
         public ICollection<Review> VetReviews { get; set; }
+        public List<Message> MessagesSent { get; set; }
+        public List<Message> MessagesReceived { get; set; }
     }
 }

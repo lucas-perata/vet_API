@@ -8,6 +8,7 @@ using API.Identity;
 using API.Interfaces;
 using API.Repository;
 using API.Services;
+using API.SignalIR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<AdoptionRepository>();
 builder.Services.AddScoped<ServiceRepository>(); 
 builder.Services.AddScoped<AppointmentRepository>();
 builder.Services.AddScoped<ReviewRepository>();
+builder.Services.AddScoped<MessageRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -120,5 +122,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MessageHub>("hubs/message");
 
 app.Run();

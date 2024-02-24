@@ -7,39 +7,37 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using API.Data;
+using System.Security.Claims;
 
 namespace API.Extensions
 {
     public static class IdentityServiceExtensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
+{
+    services.AddIdentityCore<AppUser>(options =>
+    {
+        // Identity options here
+    })
+        .AddEntityFrameworkStores<DataContext>()
+        .AddSignInManager<SignInManager<AppUser>>();
+
+    var domain = $"https://{config["Auth0:Domain"]}/";
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options => 
         {
-
-            services.AddIdentityCore<AppUser>(options =>
+            options.Authority = domain;
+            options.Audience = config["Auth0:Audience"];
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                // Identity options here
-            })
-                .AddEntityFrameworkStores<DataContext>()
-                .AddSignInManager<SignInManager<AppUser>>();
+                NameClaimType = ClaimTypes.NameIdentifier
+            };
+        });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => 
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true, 
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),   
-                        ValidIssuer = config["Token:Issuer"],
-                        ValidateIssuer = true,
-                        ValidateAudience = false
-                    };
-                });
+    services.AddAuthorization(); 
 
-
-            services.AddAuthorization(); 
-            
-            return services;
-        }
+    return services;
+}
 
     }
 }

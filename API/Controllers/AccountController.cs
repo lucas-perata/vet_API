@@ -7,6 +7,7 @@ using API.Extensions;
 using API.Identity;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +22,17 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-        ITokenService tokenService, IMapper mapper, DataContext context)
+        ITokenService tokenService, IMapper mapper, DataContext context, IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _tokenService = tokenService;
             _mapper = mapper;
             _context = context;
+            _configuration = configuration;
         }
 
         [Authorize]

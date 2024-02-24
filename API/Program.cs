@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 using API.Data;
 using API.Entities;
@@ -9,11 +10,18 @@ using API.Interfaces;
 using API.Repository;
 using API.Services;
 using API.SignalIR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+
+
 
 // Add services to the container.
 
@@ -24,6 +32,15 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
     });
 builder.Services.AddIdentityServices(builder.Configuration);
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("read:messages", policy => policy.Requirements.Add(new 
+    HasScopeRequirement("read:messages", domain)));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
 /* builder.Services.AddControllers().AddJsonOptions(x => 
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); */
 
@@ -120,10 +137,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
+
 app.MapControllers();
+
 app.MapHub<MessageHub>("hubs/message");
 
 app.Run();

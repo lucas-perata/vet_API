@@ -82,31 +82,8 @@ namespace API.Controllers
             return NotFound();
         }
 
-        [HttpPost("login-vet")]
-        public async Task<ActionResult<UserDto>> LoginVet([FromBody] LoginDto loginDto)
-        {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email); 
-
-            if(user == null) return Unauthorized(); 
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true); // brute force attack protection
-
-            if(!result.Succeeded) return Unauthorized(); 
-
-            var isVet = await _context.Vets.AnyAsync(v => v.User.Id == user.Id); 
-
-            if (isVet) return Unauthorized("You are not allowed to login here");
-
-            return new UserDto
-            {
-                Email = user.Email,
-                Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName,
-            };
-        }
-
-        [HttpPost("login-owner")]
-        public async Task<ActionResult<UserDto>> LoginOwner([FromBody] LoginDto loginDto)
+        [HttpPost("login")]
+        public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email); 
 
@@ -115,10 +92,6 @@ namespace API.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true); 
 
             if(!result.Succeeded) return Unauthorized(); 
-
-            var isOwner = await _context.Vets.AnyAsync(v => v.User.Id == user.Id);
-
-            if(isOwner) return Unauthorized("You are not allowed to login here"); 
 
             return new UserDto
             {

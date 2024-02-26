@@ -2,14 +2,18 @@
 import { Button } from '@/components/ui/button';
 import { logout } from '../../utils/auth';
 import { useToast } from '@/components/ui/use-toast';
+import useStore from '@/store/store';
 
 function LogoutButton() {
-    const { toast } = useToast()
+  const removeToken = useStore((state) => state.removeToken);
+  const { toast } = useToast()
+  
   const handleLogout = () => {
-    logout();
+    removeToken();
     toast({
         title: "Cerraste tu sesión"              
     });
+    window.location.href = '/';
   };
 
   return (

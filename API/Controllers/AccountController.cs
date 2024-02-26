@@ -69,7 +69,7 @@ namespace API.Controllers
         [HttpGet("user-type")]
         public async Task<IActionResult> GetUserType()
         {
-             var email = User.FindFirstValue(ClaimTypes.Email);
+            var email = User.FindFirstValue(ClaimTypes.Email);
 
             var user = await _userManager.FindByEmailAsync(email); 
 
@@ -83,7 +83,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login-vet")]
-        public async Task<ActionResult<UserDto>> LoginVet(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> LoginVet([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email); 
 
@@ -106,7 +106,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login-owner")]
-        public async Task<ActionResult<UserDto>> LoginOwner(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> LoginOwner([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email); 
 
@@ -129,7 +129,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register-owner")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
         {
             var user = new AppUser
             {
@@ -155,7 +155,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register-vet")]
-        public async Task<ActionResult<UserDto>> RegisterVet(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> RegisterVet([FromBody] RegisterDto registerDto)
         {
             var user = new AppUser
             {

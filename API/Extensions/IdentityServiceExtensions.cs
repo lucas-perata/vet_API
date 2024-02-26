@@ -1,43 +1,42 @@
-using API.Entities.Identity;
-using API.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using API.Data;
-using System.Security.Claims;
+using API.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Extensions
 {
     public static class IdentityServiceExtensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
-{
-    services.AddIdentityCore<AppUser>(options =>
-    {
-        // Identity options here
-    })
-        .AddEntityFrameworkStores<DataContext>()
-        .AddSignInManager<SignInManager<AppUser>>();
-
-    var domain = $"https://{config["Auth0:Domain"]}/";
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options => 
         {
-            options.Authority = domain;
-            options.Audience = config["Auth0:Audience"];
-            options.TokenValidationParameters = new TokenValidationParameters
+
+            services.AddIdentityCore<AppUser>(options =>
             {
-                NameClaimType = ClaimTypes.NameIdentifier
-            };
-        });
+                // Identity options here
+            })
+                .AddEntityFrameworkStores<DataContext>()
+                .AddSignInManager<SignInManager<AppUser>>();
 
-    services.AddAuthorization(); 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => 
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true, 
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),   
+                        ValidIssuer = config["Token:Issuer"],
+                        ValidateIssuer = true,
+                        ValidateAudience = false
+                    };
+                });
 
-    return services;
-}
+
+            services.AddAuthorization(); 
+
+            return services;
+        }
 
     }
 }

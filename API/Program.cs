@@ -33,13 +33,14 @@ builder.Services.AddControllers()
     });
 builder.Services.AddIdentityServices(builder.Configuration);
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("read:messages", policy => policy.Requirements.Add(new 
-    HasScopeRequirement("read:messages", domain)));
-});
 
-builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowMyOrigin",
+            builder => builder.WithOrigins("http://localhost:3000") // Replace with the origin of your Next.js app
+                              .AllowAnyHeader()
+                              .AllowAnyMethod());
+    });
 
 /* builder.Services.AddControllers().AddJsonOptions(x => 
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve); */
@@ -100,7 +101,7 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;  
 
-
+app.UseCors("AllowMyOrigin");
 
 var dataContext = services.GetRequiredService<DataContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
@@ -142,12 +143,6 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
 
 app.MapControllers();
 

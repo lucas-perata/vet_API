@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using API.Data;
 using API.Dtos;
+using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
@@ -23,9 +24,10 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IPhotoService _photoService;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-        ITokenService tokenService, IMapper mapper, DataContext context, IConfiguration configuration)
+        ITokenService tokenService, IMapper mapper, DataContext context, IConfiguration configuration, IPhotoService photoService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -33,6 +35,7 @@ namespace API.Controllers
             _mapper = mapper;
             _context = context;
             _configuration = configuration;
+            _photoService = photoService;
         }
 
         [Authorize]
@@ -47,7 +50,7 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName,
+                DisplayName = user.DisplayName
             };
         }
 
@@ -151,6 +154,34 @@ namespace API.Controllers
                 Token = _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
+        }
+
+        [HttpPost("add-photo")]
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if(user is null) return NotFound(); 
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if(result.Error != null) return BadRequest(result.Error.Message);
+
+            var photo = new Photo 
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId
+            };
+
+            if(user.Photos.Count == 0) photo.IsMain = true;
+
+            user.Photos.Add(photo);
+
+            if( await _context.SaveChangesAsync() > 0) return _mapper.Map<PhotoDto>(photo);
+
+            return BadRequest("Problem adding photo");
         }
     }
 }

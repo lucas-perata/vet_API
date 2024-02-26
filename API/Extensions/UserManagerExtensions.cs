@@ -15,7 +15,9 @@ namespace API.Extensions
         {
             var email = user.FindFirstValue(ClaimTypes.Email);
 
-            return await userManager.Users.Include(p => p.Pets).SingleOrDefaultAsync(x => x.Email == email);
+            return await userManager.Users
+                            .Include(p => p.Pets)
+                            .SingleOrDefaultAsync(x => x.Email == email);
         }
 
         public static async Task<AppUser> FindByEmailFromClaimsPrinciple(this UserManager<AppUser> userManager, ClaimsPrincipal user)

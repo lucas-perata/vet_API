@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entities;
 
 namespace API.Dtos
 {
@@ -16,5 +17,7 @@ namespace API.Dtos
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }
         public string OwnerId { get; set; }
+        public List<PetPhoto> Photos { get; set; }
+
     }
 }

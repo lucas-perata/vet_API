@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240226185827_PhotosToUsersAndPets")]
+    partial class PhotosToUsersAndPets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,6 +223,9 @@ namespace API.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("PetId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("PublicId")
                         .HasColumnType("text");
 
@@ -229,6 +235,8 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("PetId");
 
                     b.ToTable("Photos");
                 });
@@ -391,33 +399,6 @@ namespace API.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Pet", (string)null);
-                });
-
-            modelBuilder.Entity("API.Entities.PetPhoto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("PetId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PetId");
-
-                    b.ToTable("Pet-Photos");
                 });
 
             modelBuilder.Entity("API.Entities.Review", b =>
@@ -737,7 +718,15 @@ namespace API.Migrations
                         .WithMany("Photos")
                         .HasForeignKey("AppUserId");
 
+                    b.HasOne("API.Entities.Pet", "Pet")
+                        .WithMany("Photos")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("API.Entities.Identity.Vet", b =>
@@ -805,17 +794,6 @@ namespace API.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("API.Entities.PetPhoto", b =>
-                {
-                    b.HasOne("API.Entities.Pet", "Pet")
-                        .WithMany("Photos")
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("API.Entities.Review", b =>

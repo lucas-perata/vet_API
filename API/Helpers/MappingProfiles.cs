@@ -2,6 +2,7 @@ using API.Dtos;
 using API.Dtos.Adoption;
 using API.Dtos.Appointment;
 using API.Dtos.Message;
+using API.Dtos.Photo;
 using API.Dtos.Review;
 using API.Dtos.Service;
 using API.Dtos.Spending;
@@ -53,6 +54,10 @@ namespace API.Helpers
             CreateMap<Spending, CreateSpendingDto>(); 
             CreateMap<Spending, UpdateSpendingDto>();
             CreateMap<UpdateSpendingDto, Spending>();
+
+            // Photos 
+            CreateMap<Photo, PhotoDto>();
+            CreateMap<PetPhoto, PetPhotoDto>();
         }
     }
 }

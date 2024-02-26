@@ -1,8 +1,11 @@
 using System.Security.Claims;
 using API.Dtos;
+using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
+using API.Interfaces;
 using API.Repository;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,11 +21,14 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly PetRepository _petRepository; 
         private readonly IMapper _mapper;
-        public PetController(IMapper mapper,PetRepository petRepository, UserManager<AppUser> userManager)
+        private readonly IPhotoService _photoService;
+        public PetController(IMapper mapper,PetRepository petRepository, 
+        UserManager<AppUser> userManager, IPhotoService photoService)
         {
             _petRepository = petRepository;
             _userManager = userManager; 
             _mapper = mapper;
+            _photoService = photoService;
         }
         
         [HttpGet("{id}")]
@@ -30,10 +36,7 @@ namespace API.Controllers
         {
             var pet =  await _petRepository.GetPet(id);
 
-            return new PetDto 
-            {
-                Name = pet.Name
-            };
+            return Ok(_mapper.Map<PetDto>(pet));
         }
 
         [HttpPost]
@@ -100,6 +103,39 @@ namespace API.Controllers
             if(!result) return BadRequest("There was a problem deleting the pet"); 
 
             return NoContent();
+        }
+
+        [HttpPost("add-photo/{petId}")]
+        public async Task<ActionResult<PetPhotoDto>> AddPhoto(IFormFile file, int petId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            var pet = await _petRepository.GetPet(petId);
+
+            if(user is null) return NotFound(); 
+
+            if(pet is null) return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if(result.Error != null) return BadRequest(result.Error.Message);
+
+            var photo = new PetPhoto 
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
+                PetId = petId
+            };
+
+            if(user.Photos.Count == 0) photo.IsMain = true;
+
+            pet.Photos.Add(photo);
+
+            if( await _petRepository.Complete()) return _mapper.Map<PetPhotoDto>(photo);
+
+            return BadRequest("Problem adding photo");
         }
     }
 }

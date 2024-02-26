@@ -35,7 +35,9 @@ namespace API.Repository
 
         public async Task<Pet> GetPet(int id)
         {
-           return await _context.Pets.FindAsync(id);
+           return await _context.Pets
+                            .Include(pet => pet.Photos)
+                            .SingleOrDefaultAsync(pet => pet.Id == id);
         }
 
         public Task<List<Pet>> GetPets()

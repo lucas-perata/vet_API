@@ -55,6 +55,10 @@ builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<MessageRepository>();
 builder.Services.AddScoped<SpendingRepository>();
 
+// CLoudinary 
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySetting"));
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<DataContext>(options =>
@@ -95,6 +99,12 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
+    builder.Services.AddControllers().AddJsonOptions(x => 
+        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+    // other services...
+
 
 var app = builder.Build();
 

@@ -5,7 +5,6 @@ using API.Entities;
 using API.Entities.Identity;
 using API.Interfaces;
 using API.Repository;
-using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -136,6 +135,64 @@ namespace API.Controllers
             if( await _petRepository.Complete()) return _mapper.Map<PetPhotoDto>(photo);
 
             return BadRequest("Problem adding photo");
+        }
+
+        [HttpPut("set-main-photo-pet/{photoId}")] 
+        public async Task<ActionResult> SetMainPhoto(int photoId, [FromBody] int petId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if(user is null) return NotFound();
+
+            var pet = await _petRepository.GetPet(petId);
+
+            if(pet is null) return NotFound();
+
+            var photo = pet.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if(photo is null) return NotFound();
+
+            if(photo.IsMain) return BadRequest("This is already the main photo");
+
+            var currentMain = pet.Photos.FirstOrDefault(x => x.IsMain);
+            if(currentMain != null) currentMain.IsMain = false;
+            photo.IsMain = true;
+
+            if(await _petRepository.Complete()) return NoContent();
+
+            return BadRequest("Problem setting main photo for pet");
+        }
+
+        [HttpDelete("delete-photo-pet/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId, [FromBody]int petId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if(user is null) return NotFound();
+
+            var pet = await _petRepository.GetPet(petId);
+
+            if(pet is null) return NotFound();
+
+            var photo = pet.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if(photo is null) return NotFound();
+
+            if(photo.IsMain) return BadRequest("Cannot delete main photo");
+
+            if(photo.PublicId != null) 
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if(result.Error != null) return BadRequest(result.Error.Message);
+            }
+            
+            pet.Photos.Remove(photo);
+
+            if(await _petRepository.Complete() ) return Ok(); 
+
+            return BadRequest("Problem deleting photo");
         }
     }
 }

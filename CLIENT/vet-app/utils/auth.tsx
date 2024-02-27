@@ -1,7 +1,7 @@
 import { serialize } from 'cookie';
 import {parseCookies} from "nookies";
-import Cookies from 'js-cookie';
 import useStore from '@/store/store';
+import {axiosConfig} from "./axiosConfig"
 
 
 interface LoginData {
@@ -14,22 +14,20 @@ interface RegisterData extends LoginData {
 }
 
 export async function login({ email, password }: LoginData) {
-  const res = await fetch('http://localhost:5193/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
-
-  if (res.ok) {
-    const data = await res.json();
-    document.cookie = serialize('token', data.token, {
+  const setToken = useStore.getState().setToken;
+  try {
+    const res = await axiosConfig.post('/login', { email, password });
+    document.cookie = serialize('token', res.data.token, {
       secure: process.env.NODE_ENV !== 'development',
       sameSite: 'strict',
       maxAge: 3600,
       path: '/',
     });
-    return data;
-  } else {
+
+
+    setToken(res.data.token);
+    return res.data;
+  } catch (error) {
     throw new Error('Login failed');
   }
 }

@@ -61,7 +61,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet("pets")]
+        [HttpGet("/deprecated")]
         public ActionResult<PetDto> GetUserPets()
         {
             var user = _userManager.FindUserByClaimsPrincipleWithPet(User).Result;

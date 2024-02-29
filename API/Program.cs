@@ -100,12 +100,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-    builder.Services.AddControllers().AddJsonOptions(x => 
-        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
-    // other services...
-
-
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();

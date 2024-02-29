@@ -15,9 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body style={{minWidth:"100vw", height: '90vh'}}>
         <Navbar/>
-        <main className="container mx-auto px-5 pt-10">
+        <main className="p-10" style={{minWidth:"100%", minHeight: '90vh'}}>
           {children}
         </main>
         <Toaster />

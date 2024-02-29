@@ -17,6 +17,7 @@ namespace API.Extensions
 
             return await userManager.Users
                             .Include(p => p.Pets)
+                            .ThenInclude(pet => pet.PetPhotos)
                             .SingleOrDefaultAsync(x => x.Email == email);
         }
 

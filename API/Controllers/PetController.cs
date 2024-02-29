@@ -38,6 +38,24 @@ namespace API.Controllers
             return Ok(_mapper.Map<PetDto>(pet));
         }
 
+        [HttpGet("pets")]
+        public async Task<ActionResult<List<PetDto>>> GetPetsForOwner()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email); 
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if(user is null)  return Unauthorized();
+
+            var pets = await _petRepository.GetPetsForOwner(user.Id); 
+
+            if(pets is null) return NotFound();
+
+            
+            var petDtos = _mapper.Map<List<PetDto>>(pets);
+
+            return Ok(petDtos); 
+        }
+
         [HttpPost]
         public async Task<ActionResult<PetDto>> CreatePet(CreatePetDto createPetDto)
         {
@@ -128,9 +146,9 @@ namespace API.Controllers
                 PetId = petId
             };
 
-            if(user.Photos.Count == 0) photo.IsMain = true;
+            if(pet.PetPhotos.Count == 0) photo.IsMain = true;
 
-            pet.Photos.Add(photo);
+            pet.PetPhotos.Add(photo);
 
             if( await _petRepository.Complete()) return _mapper.Map<PetPhotoDto>(photo);
 
@@ -138,24 +156,27 @@ namespace API.Controllers
         }
 
         [HttpPut("set-main-photo-pet/{photoId}")] 
-        public async Task<ActionResult> SetMainPhoto(int photoId, [FromBody] int petId)
+        public async Task<ActionResult> SetMainPhoto(int photoId, [FromBody]DeletePhotoRequest deletePhotoRequest)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
             if(user is null) return NotFound();
 
-            var pet = await _petRepository.GetPet(petId);
+            var pet = await _petRepository.GetPet(deletePhotoRequest.PetId);
 
             if(pet is null) return NotFound();
 
-            var photo = pet.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = pet.PetPhotos.FirstOrDefault(x => x.Id == photoId);
 
             if(photo is null) return NotFound();
 
-            if(photo.IsMain) return BadRequest("This is already the main photo");
+            if(photo.IsMain)
+            {
+                return BadRequest("This is already the main photo");
+            }
 
-            var currentMain = pet.Photos.FirstOrDefault(x => x.IsMain);
+            var currentMain = pet.PetPhotos.FirstOrDefault(x => x.IsMain);
             if(currentMain != null) currentMain.IsMain = false;
             photo.IsMain = true;
 
@@ -164,21 +185,28 @@ namespace API.Controllers
             return BadRequest("Problem setting main photo for pet");
         }
 
+        public class DeletePhotoRequest
+        {
+            public int PetId { get; set; }
+        }
+
+        // TODO not working properly
+
         [HttpDelete("delete-photo-pet/{photoId}")]
-        public async Task<ActionResult> DeletePhoto(int photoId, [FromBody]int petId)
+        public async Task<ActionResult> DeletePhoto([FromBody]DeletePhotoRequest deletePhotoRequest, [FromQuery] int photoId)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
-            if(user is null) return NotFound();
+            if(user is null) return NotFound("User");
 
-            var pet = await _petRepository.GetPet(petId);
+            var pet = await _petRepository.GetPet(deletePhotoRequest.PetId);
 
-            if(pet is null) return NotFound();
+            if(pet is null) return NotFound("Pet");
 
-            var photo = pet.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = pet.PetPhotos.FirstOrDefault(x => x.Id == photoId);
 
-            if(photo is null) return NotFound();
+            if(photo is null) return NotFound("Photo");
 
             if(photo.IsMain) return BadRequest("Cannot delete main photo");
 
@@ -188,7 +216,7 @@ namespace API.Controllers
                 if(result.Error != null) return BadRequest(result.Error.Message);
             }
             
-            pet.Photos.Remove(photo);
+            pet.PetPhotos.Remove(photo);
 
             if(await _petRepository.Complete() ) return Ok(); 
 

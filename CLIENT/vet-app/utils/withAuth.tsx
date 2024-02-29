@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import useStore from '../../store/store';
+import useStore from '../store/store';
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
   const Wrapper: React.FC = (props) => {

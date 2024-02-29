@@ -17,7 +17,8 @@ namespace API.Helpers
         public MappingProfiles()
         {
             // Pets 
-            CreateMap<Pet, PetDto>();
+            CreateMap<Pet, PetDto>()
+                .ForMember(dest => dest.PetPhoto, opt => opt.MapFrom(src => src.PetPhotos));
             CreateMap<UpdatePetDto, Pet>();
 
             // Medical Histories 

@@ -1,26 +1,32 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import useStore from '@/store/store';
+import React from 'react';
 import {createInstance} from '../../../utils/axiosConfig';
+import { cookies } from 'next/headers';
+import withAuthSSR from '@/utils/withAuthSSR';
+import PetCard from './PetCard';
 
-const page: React.FC = () => {
-  const [data, setData] = useState(null);
-  const token = useStore(state => state.token());
+async function getData(){
+  const kookies = cookies().get("token")?.value;
 
-  useEffect(() => {
-    const instance = createInstance(token);
+  withAuthSSR(kookies);
 
-    instance.get('/pets')
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, [token]);
+  const instance = createInstance(kookies); 
 
+  const res = await instance.get("api/pet/pets");
+
+  return res.data;
+}
+
+async function page() {
+
+const data = await getData();
+ 
   return (
-    <div>{JSON.stringify(data, null, 2)}</div>
+      <div className='flex justify-center gap-10' style={{minHeight:"83vh"}}>
+          {data && data.map((pet) => (
+          <PetCard photo={pet.petPhoto.map((ph) => (ph))} 
+          pet={pet} key={pet.id}></PetCard>
+          ))}
+      </div>
   )
 }
 

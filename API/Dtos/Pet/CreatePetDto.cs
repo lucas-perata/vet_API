@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace API.Dtos
 {
     public class CreatePetDto
@@ -15,5 +10,6 @@ namespace API.Dtos
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }
         public string OwnerId { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

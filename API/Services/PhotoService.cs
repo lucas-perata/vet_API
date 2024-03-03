@@ -9,18 +9,24 @@ namespace API.Services
     public class PhotoService : IPhotoService
     {
         private readonly Cloudinary _cloudinary;
+
         public PhotoService(IOptions<CloudinarySettings> config)
         {
             Account account = new Account(
                 "dx4urayif",
                 "685624613773267",
-                "RZF7Bh7cX8uafydwSZldT_KDVq0");
+                "RZF7Bh7cX8uafydwSZldT_KDVq0"
+            );
 
             _cloudinary = new Cloudinary(account);
         }
-        public async  Task<ImageUploadResult> AddPhotoAsync(IFormFile file) 
+
+        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
             var ImageUploadResult = new ImageUploadResult();
+
+            if (file.Length < 0)
+                return null;
 
             if (file.Length > 0)
             {
@@ -44,3 +50,4 @@ namespace API.Services
         }
     }
 }
+

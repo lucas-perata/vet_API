@@ -1,33 +1,27 @@
-import React from 'react';
-import {createInstance} from '../../../utils/axiosConfig';
-import { cookies } from 'next/headers';
-import withAuthSSR from '@/utils/withAuthSSR';
-import PetCard from './PetCard';
-
-async function getData(){
-  const kookies = cookies().get("token")?.value;
-
-  withAuthSSR(kookies);
-
-  const instance = createInstance(kookies); 
-
-  const res = await instance.get("api/pet/pets");
-
-  return res.data;
-}
+import React from "react";
+import withAuthSSR from "@/utils/withAuthSSR";
+import PetCard from "./PetCard";
+import { getAllPets } from "../../actions/petActions";
+import FloatingButton from "../../../components/ui/FloatingButton";
+import { kookies } from "@/app/actions/kookies";
 
 async function page() {
+  withAuthSSR(kookies);
+  const data = await getAllPets();
 
-const data = await getData();
- 
   return (
-      <div className='flex justify-center gap-10' style={{minHeight:"83vh"}}>
-          {data && data.map((pet) => (
-          <PetCard photo={pet.petPhoto.map((ph) => (ph))} 
-          pet={pet} key={pet.id}></PetCard>
-          ))}
-      </div>
-  )
+    <div className="flex justify-center gap-5 flex-wrap">
+      {data &&
+        data.map((pet) => (
+          <PetCard
+            photo={pet.petPhoto.map((ph) => ph)}
+            pet={pet}
+            key={pet.id}
+          ></PetCard>
+        ))}
+      <FloatingButton route="/pets/add" />
+    </div>
+  );
 }
 
 export default page;

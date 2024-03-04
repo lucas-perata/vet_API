@@ -1,10 +1,9 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
-const withAuthSSR = (kookies: string) => {
-  if(kookies == null) {
-    redirect('/sessions/login');
-    };
-  
-}
+const withAuthSSR = (kookies: string | undefined) => {
+  if (kookies == null) {
+    redirect("/sessions/login");
+  }
+};
 
 export default withAuthSSR;

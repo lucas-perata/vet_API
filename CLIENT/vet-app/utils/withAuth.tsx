@@ -1,6 +1,7 @@
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import useStore from '../store/store';
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
+import useStore from "../store/store";
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
   const Wrapper: React.FC = (props) => {
@@ -9,7 +10,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
 
     React.useEffect(() => {
       if (!token) {
-        router.replace('/sessions/login');
+        router.replace("/sessions/login");
       }
     }, [token, router]);
 
@@ -20,3 +21,4 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
 };
 
 export default withAuth;
+

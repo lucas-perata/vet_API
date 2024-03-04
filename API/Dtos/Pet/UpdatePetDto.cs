@@ -14,6 +14,6 @@ namespace API.Dtos
         public string Gender { get; set; }
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }
-        public string OwnerId { get; set; }
     }
 }
+

@@ -40,6 +40,9 @@ namespace API.Controllers
         {
             var pet = await _petRepository.GetPet(id);
 
+            if (pet is null)
+                return NotFound();
+
             return Ok(_mapper.Map<PetDto>(pet));
         }
 
@@ -63,7 +66,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PetDto>> CreatePet([FromForm] CreatePetDto createPetDto)
+        public async Task<ActionResult<PetDto>> CreatePet(CreatePetDto createPetDto)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
@@ -101,12 +104,63 @@ namespace API.Controllers
                 if (await _petRepository.Complete())
                     return Ok(_mapper.Map<PetDto>(pet));
             }
-
+            else if (await _petRepository.Complete())
+            {
+                return Ok(_mapper.Map<PetDto>(pet));
+            }
+            ;
             return BadRequest("Failed to create pet");
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePet(int id, UpdatePetDto updatePetDto)
+        {
+            var pet = await _petRepository.GetPet(id);
+
+            if (pet is null)
+                return NotFound();
+
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (pet.OwnerId != user.Id)
+                return BadRequest("Not your pet");
+
+            if (updatePetDto.Name != null)
+                pet.Name = updatePetDto.Name;
+            if (updatePetDto.Breed != null)
+                pet.Breed = updatePetDto.Breed;
+            if (
+                updatePetDto.DateOfBirth != DateTime.MinValue
+                && updatePetDto.DateOfBirth != pet.DateOfBirth
+            )
+            {
+                pet.DateOfBirth = updatePetDto.DateOfBirth;
+            }
+            if (updatePetDto.Color != null)
+                pet.Color = updatePetDto.Color;
+            if (updatePetDto.Gender != null)
+                pet.Gender = updatePetDto.Gender;
+            if (updatePetDto.Weight > 0)
+                pet.Weight = updatePetDto.Weight;
+            if (
+                updatePetDto.IsNeutered != default(bool)
+                && updatePetDto.IsNeutered != pet.IsNeutered
+            )
+            {
+                pet.IsNeutered = updatePetDto.IsNeutered;
+            }
+
+            _petRepository.UpdatePet(pet);
+
+            if (await _petRepository.Complete())
+                return Ok();
+
+            return BadRequest("Failed to update pet");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePet(int id)
         {
             var pet = await _petRepository.GetPet(id);
 

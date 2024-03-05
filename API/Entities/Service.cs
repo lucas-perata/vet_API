@@ -10,7 +10,6 @@ namespace API.Entities
         public float Price { get; set; }
         public int Duration { get; set; }
         public ICollection<VetService> VetServices { get; set; }
-        public ICollection<AppUser> AppUser { get; set; }
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }
-

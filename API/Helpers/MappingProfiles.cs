@@ -59,7 +59,11 @@ namespace API.Helpers
             // Photos
             CreateMap<Photo, PhotoDto>();
             CreateMap<PetPhoto, PetPhotoDto>();
+
+            // Vaccines
+            CreateMap<Vaccine, VaccineDto>();
+            CreateMap<Vaccine, CreateVaccineDto>();
+            CreateMap<Vaccine, UpdateVaccineDto>();
         }
     }
 }
-

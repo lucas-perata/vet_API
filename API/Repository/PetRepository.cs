@@ -35,12 +35,23 @@ namespace API.Repository
 
         public async Task<Pet> GetPet(int id)
         {
-           return await _context.Pets.FindAsync(id);
+           return await _context.Pets
+                            .Include(pet => pet.PetPhotos)
+                            .SingleOrDefaultAsync(pet => pet.Id == id);
         }
 
         public Task<List<Pet>> GetPets()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<Pet>> GetPetsForOwner(string ownerId)
+        {
+            return await _context.Pets
+                            .Include(pet => pet.PetPhotos)
+                            .Include(pet => pet.Spendings)
+                            .Where(pet => pet.OwnerId == ownerId)
+                            .ToListAsync();
         }
 
         public void UpdatePet(Pet pet)

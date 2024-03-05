@@ -11,6 +11,7 @@ namespace API.Interfaces
     public interface IPetInterface
     {
         Task<List<Pet>> GetPets();
+        Task<List<Pet>> GetPetsForOwner(string ownerId);
         Task<Pet> GetPet(int id); 
         void AddPet(Pet pet); 
         Task<bool> Complete(); 

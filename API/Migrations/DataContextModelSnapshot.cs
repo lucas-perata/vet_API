@@ -206,6 +206,33 @@ namespace API.Migrations
                     b.ToTable("Owners");
                 });
 
+            modelBuilder.Entity("API.Entities.Identity.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Photos");
+                });
+
             modelBuilder.Entity("API.Entities.Identity.Vet", b =>
                 {
                     b.Property<string>("Id")
@@ -364,6 +391,33 @@ namespace API.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Pet", (string)null);
+                });
+
+            modelBuilder.Entity("API.Entities.PetPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PetId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PetId");
+
+                    b.ToTable("Pet-Photos");
                 });
 
             modelBuilder.Entity("API.Entities.Review", b =>
@@ -677,6 +731,15 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Entities.Identity.Photo", b =>
+                {
+                    b.HasOne("API.Entities.Identity.AppUser", "AppUser")
+                        .WithMany("Photos")
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("API.Entities.Identity.Vet", b =>
                 {
                     b.HasOne("API.Entities.Identity.AppUser", "User")
@@ -742,6 +805,17 @@ namespace API.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("API.Entities.PetPhoto", b =>
+                {
+                    b.HasOne("API.Entities.Pet", "Pet")
+                        .WithMany("Photos")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("API.Entities.Review", b =>
@@ -847,6 +921,8 @@ namespace API.Migrations
 
                     b.Navigation("Pets");
 
+                    b.Navigation("Photos");
+
                     b.Navigation("Spendings");
 
                     b.Navigation("VetAppointments");
@@ -858,6 +934,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Entities.Pet", b =>
                 {
+                    b.Navigation("Photos");
+
                     b.Navigation("Spendings");
                 });
 

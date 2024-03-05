@@ -5,6 +5,7 @@ namespace API.Entities.Identity
     public class AppUser : IdentityUser
     {
         public string DisplayName { get; set; }
+        public List<Photo> Photos { get; set; } = new();
         public ICollection<Pet> Pets { get; set; }
         public ICollection<VetService> VetServices { get; set; }
         public ICollection<Appointment> OwnerAppointments { get; set; }
@@ -14,5 +15,6 @@ namespace API.Entities.Identity
         public List<Message> MessagesSent { get; set; }
         public List<Message> MessagesReceived { get; set; }
         public ICollection<Spending> Spendings {get; set;}
+        
     }
 }

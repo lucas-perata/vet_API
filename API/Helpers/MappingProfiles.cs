@@ -2,6 +2,7 @@ using API.Dtos;
 using API.Dtos.Adoption;
 using API.Dtos.Appointment;
 using API.Dtos.Message;
+using API.Dtos.Photo;
 using API.Dtos.Review;
 using API.Dtos.Service;
 using API.Dtos.Spending;
@@ -15,44 +16,50 @@ namespace API.Helpers
     {
         public MappingProfiles()
         {
-            // Pets 
-            CreateMap<Pet, PetDto>();
+            // Pets
+            CreateMap<Pet, PetDto>()
+                .ForMember(dest => dest.PetPhoto, opt => opt.MapFrom(src => src.PetPhotos));
             CreateMap<UpdatePetDto, Pet>();
 
-            // Medical Histories 
-            CreateMap<MedicalHistory, CreateMedicalHistoryDto>(); 
-            CreateMap<UpdateMedicalHistoryDto, MedicalHistory>(); 
-            CreateMap<MedicalHistoryDto, CreateMedicalHistoryDto>(); 
+            // Medical Histories
+            CreateMap<MedicalHistory, CreateMedicalHistoryDto>();
+            CreateMap<UpdateMedicalHistoryDto, MedicalHistory>();
+            CreateMap<MedicalHistoryDto, CreateMedicalHistoryDto>();
             CreateMap<MedicalHistory, MedicalHistoryDto>();
 
-            // Adoptions 
-            CreateMap<Adoption, AdoptionDto>(); 
-            CreateMap<Adoption, CreateAdoptionDto>(); 
+            // Adoptions
+            CreateMap<Adoption, AdoptionDto>();
+            CreateMap<Adoption, CreateAdoptionDto>();
             CreateMap<Adoption, UpdateAdoptionDto>();
-            CreateMap<UpdateAdoptionDto, Adoption>(); 
+            CreateMap<UpdateAdoptionDto, Adoption>();
 
-            // Services 
+            // Services
             CreateMap<VetService, AddVetServiceDto>();
 
-            // Appointments 
+            // Appointments
             CreateMap<Appointment, AppointmentDto>();
-            CreateMap<Appointment, RequestAppointmentDto>(); 
+            CreateMap<Appointment, RequestAppointmentDto>();
 
-            // Reviews 
+            // Reviews
             CreateMap<Review, ReviewDto>();
             CreateMap<Review, CreateReviewDto>();
-            CreateMap<Review, UpdateReviewDto>(); 
+            CreateMap<Review, UpdateReviewDto>();
             CreateMap<UpdateReviewDto, Review>();
 
-            // Messages 
+            // Messages
             CreateMap<Message, MessageDto>();
             CreateMap<Message, CreateMessageDto>();
 
-            // Spendings 
+            // Spendings
             CreateMap<Spending, SpendingDto>();
-            CreateMap<Spending, CreateSpendingDto>(); 
+            CreateMap<Spending, CreateSpendingDto>();
             CreateMap<Spending, UpdateSpendingDto>();
             CreateMap<UpdateSpendingDto, Spending>();
+
+            // Photos
+            CreateMap<Photo, PhotoDto>();
+            CreateMap<PetPhoto, PetPhotoDto>();
         }
     }
 }
+

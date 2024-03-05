@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using API.Data;
 using API.Dtos;
+using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
@@ -23,9 +24,17 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IPhotoService _photoService;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-        ITokenService tokenService, IMapper mapper, DataContext context, IConfiguration configuration)
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            ITokenService tokenService,
+            IMapper mapper,
+            DataContext context,
+            IConfiguration configuration,
+            IPhotoService photoService
+        )
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -33,6 +42,7 @@ namespace API.Controllers
             _mapper = mapper;
             _context = context;
             _configuration = configuration;
+            _photoService = photoService;
         }
 
         [Authorize]
@@ -41,13 +51,13 @@ namespace API.Controllers
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            var user = await _userManager.FindByEmailAsync(email); 
+            var user = await _userManager.FindByEmailAsync(email);
 
             return new UserDto
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName,
+                DisplayName = user.DisplayName
             };
         }
 
@@ -58,26 +68,28 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet("pets")]
+        [HttpGet("/deprecated")]
         public ActionResult<PetDto> GetUserPets()
         {
             var user = _userManager.FindUserByClaimsPrincipleWithPet(User).Result;
             var petsDto = user.Pets.Select(pet => _mapper.Map<Pet, PetDto>(pet)).ToList();
             return Ok(petsDto);
-        } 
+        }
 
         [HttpGet("user-type")]
         public async Task<IActionResult> GetUserType()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            var user = await _userManager.FindByEmailAsync(email); 
+            var user = await _userManager.FindByEmailAsync(email);
 
             var isOwner = await _context.Owners.FindAsync(user.Id);
-            if(isOwner != null) return Ok("owner");
+            if (isOwner != null)
+                return Ok("owner");
 
             var isVet = await _context.Vets.FindAsync(user.Id);
-            if(isVet != null) return Ok("vet");
+            if (isVet != null)
+                return Ok("vet");
 
             return NotFound();
         }
@@ -85,13 +97,19 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email); 
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized(); 
+            if (user == null)
+                return Unauthorized();
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true); 
+            var result = await _signInManager.CheckPasswordSignInAsync(
+                user,
+                loginDto.Password,
+                true
+            );
 
-            if(!result.Succeeded) return Unauthorized(); 
+            if (!result.Succeeded)
+                return Unauthorized();
 
             return new UserDto
             {
@@ -113,9 +131,10 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if(!result.Succeeded) return BadRequest("Problem registering user");
+            if (!result.Succeeded)
+                return BadRequest("Problem registering user");
 
-            var owner = new Owner{Id = user.Id, User = user};
+            var owner = new Owner { Id = user.Id, User = user };
             _context.Owners.Add(owner);
             await _context.SaveChangesAsync();
 
@@ -132,18 +151,19 @@ namespace API.Controllers
         {
             var user = new AppUser
             {
-                DisplayName = registerDto.DisplayName, 
+                DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
                 UserName = registerDto.Email
-            }; 
+            };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password); 
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if(!result.Succeeded) return BadRequest("Problem registering user");
+            if (!result.Succeeded)
+                return BadRequest("Problem registering user");
 
-            var vet = new Vet{Id = user.Id, User = user};
+            var vet = new Vet { Id = user.Id, User = user };
             _context.Vets.Add(vet);
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
 
             return new UserDto
             {
@@ -152,5 +172,38 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
             };
         }
+
+        [HttpPost("add-photo")]
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+                return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null)
+                return BadRequest(result.Error.Message);
+
+            var photo = new Photo
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId
+            };
+
+            if (user.Photos.Count == 0)
+                photo.IsMain = true;
+
+            user.Photos.Add(photo);
+
+            if (await _context.SaveChangesAsync() > 0)
+                return _mapper.Map<PhotoDto>(photo);
+
+            return BadRequest("Problem adding photo");
+        }
     }
 }
+

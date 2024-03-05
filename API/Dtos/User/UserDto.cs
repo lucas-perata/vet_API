@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using API.Entities;
 
 namespace API.Dtos
 {
@@ -10,5 +7,6 @@ namespace API.Dtos
         public string Email { get; set; }
         public string Token { get; set; }
         public string DisplayName { get; set; }
+        public List<Entities.Photo> Photos {get; set;}
     }
 }

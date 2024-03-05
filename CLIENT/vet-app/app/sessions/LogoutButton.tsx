@@ -13,7 +13,7 @@ function LogoutButton() {
     toast({
         title: "Cerraste tu sesión"              
     });
-    window.location.href = '/';
+   window.location.href = '/';
   };
 
   return (

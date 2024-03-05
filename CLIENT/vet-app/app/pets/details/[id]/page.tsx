@@ -11,7 +11,7 @@ import { IoIosColorPalette } from "react-icons/io";
 import { FaPlus } from "react-icons/fa";
 import Link from "next/link";
 import { CiCalendarDate } from "react-icons/ci";
-
+// TODO: Adding spendings and vaccines
 async function Details({ params }: { params: { id: number } }) {
   withAuthSSR(cookies().get("token")?.value);
   const data = await getPet(params.id);
@@ -53,16 +53,18 @@ async function Details({ params }: { params: { id: number } }) {
         {data.isNeutered == true ? "Castrado" : null}
       </div>
       <div className="flex justify-center gap-5 flex-wrap mt-10">
-        <div className="flex flex-col gap-5 ">
+        <div className="flex flex-col gap-5">
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
             Historial médico
             <Link href="">
               <FaPlus size={25} />
             </Link>
           </h2>
-          {mH.map((mh) => (
-            <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
-          ))}
+          <div className="flex flex-col gap-4 overflow-scroll max-h-[57vh]">
+            {mH.map((mh) => (
+              <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
+            ))}
+          </div>
         </div>
         <div className="flex flex-col gap-5 ">
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
@@ -71,9 +73,11 @@ async function Details({ params }: { params: { id: number } }) {
               <FaPlus size={25} />
             </Link>
           </h2>
-          {mH.map((mh) => (
-            <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
-          ))}
+          <div className="flex flex-col gap-4 overflow-scroll max-h-[57vh]">
+            {mH.map((mh) => (
+              <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
+            ))}
+          </div>
         </div>
         <div className="flex flex-col gap-5 ">
           <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
@@ -82,9 +86,11 @@ async function Details({ params }: { params: { id: number } }) {
               <FaPlus size={25} />
             </Link>
           </h2>
-          {mH.map((mh) => (
-            <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
-          ))}
+          <div className="flex flex-col gap-4 overflow-scroll max-h-[57vh]">
+            {mH.map((mh) => (
+              <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
+            ))}
+          </div>
         </div>
       </div>
       <FloatingEditButton route={`/pets/update/${data.id}`} />

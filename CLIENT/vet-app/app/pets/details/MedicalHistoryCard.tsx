@@ -1,7 +1,6 @@
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import React from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import DialogMedicalHistory from "./DialogMedicalHistory";
 
 type Props = {
   medicalHistory: any;
@@ -17,9 +16,7 @@ function MedicalHistoryCard({ medicalHistory }: Props) {
           <div>{medicalHistory.id}</div>
         </CardHeader>
         <CardFooter>
-          <Link href={`historialmedico/${medicalHistory.id}`}>
-            <Button>Detalles</Button>
-          </Link>
+          <DialogMedicalHistory params={{ id: medicalHistory.id }} />
         </CardFooter>
       </Card>
     </>

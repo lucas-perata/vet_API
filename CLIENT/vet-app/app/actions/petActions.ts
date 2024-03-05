@@ -19,3 +19,9 @@ export async function getPetMedicalHistory(id: number) {
   console.log(res.data);
   return res.data;
 }
+
+export async function getMedicalHistory(id: number) {
+  const res = await instanceSSR.get(`api/medicalhistory/${id}`);
+  console.log(res.data);
+  return res.data;
+}

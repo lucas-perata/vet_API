@@ -17,3 +17,17 @@ export function createPet(data) {
       throw error; // Rethrow the error to propagate it to the caller
     });
 }
+
+export async function addVaccineToPetCS({ petId, vaccineId }) {
+  try {
+    const res = await instanceCS.post("api/vaccine/pet-vaccine", {
+      petId,
+      vaccineId,
+    });
+    console.log("Vaccine relationship added");
+    return res.data;
+  } catch (error) {
+    console.error("Error adding vaccine to pet:", error);
+    throw error; // re-throw the error so it can be handled by the caller
+  }
+}

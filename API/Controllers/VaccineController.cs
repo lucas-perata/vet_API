@@ -48,6 +48,22 @@ namespace API.Controllers
             return Ok(_mapper.Map<List<VaccineDto>>(vaccines));
         }
 
+        [HttpGet("notpet/{petId}")]
+        public async Task<ActionResult<List<VaccineDto>>> GetVaccinesMissingForPet(int petId)
+        {
+            var pet = await _petRepository.GetPet(petId);
+
+            if (pet is null)
+                return NotFound("Pet not found");
+
+            var vaccines = await _vaccineRepository.GetMissingVaccinesForPet(petId);
+
+            if (vaccines is null)
+                return NotFound("Vaccines not found");
+
+            return Ok(_mapper.Map<List<VaccineDto>>(vaccines));
+        }
+
         [HttpGet("get-vaccines")]
         public async Task<ActionResult<IList>> GetVaccines()
         {

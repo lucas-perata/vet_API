@@ -5,6 +5,7 @@ namespace API.Interfaces
     public interface IVaccineInterface
     {
         Task<List<Vaccine>> GetVaccinesForPet(int petId);
+        Task<List<Vaccine>> GetMissingVaccinesForPet(int petId);
         Task<List<Vaccine>> GetVaccines();
         Task<Vaccine> GetVaccine(int vaccineId);
         void AddVaccine(Vaccine vaccine);

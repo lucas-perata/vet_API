@@ -32,6 +32,18 @@ namespace API.Repository
                 .ToListAsync();
         }
 
+        public async Task<List<Vaccine>> GetMissingVaccinesForPet(int petId)
+        {
+            var vaccineIdsPetHas = await _context
+                .PetVaccines.Where(pv => pv.PetId == petId)
+                .Select(pv => pv.VaccineId)
+                .ToListAsync();
+
+            return await _context
+                .Vaccines.Where(v => !vaccineIdsPetHas.Contains(v.Id))
+                .ToListAsync();
+        }
+
         public async Task<List<Vaccine>> GetVaccines()
         {
             return await _context.Vaccines.ToListAsync();

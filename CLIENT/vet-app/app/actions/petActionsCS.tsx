@@ -5,7 +5,7 @@ import { createInstance } from "@/utils/axiosConfig";
 const kookiesCS = Cookie.get("token");
 const instanceCS = createInstance(kookiesCS);
 
-export function createPet(data) {
+export async function createPet(data) {
   return instanceCS
     .post("api/pet", data)
     .then((response) => {
@@ -14,11 +14,17 @@ export function createPet(data) {
     })
     .catch((error) => {
       console.log(error);
-      throw error; // Rethrow the error to propagate it to the caller
+      throw error;
     });
 }
 
-export async function addVaccineToPetCS({ petId, vaccineId }) {
+export async function addVaccineToPetCS({
+  petId,
+  vaccineId,
+}: {
+  petId: number;
+  vaccineId: number;
+}) {
   try {
     const res = await instanceCS.post("api/vaccine/pet-vaccine", {
       petId,
@@ -28,6 +34,24 @@ export async function addVaccineToPetCS({ petId, vaccineId }) {
     return res.data;
   } catch (error) {
     console.error("Error adding vaccine to pet:", error);
-    throw error; // re-throw the error so it can be handled by the caller
+    throw error;
+  }
+}
+
+export async function deleteVaccineFromPet({
+  petId,
+  vaccineId,
+}: {
+  petId: number;
+  vaccineId: number;
+}) {
+  try {
+    const res = await instanceCS.delete(
+      `/api/vaccine/pet-vaccine?petId=${petId}&vaccineId=${vaccineId}`,
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Error deleting vaccine from pet: ", error);
+    throw error;
   }
 }

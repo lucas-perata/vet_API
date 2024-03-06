@@ -83,10 +83,11 @@ namespace API.Repository
             );
         }
 
-        public async Task<PetVaccine> GetPetVaccineRelation(int vaccineId)
+        public async Task<PetVaccine> GetPetVaccineRelation(int vaccineId, int petId)
         {
             return await _context
                 .PetVaccines.Where(pv => pv.VaccineId == vaccineId)
+                .Where(pv => pv.PetId == petId)
                 .FirstOrDefaultAsync();
         }
     }

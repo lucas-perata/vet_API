@@ -15,6 +15,6 @@ namespace API.Interfaces
         void UpdateVaccine(Vaccine vaccine);
         bool DeleteVaccine(Vaccine vaccine);
         Task<bool> PetVaccineExistsAsync(int petId, int vaccineId);
-        Task<PetVaccine> GetPetVaccineRelation(int vaccineId);
+        Task<PetVaccine> GetPetVaccineRelation(int vaccineId, int petId);
     }
 }

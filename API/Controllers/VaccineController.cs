@@ -168,5 +168,30 @@ namespace API.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("pet-vaccine")]
+        public async Task<ActionResult> DeletePetVaccine(int petId, int vaccineId)
+        {
+            var vaccine = await _vaccineRepository.GetVaccine(vaccineId);
+            if (vaccine is null)
+                return NotFound("Vaccine not found");
+
+            var pet = await _petRepository.GetPet(petId);
+            if (pet is null)
+                return NotFound("Pet not found");
+
+            if (await _vaccineRepository.PetVaccineExistsAsync(petId, vaccineId))
+            {
+                var relation = await _vaccineRepository.GetPetVaccineRelation(vaccineId, petId);
+                var result = _vaccineRepository.DeletePetVaccine(relation);
+
+                if (!result)
+                    return BadRequest("There was a problem deleting");
+
+                return NoContent();
+            }
+
+            return BadRequest("Relation does not exist");
+        }
     }
 }

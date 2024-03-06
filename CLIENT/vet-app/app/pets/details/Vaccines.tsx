@@ -2,7 +2,10 @@
 import React from "react";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { addVaccineToPetCS } from "@/app/actions/petActionsCS";
+import {
+  addVaccineToPetCS,
+  deleteVaccineFromPet,
+} from "@/app/actions/petActionsCS";
 import useFetchData from "@/app/hooks/useFetch";
 import { Vaccine } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
@@ -31,7 +34,14 @@ export default function Vaccines({ id }: Props) {
     toast({
       title: "Vacuna agregada",
     });
+    refreshData();
+  };
 
+  const remove = async (petId: number, vaccineId: number) => {
+    await deleteVaccineFromPet({ petId, vaccineId });
+    toast({
+      title: "Vacuna eliminada",
+    });
     refreshData();
   };
 
@@ -40,45 +50,39 @@ export default function Vaccines({ id }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Render data (pet vaccines) */}
       <h2>Pet Vaccines</h2>
-      {data.map(
-        (
-          vaccine: Vaccine, // Use your actual vaccine data type
-        ) => (
-          <Card key={vaccine.id} className="w-[400px] border-green-500">
-            <CardHeader>
-              <div>{vaccine.name}</div>
-              <div>{vaccine.required ? "Obligatoria" : "Opcional"}</div>
-              <div>{vaccine.sideEffects}</div>
-            </CardHeader>
-            <CardFooter></CardFooter>
-          </Card>
-        ),
-      )}
+      {data.map((vaccine: Vaccine) => (
+        <Card key={vaccine.id} className="w-[400px] border-green-500">
+          <CardHeader>
+            <div>{vaccine.name}</div>
+            <div>{vaccine.required ? "Obligatoria" : "Opcional"}</div>
+            <div>{vaccine.sideEffects}</div>
+          </CardHeader>
+          <CardFooter>
+            <div onClick={() => remove(id, vaccine.id)}>
+              <Button>borrar</Button>
+            </div>
+          </CardFooter>
+        </Card>
+      ))}
 
-      {/* Render secondary data (missing vaccines) if available */}
       {secondaryData && (
         <>
           <h2>Missing Vaccines</h2>
-          {secondaryData.map(
-            (
-              vaccine: Vaccine, // Use your actual vaccine data type
-            ) => (
-              <Card key={vaccine.id} className="w-[400px]">
-                <CardHeader>
-                  <div>{vaccine.name}</div>
-                  <div>{vaccine.required ? "Obligatoria" : "Opcional"}</div>
-                  <div>{vaccine.sideEffects}</div>
-                </CardHeader>
-                <CardFooter>
-                  <div onClick={() => add(id, vaccine.id)}>
-                    <Button>+</Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            ),
-          )}
+          {secondaryData.map((vaccine: Vaccine) => (
+            <Card key={vaccine.id} className="w-[400px]">
+              <CardHeader>
+                <div>{vaccine.name}</div>
+                <div>{vaccine.required ? "Obligatoria" : "Opcional"}</div>
+                <div>{vaccine.sideEffects}</div>
+              </CardHeader>
+              <CardFooter>
+                <div onClick={() => add(id, vaccine.id)}>
+                  <Button>+</Button>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
         </>
       )}
     </div>

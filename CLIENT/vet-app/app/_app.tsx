@@ -1,5 +1,5 @@
-import React from 'react';
-import App, { AppContext } from 'next/app';
+import React from "react";
+import App, { AppContext } from "next/app";
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }: AppContext) {

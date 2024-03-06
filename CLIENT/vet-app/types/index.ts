@@ -32,3 +32,11 @@ export type MedicalHistory = {
   treatment: string;
   vetName: string;
 };
+
+export type Expense = {
+  id: number;
+  category: string;
+  description: string;
+  amount: number;
+  date: string;
+};

@@ -12,6 +12,7 @@ import { FaPlus } from "react-icons/fa";
 import Link from "next/link";
 import { CiCalendarDate } from "react-icons/ci";
 import Vaccines from "../Vaccines";
+import ExpensesPet from "../ExpensesPet";
 // TODO: Adding spendings
 async function Details({ params }: { params: { id: number } }) {
   withAuthSSR(cookies().get("token")?.value);
@@ -76,17 +77,7 @@ async function Details({ params }: { params: { id: number } }) {
           </div>
         </div>
         <div className="flex flex-col gap-5 ">
-          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
-            Gastos asociados
-            <Link href="">
-              <FaPlus size={25} />
-            </Link>
-          </h2>
-          <div className="flex flex-col gap-4 overflow-scroll max-h-[57vh]">
-            {mH.map((mh) => (
-              <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
-            ))}
-          </div>
+          <ExpensesPet id={params.id} />
         </div>
       </div>
       <FloatingEditButton route={`/pets/update/${data.id}`} />

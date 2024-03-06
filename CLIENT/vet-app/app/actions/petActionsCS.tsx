@@ -55,3 +55,39 @@ export async function deleteVaccineFromPet({
     throw error;
   }
 }
+
+export async function deleteExpenseFromPet(expenseId: number) {
+  try {
+    const res = await instanceCS.delete(`/api/spending/${expenseId}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error deleting expense", error);
+    throw error;
+  }
+}
+
+export async function updateExpense(expenseId: number, data) {
+  return instanceCS
+    .put(`/api/spending/${expenseId}`, data)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      throw error;
+    });
+}
+
+export async function createExpense(data) {
+  return instanceCS
+    .post("/api/spending", data)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error);
+      throw error;
+    });
+}

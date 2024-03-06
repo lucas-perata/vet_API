@@ -1,9 +1,9 @@
+import useStore from "@/store/store";
 import { useState, useEffect } from "react";
 
 interface ApiConfig {
   petUrl: string; // URL for fetching pet data
   secondaryUrl?: string; // URL for fetching missing data (optional)
-  authorizationToken: any;
 }
 // TODO: change the name of the interface
 interface PetVaccineData {
@@ -14,6 +14,8 @@ interface PetVaccineData {
 }
 
 const useFetchData = (id: number, config: ApiConfig): PetVaccineData => {
+  const { token } = useStore();
+  const tokenValue = token();
   const [data, setData] = useState<unknown>(null);
   const [secondaryData, setSecondaryData] = useState<unknown | undefined>(
     undefined,
@@ -31,7 +33,7 @@ const useFetchData = (id: number, config: ApiConfig): PetVaccineData => {
         fetch(config.petUrl.replace("{id}", id.toString()), {
           signal,
           headers: {
-            Authorization: `Bearer ${config.authorizationToken}`, // Set the authorization header
+            Authorization: `Bearer ${tokenValue}`, // Set the authorization header
           },
         }),
       ];

@@ -17,3 +17,18 @@ export type PetPhoto = {
   isMain: boolean;
   petId: number;
 };
+
+export type Vaccine = {
+  id: number;
+  name: string;
+  required: boolean;
+  sideEffects: string;
+};
+
+export type MedicalHistory = {
+  id: number;
+  date: string;
+  description: string;
+  treatment: string;
+  vetName: string;
+};

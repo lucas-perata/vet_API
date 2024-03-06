@@ -12,7 +12,7 @@ import { FaPlus } from "react-icons/fa";
 import Link from "next/link";
 import { CiCalendarDate } from "react-icons/ci";
 import Vaccines from "../Vaccines";
-// TODO: Adding spendings and vaccines
+// TODO: Adding spendings
 async function Details({ params }: { params: { id: number } }) {
   withAuthSSR(cookies().get("token")?.value);
   const data = await getPet(params.id);

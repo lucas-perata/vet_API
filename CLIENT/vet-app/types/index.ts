@@ -38,5 +38,5 @@ export type Expense = {
   category: string;
   description: string;
   amount: number;
-  date: string;
+  date: Date | string;
 };

@@ -1,13 +1,15 @@
 "use client";
-import useFetchData from "@/app/hooks/useFetch";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Expense } from "@/types";
 import React from "react";
-import { deleteExpenseFromPet } from "@/app/actions/petActionsCS";
-
-import DialogExpense from "./DialogExpense";
+import { useQuery } from "@tanstack/react-query";
+import { createInstance } from "@/utils/axiosConfig";
+import useStore from "@/store/store";
+import { FaTrash } from "react-icons/fa";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import DialogUpdateExpense from "./DialogUpdateExpense";
 
 type Props = {
   id: number;
@@ -15,37 +17,41 @@ type Props = {
 
 function ExpensesPet({ id }: Props) {
   const { toast } = useToast();
+  const token = useStore((state) => state.token);
 
-  const config = {
-    petUrl: `http://localhost:5193/api/Spending/pet-expenses/${id}`,
-  };
+  const axiosI = createInstance(token());
 
-  const { data, isLoading, refreshData } = useFetchData(id, config);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["petExpenses"],
+    queryFn: async () => {
+      const { data } = await axiosI.get(
+        `api/spending/pet-expenses/${id}?PageSize=10`,
+      );
+      return data;
+    },
+  });
 
-  const add = async (petId: number) => {
-    await deleteExpenseFromPet(petId);
-    toast({
-      title: "Gasto agregado",
-    });
-    refreshData();
-  };
+  const queryClient = useQueryClient();
 
-  const remove = async (expenseId: number) => {
-    await deleteExpenseFromPet(expenseId);
-    toast({
-      title: "Gasto eliminado",
-    });
-    refreshData();
-  };
+  const { mutate: deleteExpense, isLoading: deleteLoading } = useMutation({
+    mutationFn: async (id: number) => await axiosI.delete(`api/spending/${id}`),
+    onSuccess: () => {
+      toast({ description: "Gasto eliminado" });
+      queryClient.invalidateQueries(["petExpenses"]);
+    },
+    onError: () => {
+      toast({ description: "Error" });
+    },
+  });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!data) return <p>No data</p>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>There was an error...</div>;
 
   return (
     <div>
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
         Gastos asociados
-        <DialogExpense petId={id} />
+        <DialogUpdateExpense petId={id} create={true} />
       </h2>
       <div className="overflow-scroll max-h-[57vh]">
         <div className="flex flex-col gap-4">
@@ -59,8 +65,20 @@ function ExpensesPet({ id }: Props) {
               </CardHeader>
 
               <CardFooter>
-                <div onClick={() => remove(expense.id)}>
-                  <Button>borrar</Button>
+                <div>
+                  <Button
+                    onClick={() => deleteExpense(expense.id)}
+                    isLoading={deleteLoading}
+                    disabled={deleteLoading}
+                  >
+                    <FaTrash color="red" />
+                  </Button>
+
+                  <DialogUpdateExpense
+                    petId={id}
+                    existingData={expense}
+                    expenseId={expense.id}
+                  />
                 </div>
               </CardFooter>
             </Card>

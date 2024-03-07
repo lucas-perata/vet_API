@@ -1,6 +1,7 @@
-"use client";
+import React from "react";
+import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -10,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+
 import { z } from "zod";
 import InputForm from "@/components/forms/Input";
 import {
@@ -21,7 +23,6 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -30,16 +31,26 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
-import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
   petId: number;
+  expenseId?: number;
+  existingData?: any;
+  onCloseDialog: any;
+  create?: boolean;
 };
 
-export default function ExpenseForm({ petId }: Props) {
+export default function PetExpenseForm({
+  petId,
+  existingData,
+  expenseId,
+  onCloseDialog,
+  create,
+}: Props) {
   const { toast } = useToast();
 
   const token = useStore((state) => state.token);
@@ -53,48 +64,38 @@ export default function ExpenseForm({ petId }: Props) {
     { label: "Sin raza", value: "3" },
   ] as const;
 
-  const {
-    register,
-    handleSubmit,
-    setFocus,
-    formState: { isSubmitting, isValid, isDirty, errors },
-  } = useForm();
-
   const formSchema = z.object({
     category: z.string().min(1).max(15),
     amount: z.coerce.number().min(1).max(100000),
     description: z.string().min(2).max(100),
-    date: z.date({ required_error: "Es necesario agregar una fecha." }),
+    date: z.any({ required_error: "Es necesario agregar una fecha." }),
     petId: z.coerce.number().min(1),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: existingData,
   });
 
-  useEffect(() => {
-    form.setValue("petId", petId);
-  }, [petId, form]);
-
-  //  function onSubmit(data: z.infer<typeof formSchema>) {
-  //   console.log(data);
-  //   createExpense(data).then((response) => {
-  //     console.log(response.id);
-  //   });
-  // }
-
   const submitExpenseMutation = async (data: z.infer<typeof formSchema>) => {
-    return await axiosI.post("/api/spending", data);
+    if (create == true) {
+      return await axiosI.post("/api/spending", data);
+    } else {
+      return await axiosI.put(`api/spending/${expenseId}`, data);
+    }
   };
 
   const { mutate: submitExpense, isLoading } = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) =>
       submitExpenseMutation(data),
     onSuccess: () => {
-      toast({ description: "Gasto agregado" });
+      toast({ description: "Gasto modificado" });
       queryClient.invalidateQueries(["petExpenses"]);
+      form.reset(existingData);
+      onCloseDialog();
     },
-    onError: () => {
+    onError: (err: any) => {
+      if (err.response.status === 401) toast({ description: "U" });
       toast({ description: "Error, intentá de nuevo" });
     },
   });
@@ -102,6 +103,16 @@ export default function ExpenseForm({ petId }: Props) {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     submitExpense(data);
   };
+
+  useEffect(() => {
+    form.setValue("petId", petId);
+  }, [petId, form]);
+
+  useEffect(() => {
+    if (!open) {
+      form.reset(existingData);
+    }
+  }, [open, form, existingData]);
 
   return (
     <Form {...form}>
@@ -225,7 +236,9 @@ export default function ExpenseForm({ petId }: Props) {
           />
         </div>
         <div>
-          <Button type="submit">Crear</Button>
+          <Button isLoading={isLoading} disabled={isLoading} type="submit">
+            Crear
+          </Button>
         </div>
       </form>
     </Form>

@@ -2,14 +2,13 @@
 import React from "react";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  addVaccineToPetCS,
-  deleteVaccineFromPet,
-} from "@/app/actions/petActionsCS";
-import useFetchData from "@/app/hooks/useFetch";
+
 import { Vaccine } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import useStore from "@/store/store";
+import { createInstance } from "@/utils/axiosConfig";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   id: number;
@@ -18,39 +17,62 @@ type Props = {
 export default function Vaccines({ id }: Props) {
   const { toast } = useToast();
   const token = useStore((state) => state.token);
-  const config = {
-    petUrl: `http://localhost:5193/api/Vaccine/pet/${id}`,
-    secondaryUrl: `http://localhost:5193/api/Vaccine/notpet/${id}`,
-    authorizationToken: token,
-  };
 
-  const { data, secondaryData, isLoading, refreshData } = useFetchData(
-    id,
-    config,
-  );
+  const axiosI = createInstance(token());
 
-  const add = async (petId: number, vaccineId: number) => {
-    await addVaccineToPetCS({ petId, vaccineId });
-    toast({
-      title: "Vacuna agregada",
-    });
-    refreshData();
-  };
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["petVaccines"],
+    queryFn: async () => {
+      const { data } = await axiosI.get(`api/vaccine/pet/${id}`);
+      return data;
+    },
+  });
 
-  const remove = async (petId: number, vaccineId: number) => {
-    await deleteVaccineFromPet({ petId, vaccineId });
-    toast({
-      title: "Vacuna eliminada",
-    });
-    refreshData();
-  };
+  const { data: missingData, isLoading: missingDataLoading } = useQuery({
+    queryKey: ["petMissingVaccines"],
+    queryFn: async () => {
+      const { data } = await axiosI.get(`api/vaccine/notpet/${id}`);
+      return data;
+    },
+  });
+
+  const queryClient = useQueryClient();
+
+  const { mutate: addVaccine } = useMutation({
+    mutationFn: async ({ petId, vaccineId }) =>
+      await axiosI.post("api/vaccine/pet-vaccine", {
+        petId: Number(id),
+        vaccineId,
+      }),
+    onSuccess: () => {
+      toast({ description: "Vacuna agregada" });
+      queryClient.invalidateQueries(["petVaccines"], ["petMissingVaccines"]);
+    },
+    onError: () => {
+      toast({ description: "Error" });
+    },
+  });
+
+  const { mutate: deleteVaccine, isLoading: deleteLoading } = useMutation({
+    mutationFn: async (vaccineId: number) =>
+      await axiosI.delete(
+        `api/vaccine/pet-vaccine?petId=${id}&vaccineId=${vaccineId}`,
+      ),
+    onSuccess: () => {
+      toast({ description: "Vacuna eliminada" });
+      queryClient.invalidateQueries(["petVaccines"]);
+    },
+    onError: () => {
+      toast({ description: "Error" });
+    },
+  });
 
   if (isLoading) return <p>Loading...</p>;
-  if (!data) return <p>No profile data</p>;
+  if (missingDataLoading) return <p>Loading..</p>;
+  if (isError) return <div>There was an error...</div>;
 
   return (
     <div className="flex flex-col gap-4">
-      <h2>Pet Vaccines</h2>
       {data.map((vaccine: Vaccine) => (
         <Card key={vaccine.id} className="w-[400px] border-green-500">
           <CardHeader>
@@ -59,32 +81,39 @@ export default function Vaccines({ id }: Props) {
             <div>{vaccine.sideEffects}</div>
           </CardHeader>
           <CardFooter>
-            <div onClick={() => remove(id, vaccine.id)}>
-              <Button>borrar</Button>
+            {vaccine.id}
+            <div>
+              <Button
+                onClick={() => deleteVaccine(vaccine.id)}
+                isLoading={deleteLoading}
+              >
+                borrar
+              </Button>
             </div>
           </CardFooter>
         </Card>
       ))}
 
-      {secondaryData && (
-        <>
-          <h2>Missing Vaccines</h2>
-          {secondaryData.map((vaccine: Vaccine) => (
-            <Card key={vaccine.id} className="w-[400px]">
-              <CardHeader>
-                <div>{vaccine.name}</div>
-                <div>{vaccine.required ? "Obligatoria" : "Opcional"}</div>
-                <div>{vaccine.sideEffects}</div>
-              </CardHeader>
-              <CardFooter>
-                <div onClick={() => add(id, vaccine.id)}>
-                  <Button>+</Button>
-                </div>
-              </CardFooter>
-            </Card>
-          ))}
-        </>
-      )}
+      <>
+        {missingData.map((vaccine: Vaccine) => (
+          <Card key={vaccine.id} className="w-[400px]">
+            <CardHeader>
+              <div>{vaccine.name}</div>
+              <div>{vaccine.required ? "Obligatoria" : "Opcional"}</div>
+              <div>{vaccine.sideEffects}</div>
+            </CardHeader>
+            <CardFooter>
+              <div>
+                <Button
+                  onClick={() => addVaccine({ id: id, vaccineId: vaccine.id })}
+                >
+                  +
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
+      </>
     </div>
   );
 }

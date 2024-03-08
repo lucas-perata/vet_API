@@ -1,4 +1,4 @@
-import { getMedicalHistory } from "@/app/actions/petActions";
+"use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MedicalHistory } from "@/types";
 
-async function DialogMedicalHistory({ params }: { params: { id: any } }) {
-  const data = await getMedicalHistory(params.id);
+type Props = {
+  data: MedicalHistory;
+};
+
+function DialogMedicalHistory({ data }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>

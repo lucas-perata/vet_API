@@ -73,7 +73,6 @@ export default function PetForm() {
   }
 
   return (
-    // TODO: Photos
     <Form {...form}>
       <form
         className="flex flex-col mt-3 gap-4"

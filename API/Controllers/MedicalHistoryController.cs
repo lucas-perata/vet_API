@@ -60,13 +60,12 @@ namespace API.Controllers
             return Ok(mHDtos);
         }
 
-        [HttpPost("{petId}")]
+        [HttpPost]
         public async Task<ActionResult<MedicalHistoryDto>> CreateMedicalHistory(
-            CreateMedicalHistoryDto createMedicalHistoryDto,
-            int petId
+            CreateMedicalHistoryDto createMedicalHistoryDto
         )
         {
-            var pet = await _petRepository.GetPet(petId);
+            var pet = await _petRepository.GetPet(createMedicalHistoryDto.PetId);
 
             if (pet == null)
                 return NotFound("Pet not found");
@@ -126,4 +125,3 @@ namespace API.Controllers
         }
     }
 }
-

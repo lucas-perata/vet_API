@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Entities.Identity;
 
 namespace API.Entities
@@ -19,6 +15,8 @@ namespace API.Entities
         public string OwnerId { get; set; }
         public AppUser Owner { get; set; }
         public List<PetPhoto> PetPhotos { get; set; } = new();
-        public ICollection<Spending> Spendings {get; set;}
+        public ICollection<Spending> Spendings { get; set; }
+        public ICollection<Vaccine> Vaccines { get; set; }
+        public ICollection<PetVaccine> PetVaccines { get; set; }
     }
 }

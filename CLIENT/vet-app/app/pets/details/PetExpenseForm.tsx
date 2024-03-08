@@ -89,7 +89,9 @@ export default function PetExpenseForm({
     mutationFn: async (data: z.infer<typeof formSchema>) =>
       submitExpenseMutation(data),
     onSuccess: () => {
-      toast({ description: "Gasto modificado" });
+      create == true
+        ? toast({ description: "Gasto agregado " })
+        : toast({ description: "Gasto modificado" });
       queryClient.invalidateQueries(["petExpenses"]);
       form.reset(existingData);
       onCloseDialog();
@@ -122,7 +124,9 @@ export default function PetExpenseForm({
         <FormField
           control={form.control}
           name="petId"
-          render={({ field }) => <input {...field} value={petId} readOnly />}
+          render={({ field }) => (
+            <input type="hidden" {...field} value={petId} readOnly />
+          )}
         />
         <div className="flex gap-4">
           <div>

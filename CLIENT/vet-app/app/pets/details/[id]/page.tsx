@@ -17,7 +17,6 @@ import ExpensesPet from "../ExpensesPet";
 async function Details({ params }: { params: { id: number } }) {
   withAuthSSR(cookies().get("token")?.value);
   const data = await getPet(params.id);
-  const mH = await getPetMedicalHistory(params.id);
 
   return (
     <div className="flex justify-center gap-5">
@@ -56,16 +55,8 @@ async function Details({ params }: { params: { id: number } }) {
       </div>
       <div className="flex justify-center gap-5 flex-wrap mt-10">
         <div className="flex flex-col gap-5">
-          <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
-            Historial médico
-            <Link href="">
-              <FaPlus size={25} />
-            </Link>
-          </h2>
           <div className="flex flex-col gap-4 overflow-scroll max-h-[57vh]">
-            {mH.map((mh) => (
-              <MedicalHistoryCard medicalHistory={mh} key={mh.id} />
-            ))}
+            <MedicalHistoryCard id={params.id} />
           </div>
         </div>
         <div className="flex flex-col gap-5 ">

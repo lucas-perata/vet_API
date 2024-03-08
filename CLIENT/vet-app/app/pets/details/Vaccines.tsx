@@ -9,6 +9,7 @@ import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FaTrash } from "react-icons/fa";
 
 type Props = {
   id: number;
@@ -81,14 +82,13 @@ export default function Vaccines({ id }: Props) {
             <div>{vaccine.sideEffects}</div>
           </CardHeader>
           <CardFooter>
-            {vaccine.id}
             <div>
               <Button
-                onClick={() => deleteVaccine(vaccine.id)}
                 isLoading={deleteLoading}
+                onClick={() => deleteVaccine(vaccine.id)}
               >
-                borrar
-              </Button>
+                <FaTrash color="red" />
+              </Button>{" "}
             </div>
           </CardFooter>
         </Card>

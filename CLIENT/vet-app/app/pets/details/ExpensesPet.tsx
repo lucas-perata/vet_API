@@ -1,22 +1,20 @@
 "use client";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 import { Expense } from "@/types";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createInstance } from "@/utils/axiosConfig";
 import useStore from "@/store/store";
 import { FaTrash } from "react-icons/fa";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import DialogUpdateExpense from "./DialogUpdateExpense";
+import { useDeleteEntity } from "@/app/hooks/useDeleteEntity";
+import DialogPetExpenseForm from "./DialogPetExpenseForm";
 
 type Props = {
   id: number;
 };
 
 function ExpensesPet({ id }: Props) {
-  const { toast } = useToast();
   const token = useStore((state) => state.token);
 
   const axiosI = createInstance(token());
@@ -31,18 +29,11 @@ function ExpensesPet({ id }: Props) {
     },
   });
 
-  const queryClient = useQueryClient();
-
-  const { mutate: deleteExpense, isLoading: deleteLoading } = useMutation({
-    mutationFn: async (id: number) => await axiosI.delete(`api/spending/${id}`),
-    onSuccess: () => {
-      toast({ description: "Gasto eliminado" });
-      queryClient.invalidateQueries(["petExpenses"]);
-    },
-    onError: () => {
-      toast({ description: "Error" });
-    },
-  });
+  const { deleteEntity, deleteLoading } = useDeleteEntity(
+    "api/spending/",
+    "petExpenses",
+    "Gasto",
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>There was an error...</div>;
@@ -51,7 +42,7 @@ function ExpensesPet({ id }: Props) {
     <div>
       <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 self-center flex items-center gap-4">
         Gastos asociados
-        <DialogUpdateExpense petId={id} create={true} />
+        <DialogPetExpenseForm petId={id} create={true} />
       </h2>
       <div className="overflow-scroll max-h-[57vh]">
         <div className="flex flex-col gap-4">
@@ -67,17 +58,18 @@ function ExpensesPet({ id }: Props) {
               <CardFooter>
                 <div>
                   <Button
-                    onClick={() => deleteExpense(expense.id)}
+                    onClick={() => deleteEntity(expense.id)}
                     isLoading={deleteLoading}
                     disabled={deleteLoading}
                   >
                     <FaTrash color="red" />
                   </Button>
 
-                  <DialogUpdateExpense
+                  <DialogPetExpenseForm
                     petId={id}
                     existingData={expense}
                     expenseId={expense.id}
+                    create={false}
                   />
                 </div>
               </CardFooter>

@@ -9,20 +9,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FaEdit, FaPlus } from "react-icons/fa";
-
-import PetExpenseForm from "./PetExpenseForm";
+import MedicalHistoryForm from "@/app/medicalHistory/MedicalHistoryForm";
 
 type Props = {
   petId: number;
-  expenseId?: number;
+  medicalHistoryId?: number;
   existingData?: any;
   create?: boolean;
 };
 
-function DialogUpdateExpense({
+function DialogMedicalHistoryForm({
   petId,
   existingData,
-  expenseId,
+  medicalHistoryId,
   create,
 }: Props) {
   const [open, setOpen] = React.useState(false);
@@ -47,20 +46,20 @@ function DialogUpdateExpense({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           {create == true ? (
-            <DialogTitle>Agregar gasto</DialogTitle>
+            <DialogTitle>Agregar historial médico</DialogTitle>
           ) : (
-            <DialogTitle>Modificar gasto</DialogTitle>
+            <DialogTitle>Modificar historial médico</DialogTitle>
           )}
         </DialogHeader>
         {create == true ? (
-          <PetExpenseForm
+          <MedicalHistoryForm
             petId={petId}
             onCloseDialog={closeDialog}
             create={create}
           />
         ) : (
-          <PetExpenseForm
-            expenseId={expenseId}
+          <MedicalHistoryForm
+            medicalHistoryId={medicalHistoryId}
             existingData={existingData}
             petId={petId}
             onCloseDialog={closeDialog}
@@ -73,4 +72,4 @@ function DialogUpdateExpense({
   );
 }
 
-export default DialogUpdateExpense;
+export default DialogMedicalHistoryForm;

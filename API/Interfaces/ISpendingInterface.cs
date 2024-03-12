@@ -17,6 +17,7 @@ namespace API.Interfaces
             UserParams userParams
         );
         Task<decimal> GetTotalSpendingForOwner(string ownerId);
+        Task<decimal> GetTotalSpendingForOwnerCurrentYear(string ownerId);
         Task<decimal> GetTotalSpendingForOwnerMonthly(string ownerId, int month, int year);
         Task<PagedList<SpendingDto>> GetSpendingsForCategory(
             string ownerId,
@@ -34,5 +35,7 @@ namespace API.Interfaces
             string ownerId,
             UserParams userParams
         );
+        Task<List<MonthlySpendingSummaryDto>> GetSumSixMonthts(string ownerId);
+        Task<List<CategorySumDto>> GetCategorySpendingForCurrentMonth(string ownerId);
     }
 }

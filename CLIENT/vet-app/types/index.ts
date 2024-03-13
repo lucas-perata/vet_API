@@ -35,6 +35,7 @@ export type MedicalHistory = {
 
 export type Expense = {
   id: number;
+  petId: number;
   category: string;
   description: string;
   amount: number;

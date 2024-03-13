@@ -277,7 +277,6 @@ namespace API.Controllers
             {
                 OwnerId = user.Id,
                 Description = createSpendingDto.Description,
-                PetId = createSpendingDto.PetId,
                 Amount = createSpendingDto.Amount,
                 Date = createSpendingDto.Date,
                 Category = createSpendingDto.Category,
@@ -288,6 +287,23 @@ namespace API.Controllers
                 var pet = await _petRepository.GetPet(createSpendingDto.PetId);
                 if (pet is null)
                     return NotFound("Pet not found");
+
+                var spendingWPet = new Spending
+                {
+                    OwnerId = user.Id,
+                    Description = createSpendingDto.Description,
+                    PetId = createSpendingDto.PetId,
+                    Amount = createSpendingDto.Amount,
+                    Date = createSpendingDto.Date,
+                    Category = createSpendingDto.Category,
+                };
+
+                _spendingRepository.AddSpending(spending);
+
+                if (await _spendingRepository.Complete())
+                    return Ok(_mapper.Map<SpendingDto>(spending));
+
+                return BadRequest("Failed to create expense");
             }
 
             _spendingRepository.AddSpending(spending);

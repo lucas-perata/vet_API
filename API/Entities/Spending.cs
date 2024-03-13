@@ -6,7 +6,7 @@ namespace API.Entities
     {
         public int Id { get; set; }
         public int? PetId { get; set; }
-        public Pet Pet { get; set; }
+        public Pet? Pet { get; set; }
         public SpendingCategory Category { get; set; }
         public string Description { get; set; }
         public decimal Amount { get; set; }
@@ -17,12 +17,12 @@ namespace API.Entities
 
     public enum SpendingCategory
     {
-        Food,
-        Medicine,
-        Toys,
-        Grooming,
-        Other
+        Comida,
+        Veterinario,
+        Juguetes,
+        Aseo,
+        Medicamentos,
+        Otros
     }
-
-
 }
+

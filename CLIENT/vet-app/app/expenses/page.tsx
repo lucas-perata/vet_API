@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useFetchExpenses, useFetchMonthlySum } from "../hooks/useExpenses";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
@@ -7,7 +7,7 @@ import { AxiosInstance } from "axios";
 import MonthlyExpensesCard from "./components/ExpensesPerMonth/MonthlyExpensesCard";
 import TotalExpensesCard from "./TotalExpensesCard";
 import ExpensesPerCatCard from "./components/ExpensesPerCat/ExpensesPerCatCard";
-import ExpensesPerMonthCard from "./ExpensesPerMonthCard";
+import MonthExpensesDetail from "./MonthExpensesDetail";
 
 function page() {
   const token = useStore((state) => state.token);
@@ -36,7 +36,7 @@ function page() {
         <TotalExpensesCard />
       </div>
 
-      <ExpensesPerMonthCard />
+      <MonthExpensesDetail />
       <ExpensesPerCatCard instance={axiosI} />
     </div>
   );

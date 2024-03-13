@@ -9,12 +9,15 @@ import {
 } from "@/components/ui/card";
 import { DataTable } from "./data.table";
 import { columns } from "./columns";
+import DialogPetExpenseForm from "../pets/details/DialogPetExpenseForm";
 
-export default function ExpensesPerMonthCard() {
+export default function MonthExpensesDetail() {
   return (
     <Card className="w-[50%]">
-      <CardHeader>
-        <CardTitle>Gastos del mes </CardTitle>
+      <CardHeader className="flex flex-row ">
+        <CardTitle>
+          Gastos del mes <DialogPetExpenseForm create={true} />
+        </CardTitle>
         <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>

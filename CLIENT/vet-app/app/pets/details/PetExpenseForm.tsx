@@ -37,12 +37,14 @@ import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
 
 type Props = {
-  petId: number;
+  petId?: number;
   expenseId?: number;
   existingData?: any;
   onCloseDialog: any;
   create?: boolean;
 };
+
+// TODO: Add a list of pets to the owner
 
 export default function PetExpenseForm({
   petId,
@@ -59,9 +61,12 @@ export default function PetExpenseForm({
   const queryClient = useQueryClient();
 
   const categories = [
-    { label: "Labrador", value: "Food" },
-    { label: "Ovejero Alemán", value: "2" },
-    { label: "Sin raza", value: "3" },
+    { label: "Comida", value: "Comida" },
+    { label: "Veterinario", value: "Veterinario" },
+    { label: "Medicamentos", value: "Medicamentos" },
+    { label: "Aseo", value: "Aseo" },
+    { label: "Juguetes", value: "Juegues" },
+    { label: "Otros", value: "Otros" },
   ] as const;
 
   const formSchema = z.object({
@@ -69,7 +74,7 @@ export default function PetExpenseForm({
     amount: z.coerce.number().min(1).max(100000),
     description: z.string().min(2).max(100),
     date: z.any({ required_error: "Es necesario agregar una fecha." }),
-    petId: z.coerce.number().min(1),
+    petId: z.coerce.number().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -240,9 +245,15 @@ export default function PetExpenseForm({
           />
         </div>
         <div>
-          <Button isLoading={isLoading} disabled={isLoading} type="submit">
-            Crear
-          </Button>
+          {create == true ? (
+            <Button isLoading={isLoading} disabled={isLoading} type="submit">
+              Crear
+            </Button>
+          ) : (
+            <Button isLoading={isLoading} disabled={isLoading} type="submit">
+              Editar
+            </Button>
+          )}
         </div>
       </form>
     </Form>

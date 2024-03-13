@@ -1,10 +1,11 @@
 "use client";
-
 import { Expense } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { FaCopy } from "react-icons/fa";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
+import DeleteExpenseButton from "./components/MonthlyExpenses/DeleteExpenseButton";
+import DialogPetExpenseForm from "../pets/details/DialogPetExpenseForm";
+
 export const columns: ColumnDef<Expense>[] = [
   {
     accessorKey: "description",
@@ -41,19 +42,23 @@ export const columns: ColumnDef<Expense>[] = [
     header: "Fecha",
   },
   {
-    id: "actions",
+    id: "delete",
+    cell: ({ row }) => {
+      const expense = row.original;
+      return <DeleteExpenseButton id={expense.id} />;
+    },
+  },
+  {
+    id: "edit",
     cell: ({ row }) => {
       const expense = row.original;
       return (
-        <Button
-          onClick={() =>
-            navigator.clipboard.writeText(
-              expense.amount + " " + expense.category,
-            )
-          }
-        >
-          <FaCopy />
-        </Button>
+        <DialogPetExpenseForm
+          petId={expense.petId}
+          existingData={expense}
+          expenseId={expense.id}
+          create={false}
+        />
       );
     },
   },

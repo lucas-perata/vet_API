@@ -43,8 +43,10 @@ export function DataTable<TData, TValue>({
   );
 
   if (data == null) {
-    data = monthlyExpensesLoading ? " " : monthlyExpenses.data.data;
+    data = monthlyExpensesLoading ? " " : monthlyExpenses?.data.data;
   }
+
+  console.log(data);
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
 

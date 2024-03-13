@@ -129,6 +129,7 @@ namespace API.Repository
                     && s.Date.Month == currentMonth
                     && s.Date.Year == currentYear
                 )
+                .OrderBy(s => s.Date)
                 .AsNoTracking();
 
             return await PagedList<Spending>.CreateAsync(
@@ -138,10 +139,38 @@ namespace API.Repository
             );
         }
 
+        public async Task<List<MonthlySpendingSummaryDto>> GetSumSixMonthts(string ownerId)
+        {
+            var currentDate = DateTime.UtcNow;
+
+            var startDate = currentDate.AddMonths(-11);
+            startDate = startDate.AddDays(1 - startDate.Day);
+            var spendingData = await _context
+                .Spendings.Where(s => s.Date >= startDate && s.Date < currentDate)
+                .GroupBy(s => new { Month = s.Date.Month }) // Group only by month
+                .Select(g => new MonthlySpendingSummaryDto // Use the defined DTO class
+                {
+                    Month = g.Key.Month,
+                    TotalSpending = g.Sum(s => s.Amount)
+                })
+                .ToListAsync();
+
+            return (spendingData);
+        }
+
         public async Task<decimal> GetTotalSpendingForOwner(string ownerId)
         {
             return await _context
                 .Spendings.Where(s => s.OwnerId == ownerId)
+                .SumAsync(s => s.Amount);
+        }
+
+        public async Task<decimal> GetTotalSpendingForOwnerCurrentYear(string ownerId)
+        {
+            var currentYear = DateTime.Now.Year;
+
+            return await _context
+                .Spendings.Where(s => s.OwnerId == ownerId && s.Date.Year == currentYear)
                 .SumAsync(s => s.Amount);
         }
 
@@ -161,6 +190,24 @@ namespace API.Repository
         public void UpdateSpending(Spending spending)
         {
             _context.Entry(spending).State = EntityState.Modified;
+        }
+
+        public async Task<List<CategorySumDto>> GetCategorySpendingForCurrentMonth(string ownerId)
+        {
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+
+            var spendingData = await _context
+                .Spendings.Where(s => s.Date.Year == currentYear && s.Date.Month == currentMonth)
+                .GroupBy(s => s.Category)
+                .Select(g => new CategorySumDto
+                {
+                    CategoryName = g.Key.ToString(),
+                    Total = g.Sum(s => s.Amount)
+                })
+                .ToListAsync();
+
+            return spendingData;
         }
     }
 }

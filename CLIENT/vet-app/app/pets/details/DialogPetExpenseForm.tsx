@@ -13,7 +13,7 @@ import { FaEdit, FaPlus } from "react-icons/fa";
 import PetExpenseForm from "./PetExpenseForm";
 
 type Props = {
-  petId: number;
+  petId?: number;
   expenseId?: number;
   existingData?: any;
   create?: boolean;

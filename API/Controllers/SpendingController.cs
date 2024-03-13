@@ -61,7 +61,7 @@ namespace API.Controllers
                     spendings.CurrentPage,
                     spendings.PageSize,
                     spendings.TotalCount,
-                    spendings.TotalCount
+                    spendings.TotalPages
                 )
             );
 
@@ -79,10 +79,33 @@ namespace API.Controllers
             return Ok(spendingSum);
         }
 
+        [HttpGet("sum-spendings-year")]
+        public async Task<ActionResult<decimal>> GetAllSpendingsSumYear()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            var spendingSum = await _spendingRepository.GetTotalSpendingForOwnerCurrentYear(
+                user.Id
+            );
+
+            return Ok(spendingSum);
+        }
+
+        [HttpGet("sum-previous-months")]
+        public async Task<ActionResult<List<MonthlySpendingSummaryDto>>> GetPreviousMonthsSum()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            var spendingSum = await _spendingRepository.GetSumSixMonthts(user.Id);
+
+            return Ok(spendingSum);
+        }
+
         [HttpGet("monthly")]
         public async Task<ActionResult<PagedList<SpendingDto>>> GetAllSpendingsMonthly(
-            [FromQuery] UserParams userParams,
-            SpendingDto spendingDto
+            [FromQuery] UserParams userParams
         )
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
@@ -101,7 +124,7 @@ namespace API.Controllers
                     spendings.CurrentPage,
                     spendings.PageSize,
                     spendings.TotalCount,
-                    spendings.TotalCount
+                    spendings.TotalPages
                 )
             );
 
@@ -109,29 +132,38 @@ namespace API.Controllers
         }
 
         [HttpGet("monthly-sum")]
-        public async Task<ActionResult<PagedList<SpendingDto>>> GetSumSpendingsMonthly(
-            [FromQuery] UserParams userParams,
-            int month,
-            int year,
-            SpendingDto spendingDto
+        public async Task<ActionResult<MonthlySpendingSumDto>> GetSumSpendingsMonthly(
+            [FromQuery] int month,
+            [FromQuery] int year
         )
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
-            var spendings = await _spendingRepository.GetTotalSpendingForOwnerMonthly(
+            var currentMonth = await _spendingRepository.GetTotalSpendingForOwnerMonthly(
                 user.Id,
                 month,
                 year
             );
+            var lastY = year;
+            var lastMonth = await _spendingRepository.GetTotalSpendingForOwnerMonthly(
+                user.Id,
+                month == 1 ? 12 : month - 1,
+                month == 1 ? lastY - 1 : year
+            );
 
-            return Ok(spendings);
+            var sum = new MonthlySpendingSumDto
+            {
+                CurrentMonth = currentMonth,
+                LastMonth = lastMonth,
+            };
+
+            return Ok(sum);
         }
 
         [HttpGet("category/{category}")]
         public async Task<ActionResult<PagedList<SpendingDto>>> GetSpendingsForCategory(
             [FromQuery] UserParams userParams,
-            SpendingDto spendingDto,
             SpendingCategory category
         )
         {
@@ -152,11 +184,25 @@ namespace API.Controllers
                     spendings.CurrentPage,
                     spendings.PageSize,
                     spendings.TotalCount,
-                    spendings.TotalCount
+                    spendings.TotalPages
                 )
             );
 
             return Ok(spendings);
+        }
+
+        [HttpGet("category/sum")]
+        public async Task<ActionResult<List<CategorySumDto>>> GetSumForCategory()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            var sum = await _spendingRepository.GetCategorySpendingForCurrentMonth(user.Id);
+
+            if (sum is null)
+                return NotFound();
+
+            return Ok(sum);
         }
 
         [HttpGet("date-range")]
@@ -184,7 +230,7 @@ namespace API.Controllers
                     spendings.CurrentPage,
                     spendings.PageSize,
                     spendings.TotalCount,
-                    spendings.TotalCount
+                    spendings.TotalPages
                 )
             );
 
@@ -214,7 +260,7 @@ namespace API.Controllers
                     spendings.CurrentPage,
                     spendings.PageSize,
                     spendings.TotalCount,
-                    spendings.TotalCount
+                    spendings.TotalPages
                 )
             );
 
@@ -231,7 +277,6 @@ namespace API.Controllers
             {
                 OwnerId = user.Id,
                 Description = createSpendingDto.Description,
-                PetId = createSpendingDto.PetId,
                 Amount = createSpendingDto.Amount,
                 Date = createSpendingDto.Date,
                 Category = createSpendingDto.Category,
@@ -242,6 +287,23 @@ namespace API.Controllers
                 var pet = await _petRepository.GetPet(createSpendingDto.PetId);
                 if (pet is null)
                     return NotFound("Pet not found");
+
+                var spendingWPet = new Spending
+                {
+                    OwnerId = user.Id,
+                    Description = createSpendingDto.Description,
+                    PetId = createSpendingDto.PetId,
+                    Amount = createSpendingDto.Amount,
+                    Date = createSpendingDto.Date,
+                    Category = createSpendingDto.Category,
+                };
+
+                _spendingRepository.AddSpending(spending);
+
+                if (await _spendingRepository.Complete())
+                    return Ok(_mapper.Map<SpendingDto>(spending));
+
+                return BadRequest("Failed to create expense");
             }
 
             _spendingRepository.AddSpending(spending);

@@ -40,3 +40,8 @@ export type Expense = {
   amount: number;
   date: Date | string;
 };
+
+export type ExpensesPerCat = {
+  categoryName: string;
+  total: number;
+};

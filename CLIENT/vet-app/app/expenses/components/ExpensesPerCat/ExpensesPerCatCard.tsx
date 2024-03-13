@@ -11,24 +11,25 @@ import { useFetchCatSumMonthly } from "@/app/hooks/useExpenses";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
 import CategorySumChart from "./CategorySumChart";
+import { ExpensesPerCat } from "@/types";
 
 export default function ExpensesPerCatCard() {
   const token = useStore((state) => state.token);
   const axiosI = createInstance(token());
   const { data, isLoading, isError } = useFetchCatSumMonthly(axiosI);
   if (isLoading) return <div>Loading...</div>;
-  console.log(data);
+  if (isError) return <div>Error</div>;
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Gastos por categoría</CardTitle>
-        <CardDescription>gráfico + porcentaje</CardDescription>
+        <CardTitle>Categoría</CardTitle>
+        <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>
-        {data.map((cat) => (
-          <div>
-            <p>{cat.categoryName}</p>
-            <p>{cat.total}</p>
+        {data.map((cat: ExpensesPerCat) => (
+          <div className="flex flex-row gap-4">
+            <p className="">{cat.categoryName}</p>
+            <p>$ {cat.total}</p>
           </div>
         ))}
         <CategorySumChart data={data} />

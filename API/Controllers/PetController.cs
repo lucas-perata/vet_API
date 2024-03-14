@@ -80,6 +80,7 @@ namespace API.Controllers
                 Color = createPetDto.Color,
                 Gender = createPetDto.Gender,
                 Weight = createPetDto.Weight,
+                ForAdoption = false,
                 IsNeutered = createPetDto.IsNeutered
             };
 
@@ -128,6 +129,11 @@ namespace API.Controllers
 
             if (updatePetDto.Name != null)
                 pet.Name = updatePetDto.Name;
+            if (
+                updatePetDto.ForAdoption != default(bool)
+                && updatePetDto.ForAdoption != pet.ForAdoption
+            )
+                pet.ForAdoption = updatePetDto.ForAdoption;
             if (updatePetDto.Breed != null)
                 pet.Breed = updatePetDto.Breed;
             if (
@@ -262,7 +268,7 @@ namespace API.Controllers
             public int PetId { get; set; }
         }
 
-        // TODO not working properly
+        // TODO: not working properly
 
         [HttpDelete("delete-photo-pet/{photoId}")]
         public async Task<ActionResult> DeletePhoto(

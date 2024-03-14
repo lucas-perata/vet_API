@@ -18,16 +18,21 @@ namespace API.Controllers
     [Authorize]
     public class AdoptionController : ControllerBase
     {
-        private readonly IMapper _mapper; 
-        private readonly AdoptionRepository _adoptionRepository; 
-        private readonly PetRepository _petRepository; 
+        private readonly IMapper _mapper;
+        private readonly AdoptionRepository _adoptionRepository;
+        private readonly PetRepository _petRepository;
         private readonly UserManager<AppUser> _userManager;
-        public AdoptionController(IMapper mapper, AdoptionRepository adoptionRepository, 
-        UserManager<AppUser> userManager, PetRepository petRepository)
+
+        public AdoptionController(
+            IMapper mapper,
+            AdoptionRepository adoptionRepository,
+            UserManager<AppUser> userManager,
+            PetRepository petRepository
+        )
         {
-            _adoptionRepository = adoptionRepository; 
+            _adoptionRepository = adoptionRepository;
             _petRepository = petRepository;
-            _mapper = mapper; 
+            _mapper = mapper;
             _userManager = userManager;
         }
 
@@ -35,110 +40,134 @@ namespace API.Controllers
         public async Task<ActionResult<AdoptionDto>> GetAdoption(int id)
         {
             var adoption = await _adoptionRepository.GetAdoption(id);
-            if(adoption is null)  return NotFound();
+            if (adoption is null)
+                return NotFound();
             return Ok(_mapper.Map<AdoptionDto>(adoption));
         }
 
-        [HttpGet("/all-adoptions")]
-        public async Task<ActionResult<PagedList<AdoptionDto>>> GetAdoptions([FromQuery] UserParams userParams)
+        [HttpGet("all-adoptions")]
+        public async Task<ActionResult<PagedList<AdoptionDto>>> GetAdoptions(
+            [FromQuery] UserParams userParams
+        )
         {
-            var adoptions = await _adoptionRepository.GetAdoptions(userParams); 
+            var adoptions = await _adoptionRepository.GetAdoptions(userParams);
 
-            Response.AddPaginationHeader(new PaginationHeader(adoptions.CurrentPage, adoptions.PageSize, adoptions.TotalCount, adoptions.TotalPages));
-            
+            Response.AddPaginationHeader(
+                new PaginationHeader(
+                    adoptions.CurrentPage,
+                    adoptions.PageSize,
+                    adoptions.TotalCount,
+                    adoptions.TotalPages
+                )
+            );
+
             return Ok(adoptions);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> CreateAdoptionWithPet(CreateAdoptionWithPetDto createAdoptionWithPetDto)
+        public async Task<IActionResult> CreateAdoptionWithPet(
+            CreateAdoptionWithPetDto createAdoptionWithPetDto
+        )
         {
-            var email = User.FindFirstValue(ClaimTypes.Email); 
-            var user = await _userManager.FindByEmailAsync(email); 
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
 
-            // TODO: check user type 
+            // TODO: check user type
 
-            var pet = new Pet {
+            var pet = new Pet
+            {
                 OwnerId = user.Id,
                 Name = createAdoptionWithPetDto.CreatePetDto.Name,
-                Breed = createAdoptionWithPetDto.CreatePetDto.Breed, 
+                Breed = createAdoptionWithPetDto.CreatePetDto.Breed,
                 DateOfBirth = createAdoptionWithPetDto.CreatePetDto.DateOfBirth,
                 Color = createAdoptionWithPetDto.CreatePetDto.Color,
                 Gender = createAdoptionWithPetDto.CreatePetDto.Gender,
-                Weight = createAdoptionWithPetDto.CreatePetDto.Weight
+                Weight = createAdoptionWithPetDto.CreatePetDto.Weight,
+                ForAdoption = true,
             };
 
             _petRepository.AddPet(pet);
 
-            if (await _petRepository.Complete() is false) return BadRequest("Failed to create pet entity"); 
+            if (await _petRepository.Complete() is false)
+                return BadRequest("Failed to create pet entity");
 
-            var petAdoption = await _petRepository.GetPet(pet.Id); 
+            var petAdoption = await _petRepository.GetPet(pet.Id);
 
-            var adoption = new Adoption {
+            if(petAdoption is null) return BadRequest();
+
+            var adoption = new Adoption
+            {
                 AppUserId = pet.OwnerId,
-                PetId = petAdoption.Id, 
-                IsNeutered = createAdoptionWithPetDto.CreateAdoptionDto.IsNeutered, 
-                IsDeworm = createAdoptionWithPetDto.CreateAdoptionDto.IsDeworm, 
+                PetId = petAdoption.Id,
+                IsNeutered = createAdoptionWithPetDto.CreateAdoptionDto.IsNeutered,
+                IsDeworm = createAdoptionWithPetDto.CreateAdoptionDto.IsDeworm,
                 IsVaccinated = createAdoptionWithPetDto.CreateAdoptionDto.IsVaccinated,
             };
 
-           _adoptionRepository.CreateAdoptionWithPetAsync(adoption); 
+            _adoptionRepository.CreateAdoptionWithPetAsync(adoption);
 
             var adoptionDto = _mapper.Map<CreateAdoptionDto>(adoption);
             var petDto = _mapper.Map<PetDto>(petAdoption);
 
-           if (await _adoptionRepository.Complete())
-           {
-            var adoptionWithPet = new AdoptionWithPetDto 
+            if (await _adoptionRepository.Complete())
             {
-                Adoption = adoptionDto, 
-                Pet = petDto,
-            }; 
+                var adoptionWithPet = new AdoptionWithPetDto
+                {
+                    Adoption = adoptionDto,
+                    Pet = petDto,
+                };
 
-            return Ok(adoptionWithPet);
-           }
+                return Ok(adoptionWithPet);
+            }
 
-            return BadRequest("Failed to create adoption"); 
+            return BadRequest("Failed to create adoption");
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAdoption(int id, UpdateAdoptionDto updateAdoptionDto)
         {
-            var adoption = await _adoptionRepository.GetAdoption(id); 
+            var adoption = await _adoptionRepository.GetAdoption(id);
 
-            if(adoption == null) return NotFound();
-            
-            var email = User.FindFirstValue(ClaimTypes.Email); 
-            var user = await _userManager.FindByEmailAsync(email); 
+            if (adoption is null)
+                return NotFound();
 
-            if(adoption.AppUserId != user.Id) return BadRequest("You cannot edit this adoption"); 
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
 
-            _mapper.Map(updateAdoptionDto, adoption); 
+            if (adoption.AppUserId != user.Id)
+                return BadRequest("You cannot edit this adoption");
 
-            _adoptionRepository.UpdateAdoption(adoption); 
+            _mapper.Map(updateAdoptionDto, adoption);
 
-            if(await _adoptionRepository.Complete()) return Ok(); 
+            _adoptionRepository.UpdateAdoption(adoption);
 
-            return BadRequest("Failed to update adoption"); 
+            if (await _adoptionRepository.Complete())
+                return Ok();
+
+            return BadRequest("Failed to update adoption");
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAdoption(int id)
         {
-            var adoption = await _adoptionRepository.GetAdoption(id); 
+            var adoption = await _adoptionRepository.GetAdoption(id);
 
-            if(adoption is null) return NotFound();
+            if (adoption is null)
+                return NotFound();
 
-            var email = User.FindFirstValue(ClaimTypes.Email); 
-            var user = await _userManager.FindByEmailAsync(email); 
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
 
-            if(adoption.AppUserId != user.Id) return BadRequest("Not your adoption"); 
+            if (adoption.AppUserId != user.Id)
+                return BadRequest("Not your adoption");
 
-            var result = _adoptionRepository.DeleteAdoption(adoption); 
-            
-            if(!result) return BadRequest("There was a problem deleting the adoption"); 
+            var result = _adoptionRepository.DeleteAdoption(adoption);
+
+            if (!result)
+                return BadRequest("There was a problem deleting the adoption");
 
             return NoContent();
         }
     }
 }
+

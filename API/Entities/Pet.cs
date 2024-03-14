@@ -12,6 +12,7 @@ namespace API.Entities
         public string Gender { get; set; }
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }
+        public bool? ForAdoption { get; set; }
         public string OwnerId { get; set; }
         public AppUser Owner { get; set; }
         public List<PetPhoto> PetPhotos { get; set; } = new();

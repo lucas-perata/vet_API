@@ -9,7 +9,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
     const token = useStore((state) => state.token);
 
     React.useEffect(() => {
-      if (!token) {
+      if (!token()) {
         router.replace("/sessions/login");
       }
     }, [token, router]);
@@ -21,4 +21,3 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
 };
 
 export default withAuth;
-

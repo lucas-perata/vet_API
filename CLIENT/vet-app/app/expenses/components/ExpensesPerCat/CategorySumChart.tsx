@@ -14,8 +14,9 @@ export default function CategorySumChart({ data }: Props) {
     "#FF00FF", // Magenta (Nature-Inspired)
   ];
 
+  // TODO: Fix chart letters overflow
   return (
-    <PieChart width={800} height={400}>
+    <PieChart width={400} height={400}>
       {data.length === 0 ? (
         <p>No data to display</p>
       ) : (

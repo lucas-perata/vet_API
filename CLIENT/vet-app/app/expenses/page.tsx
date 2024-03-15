@@ -35,9 +35,9 @@ function page() {
         <MonthlyExpensesCard />
         <TotalExpensesCard />
       </div>
-
+      <div className="flex flex-"> </div>
       <MonthExpensesDetail />
-      <ExpensesPerCatCard instance={axiosI} />
+      <ExpensesPerCatCard />
     </div>
   );
 }

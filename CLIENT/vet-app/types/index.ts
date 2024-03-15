@@ -11,6 +11,15 @@ export type Pet = {
   petPhoto: PetPhoto[];
 };
 
+export type Adoption = {
+  id: number;
+  appUserId: number;
+  isNeutered: boolean;
+  isVaccinated: boolean;
+  isDewoem: boolean;
+  Pet: Pet;
+};
+
 export type PetPhoto = {
   id: number;
   url: string;
@@ -45,4 +54,11 @@ export type Expense = {
 export type ExpensesPerCat = {
   categoryName: string;
   total: number;
+};
+
+export type Pagination = {
+  currentPage: number;
+  itemsPerPage: number;
+  totalItems: number;
+  totalPages: number;
 };

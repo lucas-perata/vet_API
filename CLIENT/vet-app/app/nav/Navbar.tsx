@@ -34,6 +34,9 @@ export default function Navbar() {
         ) : (
           <div className="flex gap-5">
             <Button>
+              <Link href="/adoptions">Adopciones</Link>
+            </Button>
+            <Button>
               <Link href="/expenses">Gastos</Link>
             </Button>
             <Button>

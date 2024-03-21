@@ -93,7 +93,8 @@ namespace API.Controllers
 
             var petAdoption = await _petRepository.GetPet(pet.Id);
 
-            if(petAdoption is null) return BadRequest();
+            if (petAdoption is null)
+                return BadRequest();
 
             var adoption = new Adoption
             {
@@ -102,6 +103,8 @@ namespace API.Controllers
                 IsNeutered = createAdoptionWithPetDto.CreateAdoptionDto.IsNeutered,
                 IsDeworm = createAdoptionWithPetDto.CreateAdoptionDto.IsDeworm,
                 IsVaccinated = createAdoptionWithPetDto.CreateAdoptionDto.IsVaccinated,
+                Area = createAdoptionWithPetDto.CreateAdoptionDto.Area,
+                Province = createAdoptionWithPetDto.CreateAdoptionDto.Province,
             };
 
             _adoptionRepository.CreateAdoptionWithPetAsync(adoption);
@@ -168,6 +171,26 @@ namespace API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<PagedList<AdoptionDto>>> SearchAdoptions(
+            [FromQuery] UserParams userParams,
+            string area,
+            string province,
+            string gender
+        )
+        {
+            var adoptions = await _adoptionRepository.SearchAdoptions(
+                userParams,
+                gender,
+                area,
+                province
+            );
+
+            if (adoptions is null)
+                return NotFound();
+
+            return Ok(adoptions);
+        }
     }
 }
-

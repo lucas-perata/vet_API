@@ -11,34 +11,36 @@ namespace API.Repository
 {
     public class AdoptionRepository : IAdoptionInterface
     {
-        private readonly DataContext _context; 
-        private readonly IMapper _mapper; 
+        private readonly DataContext _context;
+        private readonly IMapper _mapper;
+
         public AdoptionRepository(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<bool> Complete()
         {
-            return await _context.SaveChangesAsync() > 0; 
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public void CreateAdoptionWithPetAsync(Adoption adoption)
         {
-            _context.Adoptions.Add(adoption); 
+            _context.Adoptions.Add(adoption);
         }
 
         public bool DeleteAdoption(Adoption adoption)
         {
-            _context.Remove(adoption); 
-            return _context.SaveChanges() > 0; 
+            _context.Remove(adoption);
+            return _context.SaveChanges() > 0;
         }
 
         public async Task<Adoption> GetAdoption(int id)
         {
-            return await _context.Adoptions
-                            .Include(p => p.Pet)
-                            .FirstOrDefaultAsync(a => a.Id == id);    
+            return await _context
+                .Adoptions.Include(p => p.Pet)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public void UpdateAdoption(Adoption adoption)
@@ -48,11 +50,36 @@ namespace API.Repository
 
         public async Task<PagedList<AdoptionDto>> GetAdoptions(UserParams userParams)
         {
-            var query = _context.Adoptions
-                            .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
-                            .AsNoTracking();
-            
-            return await PagedList<AdoptionDto>.CreateAsync(query, userParams.PageNumber, userParams.PageSize); 
+            var query = _context
+                .Adoptions.ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                .AsNoTracking();
+
+            return await PagedList<AdoptionDto>.CreateAsync(
+                query,
+                userParams.PageNumber,
+                userParams.PageSize
+            );
+        }
+
+        public async Task<PagedList<AdoptionDto>> SearchAdoptions(
+            UserParams userParams,
+            string gender,
+            string area,
+            string province
+        )
+        {
+            var query = _context
+                .Adoptions.Include(p => p.Pet)
+                .Where(a => a.Pet.Gender == gender)
+                .Where(a => a.Province == province || a.Area == area)
+                .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                .AsNoTracking();
+
+            return await PagedList<AdoptionDto>.CreateAsync(
+                query,
+                userParams.PageNumber,
+                userParams.PageSize
+            );
         }
     }
 }

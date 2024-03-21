@@ -1,3 +1,5 @@
+using API.Entities;
+
 namespace API.Dtos.Adoption
 {
     public class UpdateAdoptionDto
@@ -7,6 +9,6 @@ namespace API.Dtos.Adoption
         public bool IsDeworm { get; set; }
         public string Area { get; set; }
         public string Province { get; set; }
+        public StatusList StatusList { get; set; }
     }
 }
-

@@ -105,6 +105,7 @@ namespace API.Controllers
                 IsVaccinated = createAdoptionWithPetDto.CreateAdoptionDto.IsVaccinated,
                 Area = createAdoptionWithPetDto.CreateAdoptionDto.Area,
                 Province = createAdoptionWithPetDto.CreateAdoptionDto.Province,
+                StatusList = 0,
             };
 
             _adoptionRepository.CreateAdoptionWithPetAsync(adoption);

@@ -12,12 +12,17 @@ namespace API.Entities
         public bool IsNeutered { get; set; }
         public bool IsVaccinated { get; set; }
         public bool IsDeworm { get; set; }
-
-        // TODO: Add status to adoptions
         public string Status { get; set; }
+        public StatusList StatusList { get; set; }
         public string Area { get; set; }
         public string Province { get; set; }
         public ICollection<MedicalHistory> MedicalHistories { get; set; }
     }
-}
 
+    public enum StatusList
+    {
+        Open,
+        InProcess,
+        Adopted
+    }
+}

@@ -48,6 +48,8 @@ namespace API.Repository
             _context.Entry(adoption).State = EntityState.Modified;
         }
 
+        // TODO: GET ADOPTIONS STATUS === 0
+
         public async Task<PagedList<AdoptionDto>> GetAdoptions(UserParams userParams)
         {
             var query = _context
@@ -70,7 +72,7 @@ namespace API.Repository
         {
             var query = _context
                 .Adoptions.Include(p => p.Pet)
-                .Where(a => a.Pet.Gender == gender)
+                .Where(a => a.Pet.Gender == gender && a.StatusList == 0)
                 .Where(a => a.Province == province || a.Area == area)
                 .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();

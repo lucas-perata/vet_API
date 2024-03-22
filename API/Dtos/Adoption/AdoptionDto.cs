@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Entities;
-using API.Entities.Identity;
 
 namespace API.Dtos.Adoption
 {
@@ -15,6 +10,9 @@ namespace API.Dtos.Adoption
         public string AppUserId { get; set; }
         public bool IsNeutered { get; set; }
         public bool IsVaccinated { get; set; }
-        public bool IsDeworm {get; set;}
+        public bool IsDeworm { get; set; }
+        public string Area { get; set; }
+        public string Province { get; set; }
+        public StatusList StatusList { get; set; }
     }
 }

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Entities.Identity;
 
 namespace API.Entities
@@ -15,8 +11,18 @@ namespace API.Entities
         public AppUser AppUser { get; set; }
         public bool IsNeutered { get; set; }
         public bool IsVaccinated { get; set; }
-        public bool IsDeworm {get; set;}
+        public bool IsDeworm { get; set; }
         public string Status { get; set; }
+        public StatusList StatusList { get; set; }
+        public string Area { get; set; }
+        public string Province { get; set; }
         public ICollection<MedicalHistory> MedicalHistories { get; set; }
+    }
+
+    public enum StatusList
+    {
+        Open,
+        InProcess,
+        Adopted
     }
 }

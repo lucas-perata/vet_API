@@ -9,7 +9,7 @@ namespace API.Dtos
         public string Gender { get; set; }
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }
-        public string OwnerId { get; set; }
-        public IFormFile Photo { get; set; }
+        public bool ForAdoption { get; set; }
+        public IFormFile? Photo { get; set; }
     }
 }

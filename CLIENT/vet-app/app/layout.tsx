@@ -19,10 +19,7 @@ export default function RootLayout({
       <body style={{ minWidth: "100vw", height: "90vh" }}>
         <TanstackProvider>
           <Navbar />
-          <main
-            className="p-10"
-            style={{ minWidth: "100%", minHeight: "90vh" }}
-          >
+          <main className="p-5" style={{ minWidth: "100%", maxHeight: "90vh" }}>
             {children}
           </main>
           <Toaster />

@@ -63,6 +63,7 @@ namespace API.Repository
             );
         }
 
+        // TODO: Make search not sensible no CAPS and optional
         public async Task<PagedList<AdoptionDto>> SearchAdoptions(
             UserParams userParams,
             string gender,

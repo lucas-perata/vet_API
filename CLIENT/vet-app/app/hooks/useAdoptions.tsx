@@ -1,12 +1,16 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Params {
   id?: number;
   pageParam?: number;
-  instance: AxiosInstance;
+  instance?: AxiosInstance;
+  area?: string;
+  province?: string;
+  gender?: string;
 }
 
 export function useFetchAdoptions({ instance, pageParam }: Params) {
@@ -39,3 +43,27 @@ export function useFetchAdoption({ instance, id }: Params) {
   });
   return { data, isLoading, isError };
 }
+
+export function useFilterAdoptions(instance) {
+  const queryClient = useQueryClient();
+  const { mutate: filterData } = useMutation({
+    mutationFn: async (area: string) => {
+      const response = await instance.get(`api/Adoption/search?pagesize=6&area=${area}&gender=string`,
+        {
+          responseType: "json",
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+      return { data: response, headers: response.headers };
+    },
+    onSuccess: (response) => {
+      queryClient.setQueryData(["adoptions", 1], response)
+    },
+    onError: () => {
+      console.log("error");
+    }
+  })
+  return { filterData };
+}
+
+

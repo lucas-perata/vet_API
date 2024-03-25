@@ -16,15 +16,16 @@ type Props = {
 };
 
 export default function AdoptionsCard({ adoptions }: Props) {
-  console.log(adoptions);
   return (
     <>
       {adoptions.map((adoption: Adoption) => (
         <Card className="flex h-[25vh] w-[23vw]">
           <CardHeader>
-            <CardTitle>{adoption.appUserId}</CardTitle>
+            <CardTitle>{adoption.pet.name}</CardTitle>
             <CardDescription>
-              Deploy your new project in one-click.
+              {adoption.area}
+              {adoption.province}
+              {adoption.pet.gender}
             </CardDescription>
           </CardHeader>
           <CardContent></CardContent>

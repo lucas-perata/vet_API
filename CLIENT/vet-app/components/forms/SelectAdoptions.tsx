@@ -29,7 +29,7 @@ export const SelectAdoptions = (props: Props) => {
         name={props.name}
         render={({ field }) => (
           <FormItem className="w-52">
-            <FormLabel>Especie</FormLabel>
+            <FormLabel>{props.label}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
                 <SelectTrigger>
@@ -37,8 +37,8 @@ export const SelectAdoptions = (props: Props) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="m@example.com">m@example.com</SelectItem>
-                <SelectItem value="m@google.com">m@google.com</SelectItem>
+                <SelectItem value="Morón">Moron</SelectItem>
+                <SelectItem value="string">string</SelectItem>
                 <SelectItem value="m@support.com">m@support.com</SelectItem>
               </SelectContent>
             </Select>

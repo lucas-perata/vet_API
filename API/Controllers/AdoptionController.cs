@@ -191,6 +191,15 @@ namespace API.Controllers
             if (adoptions is null)
                 return NotFound();
 
+            Response.AddPaginationHeader(
+                new PaginationHeader(
+                    adoptions.CurrentPage,
+                    adoptions.PageSize,
+                    adoptions.TotalCount,
+                    adoptions.TotalPages
+                )
+            );
+
             return Ok(adoptions);
         }
     }

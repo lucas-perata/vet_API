@@ -17,7 +17,10 @@ export type Adoption = {
   isNeutered: boolean;
   isVaccinated: boolean;
   isDewoem: boolean;
-  Pet: Pet;
+  area: string;
+  province: string;
+  statusList: string;
+  pet: Pet;
 };
 
 export type PetPhoto = {

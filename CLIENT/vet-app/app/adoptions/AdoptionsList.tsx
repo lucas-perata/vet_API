@@ -11,7 +11,7 @@ function PaginationButtons(params, totalPages: number, currentPage: number) {
   return (
     <div className="flex gap-4">
       <Button
-        disabled={currentPage != totalPages}
+        disabled={currentPage >= 1}
         onClick={() =>
           params((page: number) => (totalPages == page ? page - 1 : page))
         }

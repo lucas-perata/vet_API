@@ -9,6 +9,8 @@ namespace API.Entities
         public string Breed { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Color { get; set; }
+
+        // TODO: GENDER list enum maybe
         public string Gender { get; set; }
         public int Weight { get; set; }
         public bool IsNeutered { get; set; }

@@ -63,7 +63,6 @@ namespace API.Repository
             );
         }
 
-        // TODO: Make search not sensible no CAPS and optional
         public async Task<PagedList<AdoptionDto>> SearchAdoptions(
             UserParams userParams,
             string gender,
@@ -71,12 +70,26 @@ namespace API.Repository
             string province
         )
         {
-            var query = _context
-                .Adoptions.Include(p => p.Pet)
-                .Where(a => a.Pet.Gender == gender && a.StatusList == 0)
-                .Where(a => a.Province == province || a.Area == area)
-                .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
-                .AsNoTracking();
+            IQueryable<AdoptionDto> query;
+
+            if (gender == "default")
+            {
+                query = _context
+                    .Adoptions.Include(p => p.Pet)
+                    .Where(a => a.StatusList == 0)
+                    .Where(a => a.Province == province && a.Area == area)
+                    .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                    .AsNoTracking();
+            }
+            else
+            {
+                query = _context
+                    .Adoptions.Include(p => p.Pet)
+                    .Where(a => a.StatusList == 0 && a.Pet.Gender == gender)
+                    .Where(a => a.Province == province && a.Area == area)
+                    .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                    .AsNoTracking();
+            }
 
             return await PagedList<AdoptionDto>.CreateAsync(
                 query,

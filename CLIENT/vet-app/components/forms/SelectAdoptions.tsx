@@ -19,6 +19,8 @@ type Props = {
   label: string;
   name: string;
   form: any;
+  selection: {}[];
+  onValueChange?: (value: string) => void;
 } & UseControllerProps;
 
 export const SelectAdoptions = (props: Props) => {
@@ -30,19 +32,26 @@ export const SelectAdoptions = (props: Props) => {
         render={({ field }) => (
           <FormItem className="w-52">
             <FormLabel>{props.label}</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={(value) => {
+                field.onChange(value);
+                props.onValueChange?.(value);
+              }}
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccioná una especie" />
+                  <SelectValue placeholder="" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="Morón">Moron</SelectItem>
-                <SelectItem value="string">string</SelectItem>
-                <SelectItem value="m@support.com">m@support.com</SelectItem>
+                {props.selection.map((value) => (
+                  <SelectItem key={value.name} value={value.name}>
+                    {value.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-
             <FormMessage />
           </FormItem>
         )}

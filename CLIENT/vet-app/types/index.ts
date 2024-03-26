@@ -65,3 +65,5 @@ export type Pagination = {
   totalItems: number;
   totalPages: number;
 };
+
+export type List = { id: number; name: string }[]

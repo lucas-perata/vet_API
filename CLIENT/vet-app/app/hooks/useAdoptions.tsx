@@ -44,11 +44,16 @@ export function useFetchAdoption({ instance, id }: Params) {
   return { data, isLoading, isError };
 }
 
-export function useFilterAdoptions(instance) {
+export function useFilterAdoptions(instance: AxiosInstance) {
   const queryClient = useQueryClient();
+  interface filterArgs {
+    gender: string;
+    area: string;
+    province: string;
+  }
   const { mutate: filterData } = useMutation({
-    mutationFn: async (area: string) => {
-      const response = await instance.get(`api/Adoption/search?pagesize=6&area=${area}&gender=string`,
+    mutationFn: async (args: filterArgs) => {
+      const response = await instance.get(`api/Adoption/search?pagesize=6&area=${args.area}&gender=${args.gender}&province=${args.province}`,
         {
           responseType: "json",
           headers: { "Content-Type": "application/json" },

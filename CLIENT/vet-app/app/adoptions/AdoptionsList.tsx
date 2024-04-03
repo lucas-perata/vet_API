@@ -45,11 +45,13 @@ export default function AdoptionsList() {
   const pagination: Pagination = JSON.parse(data?.headers.pagination);
   console.log(pagination.totalPages);
   return (
-    <div className="flex flex-col w-full justify-center items-center">
-      <div className="flex flex-row h-[63vh] w-10/12 justify-center items-center p-5 gap-5 flex-wrap">
-        <AdoptionsCard adoptions={data?.data.data} />
+    <div className="flex flex-col">
+      <div className="flex flex-col w-full justify-center items-center">
+        <div className="flex flex-row h-[63vh] w-10/12  items-center p-5 gap-5 flex-wrap">
+          <AdoptionsCard adoptions={data?.data.data} />
+        </div>
       </div>
-      <div className="self-center flex sticky">
+      <div className="self-center bg-red-100 sticky bottom-0">
         <p>
           {PaginationButtons(
             setPageNumber,
@@ -59,5 +61,6 @@ export default function AdoptionsList() {
         </p>
       </div>
     </div>
+
   );
 }

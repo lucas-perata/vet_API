@@ -1,6 +1,7 @@
 "use client";
 import Cookie from "js-cookie";
 import { createInstance } from "@/utils/axiosConfig";
+import { Pet } from "@/types";
 
 const kookiesCS = Cookie.get("token");
 const instanceCS = createInstance(kookiesCS);
@@ -90,4 +91,9 @@ export async function createExpense(data) {
       console.log(error);
       throw error;
     });
+}
+
+export function photoMain(pet: Pet) {
+  let photo = pet.petPhoto.map((ph) => ph);
+  return photo.find((main) => main.isMain == true)?.url;
 }

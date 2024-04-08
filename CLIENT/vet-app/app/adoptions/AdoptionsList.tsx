@@ -43,21 +43,20 @@ export default function AdoptionsList() {
   if (isError) return <div>Error</div>;
 
   const pagination: Pagination = JSON.parse(data?.headers.pagination);
-  console.log(pagination.totalPages);
   return (
     <div className="flex flex-col">
       <div className="flex flex-col w-full items-center align-top">
         <div className="flex flex-row w-10/12  items-center p-5 gap-5 flex-wrap">
           <AdoptionsCard adoptions={data?.data.data} />
         </div>
-        <div className="">
-          <p className=" ">
+        <div >
+          <div >
             {PaginationButtons(
               setPageNumber,
               pagination.totalPages,
               pagination.currentPage,
             )}
-          </p>
+          </div>
         </div>
 
       </div>

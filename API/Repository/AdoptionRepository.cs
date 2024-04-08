@@ -40,6 +40,7 @@ namespace API.Repository
         {
             return await _context
                 .Adoptions.Include(p => p.Pet)
+                .ThenInclude(p => p.PetPhotos)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 

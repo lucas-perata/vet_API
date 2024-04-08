@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "./nav/Navbar";
 import { Toaster } from "@/components/ui/toaster";
 import TanstackProvider from "@/components/TanstackProvider";
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: "vet-client",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <TanstackProvider>
           <Navbar />
           <main className="p-5" style={{ minWidth: "100%", maxHeight: "90vh" }}>
+            <NextTopLoader color="#4edd22" height={5} />
             {children}
           </main>
           <Toaster />

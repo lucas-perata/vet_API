@@ -46,19 +46,20 @@ export default function AdoptionsList() {
   console.log(pagination.totalPages);
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col w-full justify-center items-center">
-        <div className="flex flex-row h-[63vh] w-10/12  items-center p-5 gap-5 flex-wrap">
+      <div className="flex flex-col w-full items-center align-top">
+        <div className="flex flex-row w-10/12  items-center p-5 gap-5 flex-wrap">
           <AdoptionsCard adoptions={data?.data.data} />
         </div>
-      </div>
-      <div className="self-center bg-red-100 sticky bottom-0">
-        <p>
-          {PaginationButtons(
-            setPageNumber,
-            pagination.totalPages,
-            pagination.currentPage,
-          )}
-        </p>
+        <div className="">
+          <p className=" ">
+            {PaginationButtons(
+              setPageNumber,
+              pagination.totalPages,
+              pagination.currentPage,
+            )}
+          </p>
+        </div>
+
       </div>
     </div>
 

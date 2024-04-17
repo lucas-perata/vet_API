@@ -1,8 +1,7 @@
 import { BsAsAreasLists } from "./lists";
 
 export const getAreasByProvince = (province: string) => {
-  // Implement your logic to get the areas based on the selected province
-  // For example, you can have a mapping object or an API call to fetch the areas
+  // TODO: add areas to each province
   const areasMap = {
     "Buenos Aires": BsAsAreasLists,
     "Córdoba": ["Villa María", "Río Cuarto", "Córdoba Capital", "Alta Gracia", "Jesús María", "Villa Allende", "Villa Carlos Paz", "La Calera"],

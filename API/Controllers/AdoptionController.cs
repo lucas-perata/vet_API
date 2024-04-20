@@ -1,10 +1,11 @@
 using System.Security.Claims;
-using API.Dtos;
 using API.Dtos.Adoption;
+using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
 using API.Helpers;
+using API.Interfaces;
 using API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -21,16 +22,19 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly AdoptionRepository _adoptionRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IPhotoService _photoService;
 
         public AdoptionController(
             IMapper mapper,
             AdoptionRepository adoptionRepository,
-            UserManager<AppUser> userManager
+            UserManager<AppUser> userManager,
+            IPhotoService photoService
         )
         {
             _adoptionRepository = adoptionRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _photoService = photoService;
         }
 
         [HttpGet("{id}")]
@@ -69,9 +73,6 @@ namespace API.Controllers
 
             // TODO: check user type
 
-
-
-
             var adoption = new Adoption
             {
                 AppUserId = user.Id,
@@ -87,11 +88,28 @@ namespace API.Controllers
 
             _adoptionRepository.CreateAdoptionAsync(adoption);
 
-            var adoptionDto = _mapper.Map<CreateAdoptionDto>(adoption);
-
-            if (await _adoptionRepository.Complete())
+            if (createAdoptionDto.Photo != null && await _adoptionRepository.Complete())
             {
-                return Ok(adoptionDto);
+                var result = await _photoService.AddPhotoAsync(createAdoptionDto.Photo);
+                if (adoption is null)
+                    return NotFound();
+                var adoptionPhoto = new AdoptionPhoto
+                {
+                    Url = result.SecureUrl.AbsoluteUri,
+                    PublicId = result.PublicId,
+                    AdoptionId = adoption.Id,
+                };
+
+                if (adoption.AdoptionPhotos.Count == 0)
+                    adoptionPhoto.IsMain = true;
+
+                adoption.AdoptionPhotos.Add(adoptionPhoto);
+                if (await _adoptionRepository.Complete())
+                    return Ok(_mapper.Map<AdoptionDto>(adoption));
+            }
+            else if (await _adoptionRepository.Complete())
+            {
+                return Ok(_mapper.Map<AdoptionDto>(adoption));
             }
 
             return BadRequest("Failed to create adoption");
@@ -171,6 +189,41 @@ namespace API.Controllers
             );
 
             return Ok(adoptions);
+        }
+
+        [HttpPost("add-photo/{adoptionId}")]
+        public async Task<ActionResult<AdoptionPhotoDto>> AddPhoto(IFormFile file, int adoptionId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var adoption = await _adoptionRepository.GetAdoption(adoptionId);
+
+            if (user is null)
+                return NotFound();
+            if (adoption is null)
+                return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null)
+                return BadRequest(result.Error.Message);
+
+            var photo = new AdoptionPhoto
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
+                AdoptionId = adoptionId
+            };
+
+            if (adoption.AdoptionPhotos.Count == 0)
+                photo.IsMain = true;
+
+            adoption.AdoptionPhotos.Add(photo);
+
+            if (await _adoptionRepository.Complete())
+                return _mapper.Map<AdoptionPhotoDto>(photo);
+
+            return BadRequest("Problem adding photo");
         }
     }
 }

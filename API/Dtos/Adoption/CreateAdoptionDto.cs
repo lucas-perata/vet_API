@@ -14,5 +14,6 @@ namespace API.Dtos.Adoption
         public string Description { get; set; }
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

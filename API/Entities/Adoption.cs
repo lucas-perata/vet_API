@@ -19,6 +19,7 @@ namespace API.Entities
         public string Province { get; set; }
         public ICollection<MedicalHistory> MedicalHistories { get; set; }
         public string Description { get; set; }
+        public List<AdoptionPhoto> AdoptionPhotos { get; set; } = new();
     }
 
     public enum StatusList

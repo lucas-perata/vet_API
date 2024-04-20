@@ -4,7 +4,7 @@ import { SelectAdoptions } from '@/components/forms/SelectAdoptions';
 import { useToast } from '@/components/ui/use-toast';
 import useStore from '@/store/store';
 import { createInstance } from '@/utils/axiosConfig';
-import { BsAsAreasLists, ProvincesList } from '@/utils/lists';
+import { BsAsAreasLists, GenderList, ProvincesList } from '@/utils/lists';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
@@ -28,6 +28,9 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { LuCake } from 'react-icons/lu';
 import { Calendar } from '@/components/ui/calendar';
+import TextArea from '@/components/forms/TextArea';
+import { createAdoption } from '@/app/actions/petActionsCS';
+import { useRouter } from "next/navigation";
 
 export default function AdoptionForm() {
 
@@ -44,19 +47,22 @@ export default function AdoptionForm() {
 
   const { formState: { isSubmitting, isValid, isDirty, errors }, } = useForm();
 
+  // TODO: Add the other fields
   const formSchema = z.object({
-    area: z.string().min(1).max(25),
-    province: z.string().min(5).max(25),
-    statusList: z.string(),
+    area: z.string(),
+    province: z.string(),
+    // statusList: z.string(),
     isNeutered: z.boolean().default(false),
     isVaccinated: z.boolean().default(false),
     isDeworm: z.boolean().default(false),
     gender: z.string(),
     name: z.string(),
-    weight: z.coerce.number(),
-    breed: z.string(),
-    dateOfBirth: z.date()
+    // weight: z.coerce.number(),
+    // breed: z.string(),
+    dateOfBirth: z.date(),
   })
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,33 +84,33 @@ export default function AdoptionForm() {
     }
   })
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    submitAdoption(data);
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    // createAdoption(data).then((response) => {
+    //   console.log(response.id);
+    //   router.push(`/adoptions`);
+    // });
+    if (!isValid) {
+      console.log("Form has validation errors:", errors);
+      return;
+    }
+    console.log(data);
   }
 
 
   return (
     <Form {...form}>
       <form className="flex flex-col mt-3 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <div>
+        <div className="flex gap-4">
           <SelectAdoptions label='Provincia' name="province" form={form} selection={ProvincesList} onValueChange={(value) => {
             setSelectedProvince(value);
             setAreaList(getAreasByProvince(value));
           }} />
           <SelectAdoptions label='Partido' name='area' form={form} selection={areas}
           />
-
-
-
-
-
-
-
-
         </div>
-        <div>
+        <div className='flex flex-col gap-4'>
           <InputForm form={form} label="Name" name="name" />
-          <InputForm form={form} label="Gender" name="gender" />
+          <SelectAdoptions form={form} label="" name="gender" selection={GenderList} />
           <div className="flex gap-4">
             <div>
               <FormField
@@ -150,7 +156,6 @@ export default function AdoptionForm() {
               />
             </div>
             <div className="flex basis-1/2">
-              <InputForm label="photo" name="photo" type="file" form={form} />
             </div>
           </div>
           <div className="flex gap-4 ">
@@ -160,7 +165,7 @@ export default function AdoptionForm() {
           </div>
         </div>
         <div>
-          <Button disabled={!isValid} type="submit" >
+          <Button type="submit" >
             Crear
           </Button>
         </div>

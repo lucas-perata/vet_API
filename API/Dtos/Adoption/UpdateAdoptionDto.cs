@@ -10,5 +10,6 @@ namespace API.Dtos.Adoption
         public string Area { get; set; }
         public string Province { get; set; }
         public StatusList StatusList { get; set; }
+        public string Description { get; set; }
     }
 }

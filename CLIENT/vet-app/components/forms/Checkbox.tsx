@@ -20,7 +20,7 @@ export default function CheckboxForm(props: Props) {
                 onCheckedChange={field.onChange}
               />
             </FormControl>
-            <FormLabel>
+            <FormLabel className='p-2'>
               {props.label}
             </FormLabel>
           </FormItem>

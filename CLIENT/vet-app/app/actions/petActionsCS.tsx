@@ -19,6 +19,17 @@ export async function createPet(data) {
     });
 }
 
+export async function createAdoption(data) {
+  return instanceCS
+    .post("api/adoption", data)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
+
 export async function addVaccineToPetCS({
   petId,
   vaccineId,

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace API.Dtos.Adoption
 {
     public class AdoptionWithPetDto
@@ -11,3 +6,4 @@ namespace API.Dtos.Adoption
         public PetDto Pet { get; set; }
     }
 }
+

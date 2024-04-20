@@ -20,18 +20,15 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly AdoptionRepository _adoptionRepository;
-        private readonly PetRepository _petRepository;
         private readonly UserManager<AppUser> _userManager;
 
         public AdoptionController(
             IMapper mapper,
             AdoptionRepository adoptionRepository,
-            UserManager<AppUser> userManager,
-            PetRepository petRepository
+            UserManager<AppUser> userManager
         )
         {
             _adoptionRepository = adoptionRepository;
-            _petRepository = petRepository;
             _mapper = mapper;
             _userManager = userManager;
         }
@@ -65,64 +62,36 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAdoptionWithPet(
-            CreateAdoptionWithPetDto createAdoptionWithPetDto
-        )
+        public async Task<IActionResult> CreateAdoption(CreateAdoptionDto createAdoptionDto)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
             // TODO: check user type
 
-            var pet = new Pet
-            {
-                OwnerId = user.Id,
-                Name = createAdoptionWithPetDto.CreatePetDto.Name,
-                Breed = createAdoptionWithPetDto.CreatePetDto.Breed,
-                DateOfBirth = createAdoptionWithPetDto.CreatePetDto.DateOfBirth,
-                Color = createAdoptionWithPetDto.CreatePetDto.Color,
-                Gender = createAdoptionWithPetDto.CreatePetDto.Gender,
-                Weight = createAdoptionWithPetDto.CreatePetDto.Weight,
-                ForAdoption = true,
-            };
 
-            _petRepository.AddPet(pet);
 
-            if (await _petRepository.Complete() is false)
-                return BadRequest("Failed to create pet entity");
-
-            var petAdoption = await _petRepository.GetPet(pet.Id);
-
-            if (petAdoption is null)
-                return BadRequest();
 
             var adoption = new Adoption
             {
-                AppUserId = pet.OwnerId,
-                PetId = petAdoption.Id,
-                IsNeutered = createAdoptionWithPetDto.CreateAdoptionDto.IsNeutered,
-                IsDeworm = createAdoptionWithPetDto.CreateAdoptionDto.IsDeworm,
-                IsVaccinated = createAdoptionWithPetDto.CreateAdoptionDto.IsVaccinated,
-                Area = createAdoptionWithPetDto.CreateAdoptionDto.Area,
-                Province = createAdoptionWithPetDto.CreateAdoptionDto.Province,
-                Description = createAdoptionWithPetDto.CreateAdoptionDto.Description,
+                AppUserId = user.Id,
+                IsNeutered = createAdoptionDto.IsNeutered,
+                IsDeworm = createAdoptionDto.IsDeworm,
+                IsVaccinated = createAdoptionDto.IsVaccinated,
+                Area = createAdoptionDto.Area,
+                Province = createAdoptionDto.Province,
+                Description = createAdoptionDto.Description,
+                Name = createAdoptionDto.Name,
                 StatusList = 0,
             };
 
-            _adoptionRepository.CreateAdoptionWithPetAsync(adoption);
+            _adoptionRepository.CreateAdoptionAsync(adoption);
 
             var adoptionDto = _mapper.Map<CreateAdoptionDto>(adoption);
-            var petDto = _mapper.Map<PetDto>(petAdoption);
 
             if (await _adoptionRepository.Complete())
             {
-                var adoptionWithPet = new AdoptionWithPetDto
-                {
-                    Adoption = adoptionDto,
-                    Pet = petDto,
-                };
-
-                return Ok(adoptionWithPet);
+                return Ok(adoptionDto);
             }
 
             return BadRequest("Failed to create adoption");

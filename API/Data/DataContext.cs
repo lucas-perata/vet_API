@@ -38,7 +38,6 @@ namespace API.Data
             modelBuilder.Entity<MedicalHistory>().HasOne(p => p.Pet);
 
             modelBuilder.Entity<Adoption>().ToTable("Adoption").HasKey(p => p.Id);
-            modelBuilder.Entity<Adoption>().HasOne(p => p.Pet);
             modelBuilder.Entity<Adoption>().HasOne(a => a.AppUser);
 
             modelBuilder

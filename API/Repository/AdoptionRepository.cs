@@ -25,7 +25,7 @@ namespace API.Repository
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public void CreateAdoptionWithPetAsync(Adoption adoption)
+        public void CreateAdoptionAsync(Adoption adoption)
         {
             _context.Adoptions.Add(adoption);
         }
@@ -38,10 +38,7 @@ namespace API.Repository
 
         public async Task<Adoption> GetAdoption(int id)
         {
-            return await _context
-                .Adoptions.Include(p => p.Pet)
-                .ThenInclude(p => p.PetPhotos)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Adoptions.FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public void UpdateAdoption(Adoption adoption)
@@ -76,8 +73,7 @@ namespace API.Repository
             if (gender == "default")
             {
                 query = _context
-                    .Adoptions.Include(p => p.Pet)
-                    .Where(a => a.StatusList == 0)
+                    .Adoptions.Where(a => a.StatusList == 0)
                     .Where(a => a.Province == province && a.Area == area)
                     .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                     .AsNoTracking();
@@ -85,8 +81,7 @@ namespace API.Repository
             else
             {
                 query = _context
-                    .Adoptions.Include(p => p.Pet)
-                    .Where(a => a.StatusList == 0 && a.Pet.Gender == gender)
+                    .Adoptions.Where(a => a.StatusList == 0 && a.Gender == gender)
                     .Where(a => a.Province == province && a.Area == area)
                     .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                     .AsNoTracking();

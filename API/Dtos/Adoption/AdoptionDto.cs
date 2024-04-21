@@ -1,9 +1,11 @@
+using API.Dtos.Photo;
 using API.Entities;
 
 namespace API.Dtos.Adoption
 {
     public class AdoptionDto
     {
+        public int Id { get; set; }
         public bool IsNeutered { get; set; }
         public string Name { get; set; }
         public bool IsVaccinated { get; set; }
@@ -15,5 +17,6 @@ namespace API.Dtos.Adoption
         public string Area { get; set; }
         public string Province { get; set; }
         public string Description { get; set; }
+        public ICollection<AdoptionPhotoDto> AdoptionPhoto { get; set; }
     }
 }

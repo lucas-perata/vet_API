@@ -66,7 +66,10 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAdoption(CreateAdoptionDto createAdoptionDto)
+        public async Task<IActionResult> CreateAdoption(
+            [FromForm] CreateAdoptionDto createAdoptionDto,
+            IFormFile photo
+        )
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
@@ -88,29 +91,25 @@ namespace API.Controllers
 
             _adoptionRepository.CreateAdoptionAsync(adoption);
 
-            if (createAdoptionDto.Photo != null && await _adoptionRepository.Complete())
+            if (photo != null)
             {
-                var result = await _photoService.AddPhotoAsync(createAdoptionDto.Photo);
+                var result = await _photoService.AddPhotoAsync(photo);
                 if (adoption is null)
                     return NotFound();
+
                 var adoptionPhoto = new AdoptionPhoto
                 {
                     Url = result.SecureUrl.AbsoluteUri,
                     PublicId = result.PublicId,
                     AdoptionId = adoption.Id,
+                    IsMain = adoption.AdoptionPhotos.Count == 0
                 };
 
-                if (adoption.AdoptionPhotos.Count == 0)
-                    adoptionPhoto.IsMain = true;
-
                 adoption.AdoptionPhotos.Add(adoptionPhoto);
-                if (await _adoptionRepository.Complete())
-                    return Ok(_mapper.Map<AdoptionDto>(adoption));
             }
-            else if (await _adoptionRepository.Complete())
-            {
+
+            if (await _adoptionRepository.Complete())
                 return Ok(_mapper.Map<AdoptionDto>(adoption));
-            }
 
             return BadRequest("Failed to create adoption");
         }

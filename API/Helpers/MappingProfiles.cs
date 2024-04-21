@@ -28,7 +28,11 @@ namespace API.Helpers
             CreateMap<MedicalHistory, MedicalHistoryDto>();
 
             // Adoptions
-            CreateMap<Adoption, AdoptionDto>();
+            CreateMap<Adoption, AdoptionDto>()
+                .ForMember(
+                    dest => dest.AdoptionPhoto,
+                    opt => opt.MapFrom(src => src.AdoptionPhotos)
+                );
             CreateMap<Adoption, CreateAdoptionDto>();
             CreateMap<Adoption, UpdateAdoptionDto>();
             CreateMap<UpdateAdoptionDto, Adoption>();
@@ -59,6 +63,7 @@ namespace API.Helpers
             // Photos
             CreateMap<Photo, PhotoDto>();
             CreateMap<PetPhoto, PetPhotoDto>();
+            CreateMap<AdoptionPhoto, AdoptionPhotoDto>();
 
             // Vaccines
             CreateMap<Vaccine, VaccineDto>();

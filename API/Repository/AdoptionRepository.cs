@@ -38,7 +38,9 @@ namespace API.Repository
 
         public async Task<Adoption> GetAdoption(int id)
         {
-            return await _context.Adoptions.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context
+                .Adoptions.Include(adoption => adoption.AdoptionPhotos)
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public void UpdateAdoption(Adoption adoption)
@@ -51,7 +53,8 @@ namespace API.Repository
         public async Task<PagedList<AdoptionDto>> GetAdoptions(UserParams userParams)
         {
             var query = _context
-                .Adoptions.ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                .Adoptions.Include(adoption => adoption.AdoptionPhotos)
+                .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
 
             return await PagedList<AdoptionDto>.CreateAsync(

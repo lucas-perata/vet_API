@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, useState } from "react";
+import React, { useState } from "react";
 import { useFetchAdoptions } from "../hooks/useAdoptions";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
@@ -11,9 +11,9 @@ function PaginationButtons(params, totalPages: number, currentPage: number) {
   return (
     <div className="flex gap-4">
       <Button
-        disabled={currentPage >= 1}
+        disabled={currentPage == 1}
         onClick={() =>
-          params((page: number) => (totalPages == page ? page - 1 : page))
+          params((page: number) => (page > 1 ? page - 1 : page))
         }
       >
         Anterior

@@ -4,7 +4,7 @@ import { SelectAdoptions } from '@/components/forms/SelectAdoptions';
 import { useToast } from '@/components/ui/use-toast';
 import useStore from '@/store/store';
 import { createInstance } from '@/utils/axiosConfig';
-import { BsAsAreasLists, GenderList, ProvincesList } from '@/utils/lists';
+import { BreedList, BsAsAreasLists, GenderList, ProvincesList } from '@/utils/lists';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react'
@@ -31,6 +31,9 @@ import { Calendar } from '@/components/ui/calendar';
 import TextArea from '@/components/forms/TextArea';
 import { createAdoption } from '@/app/actions/petActionsCS';
 import { useRouter } from "next/navigation";
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import Input from '@/components/forms/Input';
 
 export default function AdoptionForm() {
 
@@ -57,9 +60,12 @@ export default function AdoptionForm() {
     isDeworm: z.boolean().default(false),
     gender: z.string(),
     name: z.string(),
-    // weight: z.coerce.number(),
-    // breed: z.string(),
+    weight: z.coerce.number(),
+    breed: z.string(),
     dateOfBirth: z.date(),
+    description: z.string(),
+    color: z.string(),
+    photo: z.any(),
   })
 
   const router = useRouter();
@@ -68,39 +74,57 @@ export default function AdoptionForm() {
     resolver: zodResolver(formSchema),
   });
 
-  const submitAdoptionMutation = async (data: z.infer<typeof formSchema>) => {
-    return await axiosI.post("/api/adoption", data);
-  }
+  // const submitAdoptionMutation = async (data: z.infer<typeof formSchema>) => {
+  //   return await axiosI.post("/api/adoption", data);
+  // }
+  //
+  // const { mutate: submitAdoption, isLoading } = useMutation({
+  //   mutationFn: async (data: z.infer<typeof formSchema>) =>
+  //     submitAdoptionMutation(data),
+  //   onSuccess: () => {
+  //     toast({ description: "Agregado" });
+  //     queryClient.invalidateQueries(["adoptions"]);
+  //   },
+  //   onError: () => {
+  //     toast({ description: "Error" });
+  //   }
+  // })
 
-  const { mutate: submitAdoption, isLoading } = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) =>
-      submitAdoptionMutation(data),
-    onSuccess: () => {
-      toast({ description: "Agregado" });
-      queryClient.invalidateQueries(["adoptions"]);
-    },
-    onError: () => {
-      toast({ description: "Error" });
-    }
-  })
+  function onSubmit(data: z.infer<typeof formSchema>, event: React.BaseSyntheticEvent) {
+    const fileInput = event.target.elements.photo;
+    const file = fileInput.files?.[0];
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    // createAdoption(data).then((response) => {
-    //   console.log(response.id);
-    //   router.push(`/adoptions`);
-    // });
-    if (!isValid) {
-      console.log("Form has validation errors:", errors);
-      return;
+    if (file) {
+      console.log(file instanceof File); // Should log true
+      console.log(Object.prototype.toString.call(file));
     }
-    console.log(data);
+    const formData = new FormData();
+    formData.append('photo', file);
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (key === 'isNeutered' || key === 'isVaccinated' || key === 'isDeworm') {
+          formData.append(key, value ? 'true' : 'false'); // Convert boolean to string
+        } else if (key === 'dateOfBirth') {
+          formData.append(key, value.toISOString()); // Convert date to ISO string
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+
+    createAdoption(formData).then((response) => {
+      console.log(response.id);
+      router.push(`/adoptions`);
+    });
   }
 
 
   return (
     <Form {...form}>
-      <form className="flex flex-col mt-3 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex flex-col mt-3 gap-4" onSubmit={form.handleSubmit(onSubmit)} encType='multipart/form-data'>
         <div className="flex gap-4">
+          <Input form={form} label='photo' name='photo' type="file" />
           <SelectAdoptions label='Provincia' name="province" form={form} selection={ProvincesList} onValueChange={(value) => {
             setSelectedProvince(value);
             setAreaList(getAreasByProvince(value));
@@ -109,8 +133,74 @@ export default function AdoptionForm() {
           />
         </div>
         <div className='flex flex-col gap-4'>
+
           <InputForm form={form} label="Name" name="name" />
-          <SelectAdoptions form={form} label="" name="gender" selection={GenderList} />
+          <SelectAdoptions form={form} label="Gender" name="gender" selection={GenderList} />
+          <InputForm form={form} label="Peso" name="weight" type="number" />
+          <InputForm form={form} label="Color" name="color" />
+          <TextArea label="description" name="description" form={form} placeholder='test' />
+
+          <FormField
+            control={form.control}
+            name="breed"
+            render={({ field }) => (
+              <FormItem className="">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-[400px] justify-between",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value
+                          ? BreedList.find(
+                            (breed) => breed.value === field.value,
+                          )?.label
+                          : "Selecciona la raza"}
+                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput
+                        placeholder="Buscar raza..."
+                        className="h-9"
+                      />
+                      <CommandEmpty>No se encontró una raza</CommandEmpty>
+                      <CommandGroup>
+                        {BreedList.map((breed) => (
+                          <CommandItem
+                            value={breed.label}
+                            key={breed.value}
+                            onSelect={() => {
+                              form.setValue("breed", breed.value);
+                            }}
+                          >
+                            {breed.label}
+                            <CheckIcon
+                              className={cn(
+                                "ml-auto h-4 w-4",
+                                breed.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="flex gap-4">
             <div>
               <FormField

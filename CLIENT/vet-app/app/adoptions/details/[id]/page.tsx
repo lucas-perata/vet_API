@@ -1,5 +1,5 @@
 "use client"
-import { photoMain } from '@/app/actions/petActionsCS';
+import { photoMainB } from '@/app/actions/petActionsCS';
 import { useFetchAdoption } from '@/app/hooks/useAdoptions'
 import useStore from '@/store/store';
 import { Adoption } from '@/types';
@@ -24,7 +24,7 @@ function AdoptionDetails({ params }: { params: { id: number } }) {
       {adoption.area}
       {}
       <div>
-        <img src={photoMain(adoption.pet)} alt={`foto adopción ${adoption.pet.name}`} />
+        <img src={photoMainB(adoption)} alt={`foto adopción ${adoption.name}`} />
 
       </div>
       <p>Quiero que me contacten</p>

@@ -22,7 +22,7 @@ function TextArea(props: Props) {
     <div>
       <FormField
         control={props.form.control}
-        name="bio"
+        name={props.name}
         render={({ field }) => (
           <FormItem>
             <FormControl>

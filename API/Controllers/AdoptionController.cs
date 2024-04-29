@@ -86,6 +86,7 @@ namespace API.Controllers
                 Province = createAdoptionDto.Province,
                 Description = createAdoptionDto.Description,
                 Name = createAdoptionDto.Name,
+                Gender = createAdoptionDto.Gender,
                 StatusList = 0,
             };
 

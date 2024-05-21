@@ -21,7 +21,7 @@ export function useFetchAdoptions({ instance, pageParam }: Params) {
     queryKey: ["adoptions", pageParam],
     queryFn: async () => {
       const response = await instance.get(
-        "api/Adoption/all-adoptions?pagesize=6&PageNumber=" + pageParam,
+        "api/Adoption/all-adoptions?pagesize=8&PageNumber=" + pageParam,
         {
           responseType: "json",
           headers: { "Content-Type": "application/json" },

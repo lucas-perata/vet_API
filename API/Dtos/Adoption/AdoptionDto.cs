@@ -6,6 +6,7 @@ namespace API.Dtos.Adoption
     public class AdoptionDto
     {
         public int Id { get; set; }
+        public string AppUserId { get; set; }
         public bool IsNeutered { get; set; }
         public string Name { get; set; }
         public bool IsVaccinated { get; set; }

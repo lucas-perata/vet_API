@@ -15,12 +15,15 @@ export type Adoption = {
   id: number;
   appUserId: number;
   isNeutered: boolean;
+  name: string;
+  description: string;
   isVaccinated: boolean;
-  isDewoem: boolean;
+  isDeworm: boolean;
   area: string;
   province: string;
   statusList: string;
-  pet: Pet;
+  gender: string;
+  AdoptionPhoto: string;
 };
 
 export type PetPhoto = {
@@ -67,3 +70,4 @@ export type Pagination = {
 };
 
 export type List = { id: number; name: string }[]
+export type ListB = { label: string; value: string }[]

@@ -1,7 +1,7 @@
 "use client";
 import Cookie from "js-cookie";
 import { createInstance } from "@/utils/axiosConfig";
-import { Pet } from "@/types";
+import { Adoption, Pet } from "@/types";
 
 const kookiesCS = Cookie.get("token");
 const instanceCS = createInstance(kookiesCS);
@@ -15,6 +15,19 @@ export async function createPet(data) {
     })
     .catch((error) => {
       console.log(error);
+      throw error;
+    });
+}
+
+export async function createAdoption(formData) {
+  return instanceCS
+    .post("api/adoption", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
       throw error;
     });
 }
@@ -95,5 +108,12 @@ export async function createExpense(data) {
 
 export function photoMain(pet: Pet) {
   let photo = pet.petPhoto.map((ph) => ph);
+  return photo.find((main) => main.isMain == true)?.url;
+}
+
+export function photoMainB(adoption: Adoption) {
+  if (adoption.adoptionPhoto == null) return;
+  let photo = adoption.adoptionPhoto.map((ph) => ph);
+  console.log(photo);
   return photo.find((main) => main.isMain == true)?.url;
 }

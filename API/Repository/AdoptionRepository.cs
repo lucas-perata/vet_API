@@ -25,7 +25,7 @@ namespace API.Repository
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public void CreateAdoptionWithPetAsync(Adoption adoption)
+        public void CreateAdoptionAsync(Adoption adoption)
         {
             _context.Adoptions.Add(adoption);
         }
@@ -39,7 +39,7 @@ namespace API.Repository
         public async Task<Adoption> GetAdoption(int id)
         {
             return await _context
-                .Adoptions.Include(p => p.Pet)
+                .Adoptions.Include(adoption => adoption.AdoptionPhotos)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
@@ -53,7 +53,8 @@ namespace API.Repository
         public async Task<PagedList<AdoptionDto>> GetAdoptions(UserParams userParams)
         {
             var query = _context
-                .Adoptions.ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
+                .Adoptions.Include(adoption => adoption.AdoptionPhotos)
+                .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
 
             return await PagedList<AdoptionDto>.CreateAsync(
@@ -75,8 +76,7 @@ namespace API.Repository
             if (gender == "default")
             {
                 query = _context
-                    .Adoptions.Include(p => p.Pet)
-                    .Where(a => a.StatusList == 0)
+                    .Adoptions.Where(a => a.StatusList == 0)
                     .Where(a => a.Province == province && a.Area == area)
                     .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                     .AsNoTracking();
@@ -84,8 +84,7 @@ namespace API.Repository
             else
             {
                 query = _context
-                    .Adoptions.Include(p => p.Pet)
-                    .Where(a => a.StatusList == 0 && a.Pet.Gender == gender)
+                    .Adoptions.Where(a => a.StatusList == 0 && a.Gender == gender)
                     .Where(a => a.Province == province && a.Area == area)
                     .ProjectTo<AdoptionDto>(_mapper.ConfigurationProvider)
                     .AsNoTracking();

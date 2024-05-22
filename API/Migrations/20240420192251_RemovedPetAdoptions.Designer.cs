@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240420192251_RemovedPetAdoptions")]
+    partial class RemovedPetAdoptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,9 +57,6 @@ namespace API.Migrations
                     b.Property<bool>("IsVaccinated")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
                     b.Property<string>("Province")
                         .HasColumnType("text");
 
@@ -71,33 +71,6 @@ namespace API.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("Adoption", (string)null);
-                });
-
-            modelBuilder.Entity("API.Entities.AdoptionPhoto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AdoptionId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsMain")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PublicId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdoptionId");
-
-                    b.ToTable("Adoption-Photos");
                 });
 
             modelBuilder.Entity("API.Entities.Appointment", b =>
@@ -767,17 +740,6 @@ namespace API.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("API.Entities.AdoptionPhoto", b =>
-                {
-                    b.HasOne("API.Entities.Adoption", "Adoption")
-                        .WithMany("AdoptionPhotos")
-                        .HasForeignKey("AdoptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Adoption");
-                });
-
             modelBuilder.Entity("API.Entities.Appointment", b =>
                 {
                     b.HasOne("API.Entities.Identity.AppUser", "Owner")
@@ -1014,8 +976,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Entities.Adoption", b =>
                 {
-                    b.Navigation("AdoptionPhotos");
-
                     b.Navigation("MedicalHistories");
                 });
 

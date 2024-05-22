@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, useState } from "react";
+import React, { useState } from "react";
 import { useFetchAdoptions } from "../hooks/useAdoptions";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
@@ -11,9 +11,9 @@ function PaginationButtons(params, totalPages: number, currentPage: number) {
   return (
     <div className="flex gap-4">
       <Button
-        disabled={currentPage >= 1}
+        disabled={currentPage == 1}
         onClick={() =>
-          params((page: number) => (totalPages == page ? page - 1 : page))
+          params((page: number) => (page > 1 ? page - 1 : page))
         }
       >
         Anterior
@@ -43,21 +43,20 @@ export default function AdoptionsList() {
   if (isError) return <div>Error</div>;
 
   const pagination: Pagination = JSON.parse(data?.headers.pagination);
-  console.log(pagination.totalPages);
   return (
     <div className="flex flex-col">
       <div className="flex flex-col w-full items-center align-top">
-        <div className="flex flex-row w-10/12  items-center p-5 gap-5 flex-wrap">
+        <div className="flex flex-row w-10/12 justify-center p-5 gap-5 flex-wrap">
           <AdoptionsCard adoptions={data?.data.data} />
         </div>
-        <div className="">
-          <p className=" ">
+        <div >
+          <div >
             {PaginationButtons(
               setPageNumber,
               pagination.totalPages,
               pagination.currentPage,
             )}
-          </p>
+          </div>
         </div>
 
       </div>

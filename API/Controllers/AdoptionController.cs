@@ -1,10 +1,11 @@
 using System.Security.Claims;
-using API.Dtos;
 using API.Dtos.Adoption;
+using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
 using API.Helpers;
+using API.Interfaces;
 using API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -20,20 +21,20 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly AdoptionRepository _adoptionRepository;
-        private readonly PetRepository _petRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IPhotoService _photoService;
 
         public AdoptionController(
             IMapper mapper,
             AdoptionRepository adoptionRepository,
             UserManager<AppUser> userManager,
-            PetRepository petRepository
+            IPhotoService photoService
         )
         {
             _adoptionRepository = adoptionRepository;
-            _petRepository = petRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _photoService = photoService;
         }
 
         [HttpGet("{id}")]
@@ -65,8 +66,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAdoptionWithPet(
-            CreateAdoptionWithPetDto createAdoptionWithPetDto
+        public async Task<IActionResult> CreateAdoption(
+            [FromForm] CreateAdoptionDto createAdoptionDto,
+            IFormFile photo
         )
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
@@ -74,55 +76,41 @@ namespace API.Controllers
 
             // TODO: check user type
 
-            var pet = new Pet
-            {
-                OwnerId = user.Id,
-                Name = createAdoptionWithPetDto.CreatePetDto.Name,
-                Breed = createAdoptionWithPetDto.CreatePetDto.Breed,
-                DateOfBirth = createAdoptionWithPetDto.CreatePetDto.DateOfBirth,
-                Color = createAdoptionWithPetDto.CreatePetDto.Color,
-                Gender = createAdoptionWithPetDto.CreatePetDto.Gender,
-                Weight = createAdoptionWithPetDto.CreatePetDto.Weight,
-                ForAdoption = true,
-            };
-
-            _petRepository.AddPet(pet);
-
-            if (await _petRepository.Complete() is false)
-                return BadRequest("Failed to create pet entity");
-
-            var petAdoption = await _petRepository.GetPet(pet.Id);
-
-            if (petAdoption is null)
-                return BadRequest();
-
             var adoption = new Adoption
             {
-                AppUserId = pet.OwnerId,
-                PetId = petAdoption.Id,
-                IsNeutered = createAdoptionWithPetDto.CreateAdoptionDto.IsNeutered,
-                IsDeworm = createAdoptionWithPetDto.CreateAdoptionDto.IsDeworm,
-                IsVaccinated = createAdoptionWithPetDto.CreateAdoptionDto.IsVaccinated,
-                Area = createAdoptionWithPetDto.CreateAdoptionDto.Area,
-                Province = createAdoptionWithPetDto.CreateAdoptionDto.Province,
+                AppUserId = user.Id,
+                IsNeutered = createAdoptionDto.IsNeutered,
+                IsDeworm = createAdoptionDto.IsDeworm,
+                IsVaccinated = createAdoptionDto.IsVaccinated,
+                Area = createAdoptionDto.Area,
+                Province = createAdoptionDto.Province,
+                Description = createAdoptionDto.Description,
+                Name = createAdoptionDto.Name,
+                Gender = createAdoptionDto.Gender,
                 StatusList = 0,
             };
 
-            _adoptionRepository.CreateAdoptionWithPetAsync(adoption);
+            _adoptionRepository.CreateAdoptionAsync(adoption);
 
-            var adoptionDto = _mapper.Map<CreateAdoptionDto>(adoption);
-            var petDto = _mapper.Map<PetDto>(petAdoption);
-
-            if (await _adoptionRepository.Complete())
+            if (photo != null)
             {
-                var adoptionWithPet = new AdoptionWithPetDto
+                var result = await _photoService.AddPhotoAsync(photo);
+                if (adoption is null)
+                    return NotFound();
+
+                var adoptionPhoto = new AdoptionPhoto
                 {
-                    Adoption = adoptionDto,
-                    Pet = petDto,
+                    Url = result.SecureUrl.AbsoluteUri,
+                    PublicId = result.PublicId,
+                    AdoptionId = adoption.Id,
+                    IsMain = adoption.AdoptionPhotos.Count == 0
                 };
 
-                return Ok(adoptionWithPet);
+                adoption.AdoptionPhotos.Add(adoptionPhoto);
             }
+
+            if (await _adoptionRepository.Complete())
+                return Ok(_mapper.Map<AdoptionDto>(adoption));
 
             return BadRequest("Failed to create adoption");
         }
@@ -201,6 +189,41 @@ namespace API.Controllers
             );
 
             return Ok(adoptions);
+        }
+
+        [HttpPost("add-photo/{adoptionId}")]
+        public async Task<ActionResult<AdoptionPhotoDto>> AddPhoto(IFormFile file, int adoptionId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var adoption = await _adoptionRepository.GetAdoption(adoptionId);
+
+            if (user is null)
+                return NotFound();
+            if (adoption is null)
+                return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null)
+                return BadRequest(result.Error.Message);
+
+            var photo = new AdoptionPhoto
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
+                AdoptionId = adoptionId
+            };
+
+            if (adoption.AdoptionPhotos.Count == 0)
+                photo.IsMain = true;
+
+            adoption.AdoptionPhotos.Add(photo);
+
+            if (await _adoptionRepository.Complete())
+                return _mapper.Map<AdoptionPhotoDto>(photo);
+
+            return BadRequest("Problem adding photo");
         }
     }
 }

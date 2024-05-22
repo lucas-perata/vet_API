@@ -1,4 +1,4 @@
-import { List } from "@/types";
+import { List, ListB } from "@/types";
 
 export const ProvincesList: List = [
   { id: 1, name: "Buenos Aires" },
@@ -179,3 +179,9 @@ export const GenderList: List = [
   // TODO: BORRAR -> testing
   { id: 3, name: "string" }
 ]
+
+export const BreedList: ListB = [
+  { label: "Labrador", value: "1" },
+  { label: "Ovejero Alemán", value: "2" },
+  { label: "Sin raza", value: "3" },
+]                                 

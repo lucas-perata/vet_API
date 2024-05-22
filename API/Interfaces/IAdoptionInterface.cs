@@ -8,7 +8,7 @@ namespace API.Interfaces
     {
         Task<PagedList<AdoptionDto>> GetAdoptions(UserParams userParams);
         Task<Adoption> GetAdoption(int id);
-        void CreateAdoptionWithPetAsync(Adoption adoption);
+        void CreateAdoptionAsync(Adoption adoption);
         Task<bool> Complete();
         void UpdateAdoption(Adoption adoption);
         bool DeleteAdoption(Adoption adoption);

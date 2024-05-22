@@ -181,8 +181,8 @@ export default function ExpenseForm({ petId }: Props) {
                       >
                         {field.value
                           ? categories.find(
-                              (category) => category.value === field.value,
-                            )?.label
+                            (category) => category.value === field.value,
+                          )?.label
                           : "Selecciona la categoría"}
                         <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>

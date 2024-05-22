@@ -17,10 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ minWidth: "100vw", height: "90vh" }}>
+      <body style={{ minWidth: "98vw", maxWidth: "100%", height: "90vh" }}>
         <TanstackProvider>
           <Navbar />
-          <main className="p-5" style={{ minWidth: "100%", maxHeight: "90vh" }}>
+          <main className="p-5" style={{ minWidth: "98%", maxHeight: "90vh" }}>
             <NextTopLoader color="#4edd22" height={5} />
             {children}
           </main>

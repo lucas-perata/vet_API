@@ -7,17 +7,19 @@ namespace API.Identity
     {
         public static async Task SeedUsersAsync(UserManager<AppUser> userManager)
         {
-            if(!userManager.Users.Any())
+            if (!userManager.Users.Any())
             {
-                var user = new AppUser 
+                var user = new AppUser
                 {
                     DisplayName = "Juan",
                     Email = "juan@test.com",
-                    UserName = "juan@test.com", 
+                    UserName = "juan@test.com",
                 };
 
-                await userManager.CreateAsync(user, "Pa$$w0rd"); 
-            }; 
+                await userManager.CreateAsync(user, "Password1!");
+            }
+            ;
         }
     }
 }
+

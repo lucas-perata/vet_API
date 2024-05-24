@@ -14,7 +14,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Policy = "RequireVetRole")]
     public class PetController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;

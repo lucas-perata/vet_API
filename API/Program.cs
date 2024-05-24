@@ -23,6 +23,7 @@ var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 
 // Add services to the container.
 
+
 builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
@@ -114,16 +115,27 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-using var scope = app.Services.CreateScope();
+var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
 app.UseCors("AllowMyOrigin");
 
 var dataContext = services.GetRequiredService<DataContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
+
 try
 {
     await dataContext.Database.MigrateAsync();
+
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "Vet", "Owner", "Admin" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
 
     await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
 

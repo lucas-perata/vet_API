@@ -1,12 +1,17 @@
+"use client"
 import React from "react";
 import { MdPets } from "react-icons/md";
 import { Button } from "@/components/ui/button";
-import { cookies } from "next/headers";
 import LogoutButton from "../sessions/LogoutButton";
 import Link from "next/link";
+import { getRole } from "../actions/getRole";
+import useStore from "@/store/store";
 
 export default function Navbar() {
-  const kookies = cookies().get("token")?.value;
+
+  const token = useStore((state) => state.token);
+  const kookies = token();
+  const role = getRole(kookies);
 
   return (
     <header
@@ -19,7 +24,7 @@ export default function Navbar() {
       >
         <MdPets size={34} />
         <div>Vet MVP</div>
-        <div></div>
+        <Button>{role}</Button>
       </Link>
       <div className="flex gap-4">
         {kookies == null ? (
@@ -31,7 +36,15 @@ export default function Navbar() {
               <Link href="/sessions/login">Iniciar sesión</Link>
             </Button>
           </>
-        ) : (
+        ) : role == "Vet" ? (<>
+          <Link href="/adoptions">
+            <Button disabled>
+              Adopciones
+            </Button> </Link>
+          <Link href="/"> <Button disabled >Reseñas</Button></Link>
+          <Link href="/"> <Button disabled>Citas</Button></Link>
+          <Link href="/"> <Button disabled>Perfil</Button></Link>
+        </>) : (
           <div className="flex gap-5">
             <Button>
               <Link href="/adoptions">Adopciones</Link>
@@ -46,6 +59,7 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
     </header>
   );
 }

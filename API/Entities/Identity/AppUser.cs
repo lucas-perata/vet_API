@@ -15,6 +15,6 @@ namespace API.Entities.Identity
         public List<Message> MessagesSent { get; set; }
         public List<Message> MessagesReceived { get; set; }
         public ICollection<Spending> Spendings { get; set; }
+        public ICollection<AppUserRole> UserRoles { get; set; }
     }
 }
-

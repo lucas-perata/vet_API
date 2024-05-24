@@ -163,6 +163,8 @@ namespace API.Controllers
 
             var vet = new Vet { Id = user.Id, User = user };
             _context.Vets.Add(vet);
+
+            await _userManager.AddToRoleAsync(user, "Vet");
             await _context.SaveChangesAsync();
 
             return new UserDto
@@ -206,4 +208,3 @@ namespace API.Controllers
         }
     }
 }
-

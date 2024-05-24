@@ -121,11 +121,12 @@ app.UseCors("AllowMyOrigin");
 
 var dataContext = services.GetRequiredService<DataContext>();
 var userManager = services.GetRequiredService<UserManager<AppUser>>();
+var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
 try
 {
     await dataContext.Database.MigrateAsync();
 
-    await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
+    await AppIdentityDbContextSeed.SeedUsersAsync(userManager, roleManager);
 
     if (!dataContext.Services.Any())
     {

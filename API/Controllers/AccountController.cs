@@ -5,14 +5,11 @@ using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
-using API.Identity;
 using API.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -56,7 +53,7 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };
         }
@@ -114,7 +111,7 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
         }
@@ -134,14 +131,16 @@ namespace API.Controllers
             if (!result.Succeeded)
                 return BadRequest("Problem registering user");
 
-            var owner = new Owner { Id = user.Id, User = user };
-            _context.Owners.Add(owner);
+            var roleUser = await _userManager.AddToRoleAsync(user, "Owner");
+            if (!roleUser.Succeeded)
+                return BadRequest(result.Errors);
+
             await _context.SaveChangesAsync();
 
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
         }
@@ -163,12 +162,17 @@ namespace API.Controllers
 
             var vet = new Vet { Id = user.Id, User = user };
             _context.Vets.Add(vet);
+
+            var roleUser = await _userManager.AddToRoleAsync(user, "Vet");
+            if (!roleUser.Succeeded)
+                return BadRequest(result.Errors);
+
             await _context.SaveChangesAsync();
 
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
         }
@@ -206,4 +210,3 @@ namespace API.Controllers
         }
     }
 }
-

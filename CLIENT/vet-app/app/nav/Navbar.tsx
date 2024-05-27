@@ -11,7 +11,11 @@ export default function Navbar() {
 
   const token = useStore((state) => state.token);
   const kookies = token();
-  const role = getRole(kookies);
+  let role: string;
+
+  if (kookies) {
+    role = getRole(kookies);
+  }
 
   return (
     <header
@@ -19,12 +23,11 @@ export default function Navbar() {
     bg-white p-5 items-center text-gray-800 shadow-md"
     >
       <Link
-        href="/"
+        href={role != null ? "/dashboard" : "/"}
         className="gap-2 text-2xl flex items-center font-semibold text-orange-700"
       >
         <MdPets size={34} />
         <div>Vet MVP</div>
-        <Button>{role}</Button>
       </Link>
       <div className="flex gap-4">
         {kookies == null ? (

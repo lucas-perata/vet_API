@@ -20,25 +20,23 @@ export default function Navbar() {
   return (
     <header
       className="sticky top-0 z-50 flex justify-between
-    bg-white p-5 items-center text-gray-800 shadow-md"
+     p-10 items-center text-gray-800  bg-green-600"
     >
       <Link
         href={role != null ? "/dashboard" : "/"}
-        className="gap-2 text-2xl flex items-center font-semibold text-orange-700"
+        className="gap-2 text-2xl flex items-center font-semibold text-white"
       >
         <MdPets size={34} />
         <div>Vet MVP</div>
+        <p className="text-xs text-gray-300">Una nueva plataforma para el cuidado de mascotas</p>
       </Link>
       <div className="flex gap-4">
         {kookies == null ? (
-          <>
-            <Button>
+          <div className="text-gray-300 flex text-bold justify-between w-80 text-sm">
+            <Link href="/sobre-nosotros">Sobre nosotros</Link>
               <Link href="/sessions/sign-up"> Crear cuenta </Link>
-            </Button>
-            <Button>
-              <Link href="/sessions/login">Iniciar sesión</Link>
-            </Button>
-          </>
+              <Link href="/sessions/login" >Iniciar sesión</Link>
+          </div>
         ) : role == "Vet" ? (<>
           <Link href="/adoptions">
             <Button disabled>

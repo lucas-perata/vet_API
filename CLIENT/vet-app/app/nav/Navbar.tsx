@@ -17,6 +17,8 @@ export default function Navbar() {
     role = getRole(kookies);
   }
 
+  // TODO: diferent navbar for front end and APP side
+
   return (
     <header
       className="sticky top-0 z-50 flex justify-between
@@ -32,10 +34,10 @@ export default function Navbar() {
       </Link>
       <div className="flex gap-4">
         {kookies == null ? (
-          <div className="text-gray-300 flex text-bold justify-between w-80 text-sm">
+          <div className="text-gray-200 flex text-bold justify-between w-80 text-ls">
             <Link href="/sobre-nosotros">Sobre nosotros</Link>
-              <Link href="/sessions/sign-up"> Crear cuenta </Link>
-              <Link href="/sessions/login" >Iniciar sesión</Link>
+            <Link href="/sessions/sign-up"> Crear cuenta </Link>
+            <Link href="/sessions/login" >Iniciar sesión</Link>
           </div>
         ) : role == "Vet" ? (<>
           <Link href="/adoptions">

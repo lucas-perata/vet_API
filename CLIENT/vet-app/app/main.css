@@ -1,0 +1,31 @@
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0
+  }
+
+  ;
+}
+
+.fade-main {
+  animation: fadeIn 1s;
+}
+
+.fade-main-out {
+  animation-name: fadeOut;
+}
+
+.parent {
+  z-index: 0;
+}
+
+.parent-b {
+  z-index: 1;
+}
+
+.parent-c {
+  z-index: 2;
+}

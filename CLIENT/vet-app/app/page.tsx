@@ -191,25 +191,25 @@ export default function Home() {
         </div>
         <div className="flex flex-wrap p-10 w-[60vw] gap-14 justify-center mt-10">
           {isVisible && <div className="animate-fadeIn ">
-            <div className="flex text-center gap-2 p-4 flex-col rounded-2xl shadow-lg">
+            <div className="flex text-center gap-2 p-4 flex-col rounded-2xl shadow-lg hover:-translate-y-1 hover:scale-105">
               <Image width={170} height={100} src="/vet.png" alt="" />
               <h3 className="font-bold text-xl">Paseadores</h3>
             </div>
           </div>}
           {isVisible && <div className="animate-fadeIn">
-            <div className="flex text-center gap-2 p-4 flex-col  rounded-2xl shadow-lg">
+            <div className="flex text-center gap-2 p-4 flex-col  rounded-2xl shadow-lg hover:-translate-y-1 hover:scale-105">
               <Image width={170} height={100} src="/vet.png" alt="" />
               <h3 className="font-bold text-xl">Paseadores</h3>
             </div>
           </div>}
           {isVisible && <div className="animate-fadeIn">
-            <div className="flex text-center gap-2 p-4 flex-col  rounded-2xl shadow-lg">
+            <div className="flex text-center gap-2 p-4 flex-col  rounded-2xl shadow-lg hover:-translate-y-1 hover:scale-105">
               <Image width={180} height={100} src="/vet.png" alt="" />
-              <h3 className="font-bold text-xl">Paseadores</h3>
+              <h3 className="font-bold text-xl ">Paseadores</h3>
             </div>
           </div>}
           {isVisible && <div className="animate-fadeIn">
-            <div className="flex text-center gap-2 p-4 flex-col  rounded-2xl shadow-lg">
+            <div className="flex text-center gap-2 p-4 flex-col  rounded-2xl shadow-lg hover:-translate-y-1 hover:scale-105">
               <Image width={180} height={100} src="/vet.png" alt="" />
               <h3 className="font-bold text-xl">Paseadores</h3>
             </div>
@@ -284,28 +284,47 @@ export default function Home() {
 
       </div>
 
-      <div className="flex justify-center bg-white flex-col items-center p-10 h-[40vh] shadow-lg z-10">
+      <div className="flex justify-center bg-white flex-col items-center p-10 h-[55vh] shadow-lg z-10">
         <h2 className="text-4xl font-bold">Preguntas frecuentes</h2>
         <Accordion type="single" collapsible className="w-1/2 mt-5">
           <AccordionItem value="item-1">
-            <AccordionTrigger>Is it accessible?</AccordionTrigger>
+            <AccordionTrigger>¿Puedo agregar a todas mis mascotas?</AccordionTrigger>
             <AccordionContent>
               Yes. It adheres to the WAI-ARIA design pattern.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>Is it styled?</AccordionTrigger>
+            <AccordionTrigger>¿Puedo encontrar veterinarios cercanos y confianza?</AccordionTrigger>
             <AccordionContent>
               Yes. It comes with default styles that matches the other
               components&apos; aesthetic.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
-            <AccordionTrigger>Is it animated?</AccordionTrigger>
+            <AccordionTrigger>¿Me ayudará a aumentar mis clientes?</AccordionTrigger>
             <AccordionContent>
               Yes. It's animated by default, but you can disable it if you prefer.
             </AccordionContent>
           </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger>¿Puedo organizar citas desde la plataforma?</AccordionTrigger>
+            <AccordionContent>
+              Yes. It's animated by default, but you can disable it if you prefer.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-5">
+            <AccordionTrigger>¿Puedo encontrar mascotas en adopción?</AccordionTrigger>
+            <AccordionContent>
+              Yes. It's animated by default, but you can disable it if you prefer.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-6">
+            <AccordionTrigger>¿Qué servicios ofrece la aplicación para mascotas?</AccordionTrigger>
+            <AccordionContent>
+              Yes. It's animated by default, but you can disable it if you prefer.
+            </AccordionContent>
+          </AccordionItem>
+
         </Accordion>
       </div>
 
@@ -362,9 +381,9 @@ export default function Home() {
         </div>
         <div><h2 className="text-gray-400 mb-4">Soluciones</h2>
           <ul className="flex flex-col gap-3">
-            <li>Soluciones 1</li>
-            <li>Soluciones 2</li>
-            <li>Soluciones 3</li>
+            <li>Precios</li>
+            <li>Servicios</li>
+            <li>Soluciones</li>
           </ul>
         </div>
         <div><h2 className="text-gray-400 mb-4">Nosotros</h2>

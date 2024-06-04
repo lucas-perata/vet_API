@@ -9,9 +9,9 @@ import { toast } from "@/components/ui/use-toast";
 import { SelectAdoptions } from "@/components/forms/SelectAdoptions";
 import { createInstance } from "@/utils/axiosConfig";
 import useStore from "@/store/store";
-import { useFilterAdoptions } from "../hooks/useAdoptions";
 import { GenderList, ProvincesList } from "@/utils/lists";
 import { getAreasByProvince } from "@/utils/filterProvincesZones";
+import { useFilterAdoptions } from "@/app/hooks/useAdoptions";
 
 const FormSchema = z.object({
   gender: z.string().optional().default("default"),

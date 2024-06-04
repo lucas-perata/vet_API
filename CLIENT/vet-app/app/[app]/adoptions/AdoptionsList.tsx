@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { useFetchAdoptions } from "../hooks/useAdoptions";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
 import AdoptionsCard from "./AdoptionsCard";
 import { Pagination } from "@/types";
 import { Button } from "@/components/ui/button";
+import { useFetchAdoptions } from "@/app/hooks/useAdoptions";
 
 function PaginationButtons(params, totalPages: number, currentPage: number) {
   return (

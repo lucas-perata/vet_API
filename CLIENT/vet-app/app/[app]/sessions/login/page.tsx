@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, FormEvent } from "react";
-import { login } from "../../../utils/auth";
 import {
   CardTitle,
   CardDescription,
@@ -12,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { login } from "@/utils/auth";
 
 const page: React.FC = () => {
   const [email, setEmail] = useState<string>("");

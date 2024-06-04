@@ -3,9 +3,10 @@ import React from "react";
 import { VetMain } from "./vetMain";
 import { OwnerMain } from "./ownerMain";
 import useStore from "@/store/store";
-import { getRole } from "../actions/getRole";
+import { getRole } from "@/app/actions/getRole";
+import withAuth from "@/utils/withAuth";
 
-export default function page() {
+function page() {
   const token = useStore((state) => state.token())
   const role = getRole(token);
 
@@ -14,3 +15,5 @@ export default function page() {
 
   </div>
 }
+
+export default withAuth(page);

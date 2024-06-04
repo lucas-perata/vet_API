@@ -10,8 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Adoption } from "@/types";
-import { photoMain, photoMainB } from "../actions/petActionsCS";
 import Link from "next/link";
+import { photoMainB } from "@/app/actions/petActionsCS";
 
 type Props = {
   adoptions: Adoption;

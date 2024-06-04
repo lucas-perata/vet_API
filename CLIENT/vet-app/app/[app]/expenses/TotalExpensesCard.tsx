@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
-import { useFetchSum } from "../hooks/useExpenses";
+import { useFetchSum } from "@/app/hooks/useExpenses";
+import { AxiosInstance } from "axios";
 
 export default function TotalExpensesCard() {
   const token = useStore((state) => state.token);

@@ -10,7 +10,7 @@ const withAuth = (WrappedComponent: React.ComponentType) => {
 
     React.useEffect(() => {
       if (!token()) {
-        router.replace("/sessions/login");
+        router.replace("/app/sessions/login");
       }
     }, [token, router]);
 

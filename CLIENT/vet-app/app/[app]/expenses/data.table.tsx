@@ -17,11 +17,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useFetchMonthlyExpenses } from "../hooks/useExpenses";
 import useStore from "@/store/store";
 import { createInstance } from "@/utils/axiosConfig";
 import { useState } from "react";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import { AxiosInstance } from "axios";
+import { useFetchMonthlyExpenses } from "@/app/hooks/useExpenses";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -74,9 +75,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   );
                 })}

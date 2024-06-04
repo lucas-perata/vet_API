@@ -16,37 +16,50 @@ export default function NavbarApp({ kookies, role }: Props) {
      p-7 items-center text-gray-800 shadow-lg bg-gray-100"
     >
       <Link
-        href={"/dashboard"}
+        href={kookies == undefined ? "/" : "/app/dashboard"}
         className="gap-2 text-2xl flex items-center font-semibold"
       >
         <MdPets size={34} />
         <div>Vet MVP</div>
       </Link>
-      <div className="flex gap-4">
-        {role == "Vet" ? (<>
-          <Link href="/adoptions">
-            <Button disabled>
-              Adopciones
-            </Button> </Link>
-          <Link href="/"> <Button disabled >Reseñas</Button></Link>
-          <Link href="/"> <Button disabled>Citas</Button></Link>
-          <Link href="/"> <Button disabled>Perfil</Button></Link>
-        </>) : (
+      {
+        kookies == undefined ? <div className="flex gap-4">
           <div className="flex gap-5">
             <Button>
-              <Link href="/adoptions">Adopciones</Link>
+              <Link href="/app/sessions/login">Ingresar</Link>
             </Button>
             <Button>
-              <Link href="/expenses">Gastos</Link>
+              <Link href="app/sessions/sign-up">Crear cuenta</Link>
             </Button>
-            <Button>
-              <Link href="/pets/list">Mis mascotas</Link>
-            </Button>
-            <LogoutButton></LogoutButton>
           </div>
-        )}
-      </div>
+        </div>
+          :
+          <div className="flex gap-4">
+            {role == "Vet" ? (<>
+              <Link href="/adoptions">
+                <Button disabled>
+                  Adopciones
+                </Button> </Link>
+              <Link href="/"> <Button disabled >Reseñas</Button></Link>
+              <Link href="/"> <Button disabled>Citas</Button></Link>
+              <Link href="/"> <Button disabled>Perfil</Button></Link>
+            </>) : (
+              <div className="flex gap-5">
+                <Button>
+                  <Link href="/adoptions">Adopciones</Link>
+                </Button>
+                <Button>
+                  <Link href="/expenses">Gastos</Link>
+                </Button>
+                <Button>
+                  <Link href="/pets/list">Mis mascotas</Link>
+                </Button>
+                <LogoutButton></LogoutButton>
+              </div>
+            )}
+          </div>
 
+      }
     </header>
 
   )

@@ -1,5 +1,5 @@
-import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import {
   Table,
   TableBody,
@@ -8,48 +8,45 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import React from 'react'
 
-
-function ReviewsDash() {
+function AppointmentsDash() {
   return (
-    <Card className="h-[35vh] w-[35vw]">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>Últimas reseñas</CardTitle>
+        <CardTitle>
+          Próximas citas confirmadas
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Fecha</TableHead>
-              <TableHead>Estrellas</TableHead>
-              <TableHead>Descripción</TableHead>
+              <TableHead>Razón</TableHead>
+              <TableHead className="text-right">Mascota</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
               <TableCell>01/01/2024</TableCell>
-              <TableCell>5</TableCell>
-              <TableCell>Servicio iorem ipsuom servicium iorem</TableCell>
+              <TableCell>Problemas de etc etc</TableCell>
+              <TableCell className="text-right">Gato</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>01/01/2024</TableCell>
-              <TableCell>3</TableCell>
               <TableCell>Problemas de etc etc</TableCell>
+              <TableCell className="text-right">Gato</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>01/01/2024</TableCell>
-              <TableCell>4</TableCell>
               <TableCell>Problemas de etc etc</TableCell>
+              <TableCell className="text-right">Gato</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>01/01/2024</TableCell>
-              <TableCell>4</TableCell>
               <TableCell>Problemas de etc etc</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>4</TableCell>
-              <TableCell>Problemas de etc etc</TableCell>
+              <TableCell className="text-right">Gato</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -59,4 +56,6 @@ function ReviewsDash() {
   )
 }
 
-export default ReviewsDash
+
+export default AppointmentsDash
+

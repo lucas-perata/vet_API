@@ -76,6 +76,12 @@ namespace API.Helpers
             CreateMap<CreateExpenseDto, ExpensesVet>();
             CreateMap<UpdateExpenseDto, ExpensesVet>();
             CreateMap<ExpensesVet, CreateExpenseDto>();
+
+            // Followers
+            CreateMap<Follower, FollowerDto>();
+            CreateMap<Follower, FollowDto>();
+            CreateMap<FollowerDto, Follower>();
+            CreateMap<FollowDto, Follower>();
         }
     }
 }

@@ -10,6 +10,8 @@ namespace API.Entities.Identity
         public ICollection<VetService> VetServices { get; set; }
         public ICollection<Appointment> OwnerAppointments { get; set; }
         public ICollection<Appointment> VetAppointments { get; set; }
+        public ICollection<Follower> FollowedVets { get; set; }
+        public ICollection<Follower> VetFollowers { get; set; }
         public ICollection<Review> OwnerReviews { get; set; }
         public ICollection<Review> VetReviews { get; set; }
         public List<Message> MessagesSent { get; set; }

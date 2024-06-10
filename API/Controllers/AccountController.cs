@@ -80,6 +80,8 @@ namespace API.Controllers
 
             var user = await _userManager.FindByEmailAsync(email);
 
+            //TODO: Add a repo to check type of user
+
             var isOwner = await _context.Owners.FindAsync(user.Id);
             if (isOwner != null)
                 return Ok("owner");

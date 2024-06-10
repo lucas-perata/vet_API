@@ -53,7 +53,12 @@ namespace API.Repository
                 .Take(4)
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
-            // var followers =
+
+            var followers = _context
+                .Followers.Where(f => f.FollowedId == vetId)
+                .Take(4)
+                .ProjectTo<FollowerDto>(_mapper.ConfigurationProvider)
+                .AsNoTracking();
 
             VetDashDto VetDashDto = new VetDashDto
             {
@@ -61,6 +66,7 @@ namespace API.Repository
                 ExpensesVet = expenses,
                 Reviews = reviews,
                 Messages = messages,
+                FollowersVet = followers,
             };
 
             return VetDashDto;

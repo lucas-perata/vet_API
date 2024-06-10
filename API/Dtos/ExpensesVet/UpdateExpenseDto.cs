@@ -10,5 +10,6 @@ namespace API.Dtos
         public DateTime Date { get; set; } = DateTime.Today;
         public string VetId { get; set; }
         public int Amount { get; set; }
+        public bool Extra { get; set; }
     }
 }

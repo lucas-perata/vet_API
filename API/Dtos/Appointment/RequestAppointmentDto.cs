@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Entities;
-
 namespace API.Dtos.Appointment
 {
     public class RequestAppointmentDto
@@ -13,5 +7,7 @@ namespace API.Dtos.Appointment
         public string VetId { get; set; }
         public int PetId { get; set; }
         public int ServiceId { get; set; }
+        public string Motive { get; set; }
     }
 }
+

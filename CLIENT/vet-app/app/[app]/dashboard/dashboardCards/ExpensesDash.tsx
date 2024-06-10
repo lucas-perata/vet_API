@@ -8,9 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Expense } from '@/types'
 import React from 'react'
 
-function ExpensesDash() {
+function ExpensesDash(data) {
+  console.log(data);
   return (
     <Card className="w-[45vw] h-[35vh]">
       <CardHeader>
@@ -30,47 +32,24 @@ function ExpensesDash() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>19:30</TableCell>
-              <TableCell>Ejemplo descripcion</TableCell>
-              <TableCell>Ejemplo</TableCell>
-              <TableCell>S</TableCell>
-              <TableCell className="text-right">
-                <Button className="mr-2">E</Button>
-                <Button>B</Button>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>19:30</TableCell>
-              <TableCell>Ejemplo</TableCell>
-              <TableCell>S</TableCell>
-              <TableCell className="text-right">
-                <Button className="mr-2">E</Button>
-                <Button>B</Button>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>19:30</TableCell>
-              <TableCell>Ejemplo</TableCell>
-              <TableCell>N</TableCell>
-              <TableCell className="text-right">
-                <Button className="mr-2">E</Button>
-                <Button>B</Button>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>19:30</TableCell>
-              <TableCell>Ejemplo</TableCell>
-              <TableCell className="text-center">S</TableCell>
-              <TableCell className="text-right">
-                <Button className="mr-2">E</Button>
-                <Button>B</Button>
-              </TableCell>
-            </TableRow>
+
+            {data.data.map((expense: Expense) => (
+              <TableRow>
+                <TableCell>{expense.date}</TableCell>
+                <TableCell>{expense.amount}</TableCell>
+                <TableCell>{expense.description}</TableCell>
+                <TableCell>{expense.category}</TableCell>
+                <TableCell>{expense.extra == true ? "Sí" : "No"}</TableCell>
+                <TableCell className="text-right">
+                  <Button className="mr-2">E</Button>
+                  <Button>B</Button>
+                </TableCell>
+              </TableRow>
+
+            ))}
+
+
+
 
           </TableBody>
         </Table>

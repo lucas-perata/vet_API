@@ -48,9 +48,9 @@ namespace API.Repository
                 .AsNoTracking();
 
             var messages = _context
-                .Messages.Where(m => m.RecipientId == vetId)
+                .Messages.Where(m => m.RecipientId == vetId && m.DateRead == null)
                 .OrderByDescending(m => m.MessageSent)
-                .Take(5)
+                .Take(4)
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
             // var followers =

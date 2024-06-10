@@ -9,5 +9,6 @@ namespace API.Dtos
         public string Description { get; set; }
         public DateTime Date { get; set; } = DateTime.Today;
         public int Amount { get; set; }
+        public bool Extra { get; set; }
     }
 }

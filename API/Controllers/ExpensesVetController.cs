@@ -97,6 +97,7 @@ namespace API.Controllers
                 Amount = createExpenseDto.Amount,
                 Category = createExpenseDto.Category,
                 Date = createExpenseDto.Date,
+                Extra = createExpenseDto.Extra
             };
 
             _expenseVetRepository.AddExpense(expense);

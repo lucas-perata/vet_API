@@ -34,7 +34,7 @@ const page: React.FC = () => {
       toast({
         title: "Ingresaste"
       });
-      window.location.href = "/dashboard"
+      window.location.href = "/app/dashboard"
     } catch (err: any) {
       setError(err.message);
       console.log(error);
@@ -51,7 +51,7 @@ const page: React.FC = () => {
       toast({
         title: "Ingresaste"
       });
-      window.location.href = "/dashboard"
+      window.location.href = "/app/dashboard"
     } catch (err: any) {
       setError(err.message);
       console.log(error);

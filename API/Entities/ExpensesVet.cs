@@ -11,6 +11,7 @@ namespace API.Entities
         public string VetId { get; set; }
         public AppUser Vet { get; set; }
         public int Amount { get; set; }
+        public bool Extra { get; set; }
     }
 
     public enum ExpenseCategory

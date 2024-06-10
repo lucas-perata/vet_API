@@ -8,9 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Review } from '@/types'
 
 
-function ReviewsDash() {
+function ReviewsDash(data) {
   return (
     <Card className="h-[35vh] w-[35vw]">
       <CardHeader>
@@ -26,31 +27,15 @@ function ReviewsDash() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>5</TableCell>
-              <TableCell>Servicio iorem ipsuom servicium iorem</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>3</TableCell>
-              <TableCell>Problemas de etc etc</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>4</TableCell>
-              <TableCell>Problemas de etc etc</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>4</TableCell>
-              <TableCell>Problemas de etc etc</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>01/01/2024</TableCell>
-              <TableCell>4</TableCell>
-              <TableCell>Problemas de etc etc</TableCell>
-            </TableRow>
+            {
+              data.data.map((review: Review) => (
+                <TableRow>
+                  <TableCell>01/01/2024</TableCell>
+                  <TableCell>{review.stars}</TableCell>
+                  <TableCell>{review.body}</TableCell>
+                </TableRow>
+              ))
+            }
           </TableBody>
         </Table>
 

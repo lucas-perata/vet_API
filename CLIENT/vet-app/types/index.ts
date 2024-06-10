@@ -55,7 +55,15 @@ export type Expense = {
   description: string;
   amount: number;
   date: Date | string;
+  extra?: boolean;
 };
+
+export type Msg = {
+  senderUsername: string;
+  content: string;
+  messageSent: Date;
+  dateRead: string;
+}
 
 export type ExpensesPerCat = {
   categoryName: string;
@@ -68,6 +76,20 @@ export type Pagination = {
   totalItems: number;
   totalPages: number;
 };
+
+export type Appointment = {
+  date: Date;
+  motive: string;
+  serviceId: number;
+  petId: number;
+  ownerId: number;
+  vetId: number;
+}
+
+export type Review = {
+  stars: string;
+  body: string;
+}
 
 export type List = { id: number; name: string }[]
 export type ListB = { label: string; value: string }[]

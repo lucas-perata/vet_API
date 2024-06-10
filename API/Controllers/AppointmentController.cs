@@ -80,7 +80,8 @@ namespace API.Controllers
                 Status = AppointmentStatus.Requested,
                 PetId = 1,
                 ServiceId = requestAppointmentDto.ServiceId,
-                Date = requestAppointmentDto.Date
+                Date = requestAppointmentDto.Date,
+                Motive = requestAppointmentDto.Motive
             };
 
             _appointmentRepository.CreateAppointment(appointment);
@@ -144,4 +145,3 @@ namespace API.Controllers
         }
     }
 }
-

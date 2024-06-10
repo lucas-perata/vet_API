@@ -15,6 +15,7 @@ namespace API.Entities
         public AppointmentStatus Status { get; set; }
         public int ServiceId { get; set; }
         public Service Service { get; set; }
+        public string Motive { get; set; }
     }
 
     public enum AppointmentStatus
@@ -25,4 +26,3 @@ namespace API.Entities
         DateChangeRequested
     }
 }
-

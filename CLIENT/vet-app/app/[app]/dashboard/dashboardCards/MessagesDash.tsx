@@ -1,8 +1,9 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Msg } from '@/types'
 
-function MessagesDash() {
+function MessagesDash(data) {
   return (
     <Card className="h-[35vh] w-72">
       <CardHeader>
@@ -17,30 +18,13 @@ function MessagesDash() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
+
+            {data.data.map((message: Msg) => (
+              <TableRow>
+                <TableCell>{message.senderUsername}</TableCell>
+                <TableCell>{message.messageSent}</TableCell>
+              </TableRow>
+            ))}
 
           </TableBody>
         </Table>

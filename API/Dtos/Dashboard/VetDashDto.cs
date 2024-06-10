@@ -9,5 +9,6 @@ namespace API.Dtos
         public IEnumerable<AppointmentDto> Appointments { get; set; }
         public IEnumerable<ReviewDto> Reviews { get; set; }
         public IEnumerable<MessageDto> Messages { get; set; }
+        public IEnumerable<ExpensesVetDto> ExpensesVet { get; set; }
     }
 }

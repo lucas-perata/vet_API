@@ -21,5 +21,6 @@ namespace API.Entities
         public ICollection<Spending> Spendings { get; set; }
         public ICollection<Vaccine> Vaccines { get; set; }
         public ICollection<PetVaccine> PetVaccines { get; set; }
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }

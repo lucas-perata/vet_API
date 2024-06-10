@@ -31,7 +31,9 @@ namespace API.Controllers
             string email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
-            return Ok();
+            var data = _dashboardRepository.GetDataForVet(user.Id);
+
+            return Ok(data);
         }
 
         [HttpGet("/owner-dash")]

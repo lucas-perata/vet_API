@@ -31,15 +31,26 @@ namespace API.Repository
         {
             var appointments = _context
                 .Appointments.Where(a => a.VetId == vetId)
+                .OrderByDescending(a => a.Date)
+                .Take(5)
                 .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
-            // var expenses =
+            var expenses = _context
+                .ExpensesVet.Where(e => e.VetId == vetId)
+                .OrderByDescending(e => e.Date)
+                .Take(5)
+                .ProjectTo<ExpensesVetDto>(_mapper.ConfigurationProvider)
+                .AsNoTracking();
             var reviews = _context
                 .Reviews.Where(r => r.VetId == vetId)
+                .Take(5)
                 .ProjectTo<ReviewDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
+
             var messages = _context
                 .Messages.Where(m => m.RecipientId == vetId)
+                .OrderByDescending(m => m.MessageSent)
+                .Take(5)
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
             // var followers =
@@ -47,6 +58,7 @@ namespace API.Repository
             VetDashDto VetDashDto = new VetDashDto
             {
                 Appointments = appointments,
+                ExpensesVet = expenses,
                 Reviews = reviews,
                 Messages = messages,
             };

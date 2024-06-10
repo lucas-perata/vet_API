@@ -1,12 +1,10 @@
 import React from "react";
-import withAuthSSR from "@/utils/withAuthSSR";
 import PetCard from "./PetCard";
-import { getAllPets } from "../../actions/petActions";
-import FloatingButton from "../../../components/ui/FloatingButton";
 import { kookies } from "@/app/actions/kookies";
+import FloatingButton from "@/components/ui/FloatingButton";
+import { getAllPets } from "@/app/actions/petActions";
 
 async function page() {
-  withAuthSSR(kookies);
   const data = await getAllPets();
 
   return (
@@ -19,7 +17,7 @@ async function page() {
             key={pet.id}
           ></PetCard>
         ))}
-      <FloatingButton route="/pets/add" />
+      <FloatingButton route="/app/pets/add" />
     </div>
   );
 }

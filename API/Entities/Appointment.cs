@@ -10,7 +10,7 @@ namespace API.Entities
         public AppUser Owner { get; set; }
         public string VetId { get; set; }
         public AppUser Vet { get; set; }
-        public int PetId { get; set; }
+        public int? PetId { get; set; }
         public Pet Pet { get; set; }
         public AppointmentStatus Status { get; set; }
         public int ServiceId { get; set; }
@@ -25,3 +25,4 @@ namespace API.Entities
         DateChangeRequested
     }
 }
+

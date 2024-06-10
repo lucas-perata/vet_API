@@ -69,6 +69,10 @@ namespace API.Helpers
             CreateMap<Vaccine, VaccineDto>();
             CreateMap<Vaccine, CreateVaccineDto>();
             CreateMap<Vaccine, UpdateVaccineDto>();
+
+            // Expenses
+            CreateMap<ExpensesVet, ExpensesVetDto>();
+            CreateMap<ExpensesVetDto, ExpensesVet>();
         }
     }
 }

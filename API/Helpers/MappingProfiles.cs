@@ -73,6 +73,9 @@ namespace API.Helpers
             // Expenses
             CreateMap<ExpensesVet, ExpensesVetDto>();
             CreateMap<ExpensesVetDto, ExpensesVet>();
+            CreateMap<CreateExpenseDto, ExpensesVet>();
+            CreateMap<UpdateExpenseDto, ExpensesVet>();
+            CreateMap<ExpensesVet, CreateExpenseDto>();
         }
     }
 }

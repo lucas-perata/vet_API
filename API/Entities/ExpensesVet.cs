@@ -10,6 +10,7 @@ namespace API.Entities
         public DateTime Date { get; set; } = DateTime.Today;
         public string VetId { get; set; }
         public AppUser Vet { get; set; }
+        public int Amount { get; set; }
     }
 
     public enum ExpenseCategory

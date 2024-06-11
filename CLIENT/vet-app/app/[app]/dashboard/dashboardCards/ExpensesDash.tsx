@@ -12,7 +12,6 @@ import { Expense } from '@/types'
 import React from 'react'
 
 function ExpensesDash(data) {
-  console.log(data);
   return (
     <Card className="w-[45vw] h-[35vh]">
       <CardHeader>

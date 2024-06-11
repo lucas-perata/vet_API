@@ -56,6 +56,7 @@ namespace API.Repository
 
             var followers = _context
                 .Followers.Where(f => f.FollowedId == vetId)
+                .OrderByDescending(f => f.Date)
                 .Take(4)
                 .ProjectTo<FollowerDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();

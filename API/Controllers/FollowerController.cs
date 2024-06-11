@@ -44,6 +44,7 @@ namespace API.Controllers
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
             AppUser user = await _userManager.FindByEmailAsync(email);
+            string userName = user.DisplayName;
 
             if (await _userManager.FindByIdAsync(followDto.FollowedId) is null)
                 return BadRequest();
@@ -51,10 +52,15 @@ namespace API.Controllers
             if (user.Id == followDto.FollowedId)
                 return BadRequest("Cannot follow yourself");
 
-            if (_followerRepository.IsFollowing(user.Id, followDto.FollowedId) is not null)
+            if (await _followerRepository.IsFollowing(user.Id, followDto.FollowedId) == true)
                 return BadRequest("You are already following them");
 
-            var follow = new Follower { FollowerId = user.Id, FollowedId = followDto.FollowedId, };
+            var follow = new Follower
+            {
+                FollowerId = user.Id,
+                FollowerUsername = userName,
+                FollowedId = followDto.FollowedId,
+            };
 
             _followerRepository.AddFollower(follow);
 
@@ -64,10 +70,29 @@ namespace API.Controllers
             return Ok(_mapper.Map<FollowerDto>(follow));
         }
 
-        // [HttpDelete("{id}")]
-        // public async Task<ActionResult> DeleteFollower(int id)
-        // {
-        //   var follower;
-        // }
+        [HttpDelete("{vetId}")]
+        public async Task<ActionResult> UnfollowUser(string vetId)
+        {
+            string email = User.FindFirstValue(ClaimTypes.Email);
+            AppUser user = await _userManager.FindByEmailAsync(email);
+
+            if (await _userManager.FindByIdAsync(vetId) is null)
+                return BadRequest();
+
+            if (await _followerRepository.IsFollowing(user.Id, vetId) == false)
+                return BadRequest("Not following them");
+
+            var follow = await _followerRepository.GetFollowRelationship(vetId, user.Id);
+
+            if (follow is null)
+                return BadRequest();
+
+            var delete = _followerRepository.DeleteFollower(follow);
+
+            if (!delete)
+                return BadRequest();
+
+            return NoContent();
+        }
     }
 }

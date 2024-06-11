@@ -58,6 +58,12 @@ export type Expense = {
   extra?: boolean;
 };
 
+export type Follower = {
+  followerUsername: string;
+  followerId: string;
+  date: Date;
+}
+
 export type Msg = {
   senderUsername: string;
   content: string;

@@ -1,8 +1,10 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Follower } from '@/types';
 
-function FollowersDash() {
+function FollowersDash(data) {
+  console.log(data);
   return (
     <Card className="h-[35vh] w-72">
       <CardHeader>
@@ -17,31 +19,14 @@ function FollowersDash() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Pepito</TableCell>
-              <TableCell>Hace 5 horas...</TableCell>
-            </TableRow>
 
+
+            {data.data.map((follower: Follower) => (
+              <TableRow>
+                <TableCell>{follower.username}</TableCell>
+                <TableCell>{follower.date}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>

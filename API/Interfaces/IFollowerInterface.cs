@@ -9,5 +9,6 @@ namespace API.Interfaces
         Task<bool> IsFollowing(string followerId, string followedId);
         void AddFollower(Follower follower);
         bool DeleteFollower(Follower follower);
+        Task<Follower> GetFollowRelationship(string followedId, string followerId);
     }
 }

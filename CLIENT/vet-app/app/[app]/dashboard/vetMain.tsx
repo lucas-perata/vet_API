@@ -28,6 +28,7 @@ export const VetMain = ({ token }: Props) => {
   let expenses = data.result.expensesVet;
   let messages = data.result.messages;
   let reviews = data.result.reviews;
+  let followers = data.result.followersVet;
 
   return (
     <div className="flex justify-between flex-wrap w-[80vw] min-h-full">
@@ -35,7 +36,7 @@ export const VetMain = ({ token }: Props) => {
       <ReviewsDash data={reviews} />
       <ExpensesDash data={expenses} />
       <MessagesDash data={messages} />
-      <FollowersDash />
+      <FollowersDash data={followers} />
     </div>
   )
 }

@@ -35,6 +35,15 @@ namespace API.Repository
             return await _context.Followers.CountAsync(f => f.FollowedId == vetId);
         }
 
+        public async Task<Follower> GetFollowRelationship(string followedId, string followerId)
+        {
+            var followerRelationship = await _context
+                .Followers.Where(f => f.FollowedId == followedId && f.FollowerId == followerId)
+                .FirstOrDefaultAsync();
+
+            return followerRelationship;
+        }
+
         public async Task<bool> IsFollowing(string followerId, string followedId)
         {
             return await _context.Followers.AnyAsync(f =>

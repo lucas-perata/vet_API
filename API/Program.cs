@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Text.Json.Serialization;
 using API.Data;
 using API.Entities;
@@ -10,11 +9,8 @@ using API.Interfaces;
 using API.Repository;
 using API.Services;
 using API.SignalIR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +53,9 @@ builder.Services.AddScoped<ReviewRepository>();
 builder.Services.AddScoped<MessageRepository>();
 builder.Services.AddScoped<SpendingRepository>();
 builder.Services.AddScoped<VaccineRepository>();
+builder.Services.AddScoped<DashboardRepository>();
+builder.Services.AddScoped<ExpenseVetRepository>();
+builder.Services.AddScoped<FollowerRepository>();
 
 // CLoudinary
 builder.Services.Configure<CloudinarySettings>(

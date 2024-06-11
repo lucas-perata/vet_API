@@ -47,7 +47,7 @@ export async function registerOwner({
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
       maxAge: 3600,
-      path: "/",
+      path: "/app/dashboard",
     });
     return data;
   } else {
@@ -72,7 +72,7 @@ export async function registerVet({
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
       maxAge: 3600,
-      path: "/",
+      path: "/app/dashboard",
     });
     return data;
   } else {

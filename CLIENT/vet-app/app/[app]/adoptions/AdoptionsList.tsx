@@ -8,27 +8,29 @@ import { Button } from "@/components/ui/button";
 import { useFetchAdoptions } from "@/app/hooks/useAdoptions";
 
 function PaginationButtons(params, totalPages: number, currentPage: number) {
-  return (
-    <div className="flex gap-4">
-      <Button
-        disabled={currentPage == 1}
-        onClick={() =>
-          params((page: number) => (page > 1 ? page - 1 : page))
-        }
-      >
-        Anterior
-      </Button>
-      <p className="text-red-500 text-xl">{currentPage}</p>
-      <Button
-        disabled={currentPage == totalPages}
-        onClick={() =>
-          params((page: number) => (page < totalPages ? page + 1 : page))
-        }
-      >
-        Siguiente
-      </Button>
-    </div>
-  );
+  if (totalPages > 1) {
+    return (
+      <div className="flex gap-4">
+        <Button
+          disabled={currentPage == 1}
+          onClick={() =>
+            params((page: number) => (page > 1 ? page - 1 : page))
+          }
+        >
+          Anterior
+        </Button>
+        <p className="text-red-500 text-xl">{currentPage}</p>
+        <Button
+          disabled={currentPage == totalPages}
+          onClick={() =>
+            params((page: number) => (page < totalPages ? page + 1 : page))
+          }
+        >
+          Siguiente
+        </Button>
+      </div>
+    );
+  }
 }
 
 export default function AdoptionsList() {
@@ -43,24 +45,28 @@ export default function AdoptionsList() {
   if (isError) return <div>Error</div>;
 
   const pagination: Pagination = JSON.parse(data?.headers.pagination);
-  return (
-    <div className="flex flex-col">
-      <div className="flex flex-col w-full items-center align-top">
-        <div className="flex flex-row w-10/12 justify-center p-5 gap-5 flex-wrap">
-          <AdoptionsCard adoptions={data?.data.data} />
-        </div>
-        <div >
-          <div >
-            {PaginationButtons(
-              setPageNumber,
-              pagination.totalPages,
-              pagination.currentPage,
-            )}
+  if (pagination.totalItems < 1) {
+    return <div>No hay mascotas para adoptar</div>
+  } else {
+    return (
+      <div className="flex flex-col">
+        <div className="flex flex-col w-full items-center align-top">
+          <div className="flex flex-row w-10/12 justify-center p-5 gap-5 flex-wrap">
+            <AdoptionsCard adoptions={data?.data.data} />
           </div>
+          <div >
+            <div >
+              {PaginationButtons(
+                setPageNumber,
+                pagination.totalPages,
+                pagination.currentPage,
+              )}
+            </div>
+          </div>
+
         </div>
-
       </div>
-    </div>
 
-  );
+    );
+  }
 }

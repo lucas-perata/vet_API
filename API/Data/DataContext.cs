@@ -37,6 +37,8 @@ namespace API.Data
         public DbSet<Spending> Spendings { get; set; }
         public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<PetVaccine> PetVaccines { get; set; }
+        public DbSet<ExpensesVet> ExpensesVet { get; set; }
+        public DbSet<Follower> Followers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -97,7 +99,19 @@ namespace API.Data
                 .HasOne(a => a.Vet)
                 .WithMany(u => u.VetAppointments)
                 .HasForeignKey(a => a.VetId);
-            modelBuilder.Entity<Appointment>().HasOne(a => a.Pet);
+            // modelBuilder.Entity<Appointment>().HasOne(a => a.Pet);
+
+            modelBuilder.Entity<Follower>().HasKey(f => f.Id);
+            modelBuilder
+                .Entity<Follower>()
+                .HasOne(f => f.Owner)
+                .WithMany(u => u.FollowedVets)
+                .HasForeignKey(f => f.FollowedId);
+            modelBuilder
+                .Entity<Follower>()
+                .HasOne(f => f.Vet)
+                .WithMany(u => u.VetFollowers)
+                .HasForeignKey(f => f.FollowedId);
 
             modelBuilder.Entity<Review>().ToTable("Review").HasKey(r => r.Id);
             modelBuilder
@@ -127,6 +141,12 @@ namespace API.Data
                 .HasMany(u => u.Spendings)
                 .WithOne(s => s.Owner)
                 .HasForeignKey(s => s.OwnerId);
+
+            modelBuilder
+                .Entity<AppUser>()
+                .HasMany(u => u.ExpensesVet)
+                .WithOne(s => s.Vet)
+                .HasForeignKey(s => s.VetId);
 
             modelBuilder
                 .Entity<Pet>()

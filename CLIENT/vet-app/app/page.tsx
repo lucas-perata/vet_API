@@ -28,8 +28,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import withAuthApp from '@/utils/withAuthApp';
 
-export default function Home() {
+function Home() {
 
   const [isSwitchOn, setSwitchOn] = useState(false);
   const [showDiv, setShowDiv] = useState(false);
@@ -404,3 +405,5 @@ export default function Home() {
     </div >
   );
 }
+
+export default withAuthApp(Home);

@@ -31,8 +31,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputForm from "@/components/forms/Input";
-import { createPet } from "../actions/petActionsCS";
 import { useRouter } from "next/navigation";
+import { createPet } from "@/app/actions/petActionsCS";
 
 export default function PetForm() {
   const breeds = [
@@ -100,8 +100,8 @@ export default function PetForm() {
                         >
                           {field.value
                             ? breeds.find(
-                                (breed) => breed.value === field.value,
-                              )?.label
+                              (breed) => breed.value === field.value,
+                            )?.label
                             : "Selecciona la raza"}
                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>

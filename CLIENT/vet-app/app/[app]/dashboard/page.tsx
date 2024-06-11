@@ -1,19 +1,22 @@
-"use client"
-import React from "react";
-import { VetMain } from "./vetMain";
-import { OwnerMain } from "./ownerMain";
-import useStore from "@/store/store";
-import { getRole } from "@/app/actions/getRole";
-import withAuth from "@/utils/withAuth";
+import { getRole } from '@/app/actions/getRole';
+import React from 'react'
+import { OwnerMain } from './ownerMain';
+import { cookies } from 'next/headers';
+import { redirect } from "next/navigation";
+import { VetMain } from './vetMain';
 
 function page() {
-  const token = useStore((state) => state.token())
-  const role = getRole(token);
+  // const token: string = useStore((state) => state.token());
+  const token: string | undefined = cookies().get("token")?.value;
+  if (token == undefined) redirect("/app/sessions/login");
+  const role: string | undefined = getRole(token);
 
-  return <div>
-    {role == "Vet" ? <VetMain /> : <OwnerMain />}
-
-  </div>
+  if (role == "Vet") {
+    return <div className="h-[85vh] flex justify-center"><VetMain token={token} /></div>
+  } else {
+    return <OwnerMain token={token} />
+  }
 }
 
-export default withAuth(page);
+export default page;
+

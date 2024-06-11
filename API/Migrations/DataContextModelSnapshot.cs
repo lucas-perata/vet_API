@@ -103,6 +103,7 @@ namespace API.Migrations
             modelBuilder.Entity("API.Entities.AppRole", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -152,10 +153,13 @@ namespace API.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Motive")
+                        .HasColumnType("text");
+
                     b.Property<string>("OwnerId")
                         .HasColumnType("text");
 
-                    b.Property<int>("PetId")
+                    b.Property<int?>("PetId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ServiceId")
@@ -196,6 +200,71 @@ namespace API.Migrations
                     b.HasIndex("GroupName");
 
                     b.ToTable("Connections");
+                });
+
+            modelBuilder.Entity("API.Entities.ExpensesVet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Extra")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("VetId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VetId");
+
+                    b.ToTable("ExpensesVet");
+                });
+
+            modelBuilder.Entity("API.Entities.Follower", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FollowedId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FollowerId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FollowerUsername")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FollowedId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Followers");
                 });
 
             modelBuilder.Entity("API.Entities.Group", b =>
@@ -804,10 +873,8 @@ namespace API.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.HasOne("API.Entities.Pet", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Appointments")
+                        .HasForeignKey("PetId");
 
                     b.HasOne("API.Entities.Service", "Service")
                         .WithMany("Appointments")
@@ -833,6 +900,30 @@ namespace API.Migrations
                     b.HasOne("API.Entities.Group", null)
                         .WithMany("Connections")
                         .HasForeignKey("GroupName");
+                });
+
+            modelBuilder.Entity("API.Entities.ExpensesVet", b =>
+                {
+                    b.HasOne("API.Entities.Identity.AppUser", "Vet")
+                        .WithMany("ExpensesVet")
+                        .HasForeignKey("VetId");
+
+                    b.Navigation("Vet");
+                });
+
+            modelBuilder.Entity("API.Entities.Follower", b =>
+                {
+                    b.HasOne("API.Entities.Identity.AppUser", "Vet")
+                        .WithMany("VetFollowers")
+                        .HasForeignKey("FollowedId");
+
+                    b.HasOne("API.Entities.Identity.AppUser", "Owner")
+                        .WithMany("FollowedVets")
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("Vet");
                 });
 
             modelBuilder.Entity("API.Entities.Identity.Owner", b =>
@@ -1035,6 +1126,10 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Entities.Identity.AppUser", b =>
                 {
+                    b.Navigation("ExpensesVet");
+
+                    b.Navigation("FollowedVets");
+
                     b.Navigation("MessagesReceived");
 
                     b.Navigation("MessagesSent");
@@ -1053,6 +1148,8 @@ namespace API.Migrations
 
                     b.Navigation("VetAppointments");
 
+                    b.Navigation("VetFollowers");
+
                     b.Navigation("VetReviews");
 
                     b.Navigation("VetServices");
@@ -1060,6 +1157,8 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Entities.Pet", b =>
                 {
+                    b.Navigation("Appointments");
+
                     b.Navigation("PetPhotos");
 
                     b.Navigation("PetVaccines");

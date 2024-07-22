@@ -8,7 +8,7 @@ import MessagesDash from './dashboardCards/MessagesDash';
 import { createInstance } from '@/utils/axiosConfig';
 import { useFetchDataVet } from '@/app/hooks/useDashboard';
 import { AxiosInstance } from 'axios';
-import { Appointment } from '@/types';
+import { Appointment, Review } from '@/types';
 
 //TODO: completar con api calls
 
@@ -27,7 +27,7 @@ export const VetMain = ({ token }: Props) => {
   let appointments: Appointment = data.result.appointments;
   let expenses = data.result.expensesVet;
   let messages = data.result.messages;
-  let reviews = data.result.reviews;
+  let reviews: Review = data.result.reviews;
   let followers = data.result.followersVet;
 
   return (

@@ -29,32 +29,32 @@ namespace API.Repository
 
         public async Task<VetDashDto> GetDataForVet(string vetId)
         {
-            var appointments = _context
+            IEnumerable<AppointmentDto> appointments = _context
                 .Appointments.Where(a => a.VetId == vetId)
                 .OrderByDescending(a => a.Date)
                 .Take(5)
                 .ProjectTo<AppointmentDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
-            var expenses = _context
+            IEnumerable<ExpensesVetDto> expenses = _context
                 .ExpensesVet.Where(e => e.VetId == vetId)
                 .OrderByDescending(e => e.Date)
                 .Take(5)
                 .ProjectTo<ExpensesVetDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
-            var reviews = _context
+            IEnumerable<ReviewDto> reviews = _context
                 .Reviews.Where(r => r.VetId == vetId)
                 .Take(5)
                 .ProjectTo<ReviewDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
 
-            var messages = _context
+            IEnumerable<MessageDto> messages = _context
                 .Messages.Where(m => m.RecipientId == vetId && m.DateRead == null)
                 .OrderByDescending(m => m.MessageSent)
                 .Take(4)
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking();
 
-            var followers = _context
+            IEnumerable<FollowerDto> followers = _context
                 .Followers.Where(f => f.FollowedId == vetId)
                 .OrderByDescending(f => f.Date)
                 .Take(4)

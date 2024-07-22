@@ -2,6 +2,8 @@ using System.Security.Claims;
 using API.Dtos.Review;
 using API.Entities;
 using API.Entities.Identity;
+using API.Extensions;
+using API.Helpers;
 using API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -41,22 +43,37 @@ namespace API.Controllers
             return _mapper.Map<ReviewDto>(review);
         }
 
+        // TODO: Crear metodos separados para que los usuarios vean reseñas -> por un lado
+        // vets y por el otro dueños
         [HttpGet("vet/{vetId}")]
-        public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVet(string vetId)
+        public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVet(
+            string vetId,
+            [FromQuery] UserParams userParams
+        )
         {
             var vet = await _userManager.FindByIdAsync(vetId);
 
             if (vet is null)
                 return NotFound();
 
-            var reviews = await _reviewRepository.GetReviewsForVet(vetId);
+            var reviews = await _reviewRepository.GetReviewsForVet(vetId, userParams);
 
             if (reviews is null)
                 return NotFound("Vet has no reviews");
 
-            return _mapper.Map<List<ReviewDto>>(reviews);
+            Response.AddPaginationHeader(
+                new PaginationHeader(
+                    reviews.CurrentPage,
+                    reviews.PageSize,
+                    reviews.TotalCount,
+                    reviews.TotalPages
+                )
+            );
+
+            return Ok(reviews);
         }
 
+        // Solo los owners pueden dejar reseñas
         [HttpPost]
         public async Task<ActionResult<ReviewDto>> CreateReview(CreateReviewDto createReviewDto)
         {
@@ -126,4 +143,3 @@ namespace API.Controllers
         }
     }
 }
-

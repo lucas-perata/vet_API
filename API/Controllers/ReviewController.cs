@@ -43,20 +43,19 @@ namespace API.Controllers
             return _mapper.Map<ReviewDto>(review);
         }
 
-        // TODO: Crear metodos separados para que los usuarios vean reseñas -> por un lado
-        // vets y por el otro dueños
-        [HttpGet("vet/{vetId}")]
+        [HttpGet("vet")]
         public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVet(
-            string vetId,
             [FromQuery] UserParams userParams
         )
         {
-            var vet = await _userManager.FindByIdAsync(vetId);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var vet = await _userManager.FindByIdAsync(user.Id);
 
             if (vet is null)
                 return NotFound();
 
-            var reviews = await _reviewRepository.GetReviewsForVet(vetId, userParams);
+            var reviews = await _reviewRepository.GetReviewsForVet(vet.Id, userParams);
 
             if (reviews is null)
                 return NotFound("Vet has no reviews");
@@ -73,7 +72,35 @@ namespace API.Controllers
             return Ok(reviews);
         }
 
-        // Solo los owners pueden dejar reseñas
+        [HttpGet("vet/{vetId}")]
+        public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVetId(
+            string vetId,
+            [FromQuery] UserParams userParams
+        )
+        {
+            var vet = await _userManager.FindByIdAsync(vetId);
+
+            if (vet is null)
+                return NotFound();
+
+            var reviews = await _reviewRepository.GetReviewsForVet(vetId, userParams);
+
+            if (reviews is null)
+                return NotFound();
+
+            Response.AddPaginationHeader(
+                new PaginationHeader(
+                    reviews.CurrentPage,
+                    reviews.PageSize,
+                    reviews.TotalCount,
+                    reviews.TotalPages
+                )
+            );
+
+            return Ok(reviews);
+        }
+
+        // TODO: Solo los owners pueden dejar reseñas
         [HttpPost]
         public async Task<ActionResult<ReviewDto>> CreateReview(CreateReviewDto createReviewDto)
         {
@@ -84,6 +111,7 @@ namespace API.Controllers
             {
                 Stars = createReviewDto.Stars,
                 Body = createReviewDto.Body,
+                Date = DateTime.Today.ToUniversalTime(),
                 OwnerId = user.Id,
                 VetId = createReviewDto.VetId
             };

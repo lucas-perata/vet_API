@@ -11,6 +11,7 @@ namespace API.Entities
         public string OwnerId { get; set; }
         public AppUser Owner { get; set; }
         public string VetId { get; set; }
+        public DateTime Date { get; set; } = DateTime.Today;
 
         // public bool Pending {get; set;}
         public AppUser Vet { get; set; }
@@ -25,4 +26,3 @@ namespace API.Entities
         PerfectService
     }
 }
-

@@ -11,7 +11,7 @@ interface Params {
 }
 
 // VET SIDE 
-export function useFetchReviews({ id, pageParam, instance }: Params) {
+export function useFetchReviews({ pageParam, instance }: Params) {
   if (pageParam == null) {
     pageParam = 1;
   }
@@ -24,7 +24,7 @@ export function useFetchReviews({ id, pageParam, instance }: Params) {
     queryKey: ["reviews", pageParam],
     queryFn: async () => {
       const response = await instance.get(
-        `api/review/vet/${id}?PageNumber=${pageParam}`,
+        `api/review/vet?PageNumber=${pageParam}`,
         {
           responseType: "json",
           headers: { "Content-Type": "application/json" },

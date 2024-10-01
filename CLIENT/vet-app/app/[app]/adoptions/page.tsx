@@ -10,7 +10,7 @@ function page() {
     <div className="flex flex-col items-center">
       <SearchAdoptions />
       <AdoptionsList />
-      <FloatingButton route="/adoptions/add" />
+      <FloatingButton route="/app/adoptions/add" />
     </div>
   );
 }

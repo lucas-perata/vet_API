@@ -2,6 +2,8 @@ using System.Security.Claims;
 using API.Dtos.Review;
 using API.Entities;
 using API.Entities.Identity;
+using API.Extensions;
+using API.Helpers;
 using API.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -41,22 +43,64 @@ namespace API.Controllers
             return _mapper.Map<ReviewDto>(review);
         }
 
+        [HttpGet("vet")]
+        public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVet(
+            [FromQuery] UserParams userParams
+        )
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var vet = await _userManager.FindByIdAsync(user.Id);
+
+            if (vet is null)
+                return NotFound();
+
+            var reviews = await _reviewRepository.GetReviewsForVet(vet.Id, userParams);
+
+            if (reviews is null)
+                return NotFound("Vet has no reviews");
+
+            Response.AddPaginationHeader(
+                new PaginationHeader(
+                    reviews.CurrentPage,
+                    reviews.PageSize,
+                    reviews.TotalCount,
+                    reviews.TotalPages
+                )
+            );
+
+            return Ok(reviews);
+        }
+
         [HttpGet("vet/{vetId}")]
-        public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVet(string vetId)
+        public async Task<ActionResult<List<ReviewDto>>> GetAllReviewsForVetId(
+            string vetId,
+            [FromQuery] UserParams userParams
+        )
         {
             var vet = await _userManager.FindByIdAsync(vetId);
 
             if (vet is null)
                 return NotFound();
 
-            var reviews = await _reviewRepository.GetReviewsForVet(vetId);
+            var reviews = await _reviewRepository.GetReviewsForVet(vetId, userParams);
 
             if (reviews is null)
-                return NotFound("Vet has no reviews");
+                return NotFound();
 
-            return _mapper.Map<List<ReviewDto>>(reviews);
+            Response.AddPaginationHeader(
+                new PaginationHeader(
+                    reviews.CurrentPage,
+                    reviews.PageSize,
+                    reviews.TotalCount,
+                    reviews.TotalPages
+                )
+            );
+
+            return Ok(reviews);
         }
 
+        // TODO: Solo los owners pueden dejar reseñas
         [HttpPost]
         public async Task<ActionResult<ReviewDto>> CreateReview(CreateReviewDto createReviewDto)
         {
@@ -67,6 +111,7 @@ namespace API.Controllers
             {
                 Stars = createReviewDto.Stars,
                 Body = createReviewDto.Body,
+                Date = DateTime.Today.ToUniversalTime(),
                 OwnerId = user.Id,
                 VetId = createReviewDto.VetId
             };
@@ -126,4 +171,3 @@ namespace API.Controllers
         }
     }
 }
-

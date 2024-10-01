@@ -7,6 +7,7 @@ interface Params {
   instance?: AxiosInstance;
 }
 
+// VET SIDE 
 export function useFetchDataVet(instance: AxiosInstance) {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashVet"],
@@ -18,3 +19,5 @@ export function useFetchDataVet(instance: AxiosInstance) {
 
   return { data, isLoading, isError }
 }
+
+// OWNER SIDE 

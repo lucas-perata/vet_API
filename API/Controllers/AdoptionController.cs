@@ -74,7 +74,7 @@ namespace API.Controllers
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
-            // TODO: check user type
+            // TODO check user type
 
             var adoption = new Adoption
             {

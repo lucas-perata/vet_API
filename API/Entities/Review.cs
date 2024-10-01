@@ -2,6 +2,7 @@ using API.Entities.Identity;
 
 namespace API.Entities
 {
+    // TODO: idea de agregar a las reviews un campo para que sean revisadas por el administrador
     public class Review
     {
         public int Id { get; set; }
@@ -10,6 +11,9 @@ namespace API.Entities
         public string OwnerId { get; set; }
         public AppUser Owner { get; set; }
         public string VetId { get; set; }
+        public DateTime Date { get; set; } = DateTime.Today;
+
+        // public bool Pending {get; set;}
         public AppUser Vet { get; set; }
     }
 

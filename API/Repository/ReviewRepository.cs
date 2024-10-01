@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Data;
+using API.Dtos.Review;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository
@@ -12,10 +12,14 @@ namespace API.Repository
     public class ReviewRepository : IReviewInterface
     {
         private readonly DataContext _context;
-        public ReviewRepository(DataContext context)
+        private readonly IMapper _mapper;
+
+        public ReviewRepository(DataContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
+
         public void AddReview(Review review)
         {
             _context.Reviews.Add(review);
@@ -37,11 +41,21 @@ namespace API.Repository
             return await _context.Reviews.FindAsync(id);
         }
 
-        public async Task<List<Review>> GetReviewsForVet(string vetId)
+        public async Task<PagedList<ReviewDto>> GetReviewsForVet(
+            string vetId,
+            UserParams userParams
+        )
         {
-            return await _context.Reviews
-                            .Where(r => r.VetId == vetId)
-                            .ToListAsync();
+            var query = _context
+                .Reviews.Where(r => r.VetId == vetId)
+                .ProjectTo<ReviewDto>(_mapper.ConfigurationProvider)
+                .AsNoTracking();
+
+            return await PagedList<ReviewDto>.CreateAsync(
+                query,
+                userParams.PageNumber,
+                userParams.PageSize
+            );
         }
 
         public void UpdateReview(Review review)
@@ -50,3 +64,4 @@ namespace API.Repository
         }
     }
 }
+

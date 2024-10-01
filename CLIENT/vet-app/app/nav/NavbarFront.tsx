@@ -18,8 +18,8 @@ export default function NavbarFront() {
       <div className="flex gap-4">
         <div className="text-gray-200 flex text-bold justify-between w-80 text-ls">
           <Link href="/sobre-nosotros">Sobre nosotros</Link>
-          <Link href="app/sessions/sign-up"> Crear cuenta </Link>
-          <Link href="app/sessions/login" >Iniciar sesión</Link>
+          <Link href="/app/sessions/sign-up"> Crear cuenta </Link>
+          <Link href="/app/sessions/login" >Iniciar sesión</Link>
         </div>
       </div>
 

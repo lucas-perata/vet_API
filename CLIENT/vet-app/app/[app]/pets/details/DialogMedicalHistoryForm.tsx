@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FaEdit, FaPlus } from "react-icons/fa";
-import MedicalHistoryForm from "@/app/medicalHistory/MedicalHistoryForm";
+import MedicalHistoryForm from "../../medicalHistory/MedicalHistoryForm";
 
 type Props = {
   petId: number;

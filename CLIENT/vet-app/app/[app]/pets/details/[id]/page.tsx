@@ -1,6 +1,5 @@
 import { getPet, getPetMedicalHistory } from "@/app/actions/petActions";
 import MedicalHistoryCard from "../MedicalHistoryCard";
-import withAuthSSR from "@/utils/withAuthSSR";
 import { cookies } from "next/headers";
 import React from "react";
 import FloatingEditButton from "@/components/ui/FloatingEditButton";
@@ -13,9 +12,9 @@ import Link from "next/link";
 import { CiCalendarDate } from "react-icons/ci";
 import Vaccines from "../Vaccines";
 import ExpensesPet from "../ExpensesPet";
+import withAuth from "@/utils/withAuth";
 // TODO: Adding spendings
 async function Details({ params }: { params: { id: number } }) {
-  withAuthSSR(cookies().get("token")?.value);
   const data = await getPet(params.id);
 
   return (
@@ -71,9 +70,10 @@ async function Details({ params }: { params: { id: number } }) {
           <ExpensesPet id={params.id} />
         </div>
       </div>
-      <FloatingEditButton route={`/pets/update/${data.id}`} />
+      <FloatingEditButton route={`/app/pets/update/${data.id}`} />
     </div>
   );
 }
 
 export default Details;
+

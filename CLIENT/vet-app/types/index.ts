@@ -95,6 +95,7 @@ export type Appointment = {
 export type Review = {
   stars: string;
   body: string;
+  date: Date;
 }
 
 export type List = { id: number; name: string }[]

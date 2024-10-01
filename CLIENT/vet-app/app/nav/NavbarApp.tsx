@@ -17,14 +17,14 @@ export default function NavbarApp({ kookies }: Props) {
   return (
     <header
       className="sticky top-0 z-50 flex justify-between
-     p-7 items-center text-gray-800 shadow-lg bg-gray-100"
+     p-10 items-center text-gray-800 shadow-lg bg-green-600"
     >
       <Link
         href={kookies == undefined ? "/" : "/app/dashboard"}
         className="gap-2 text-2xl flex items-center font-semibold"
       >
-        <MdPets size={34} />
-        <div>Vet MVP</div>
+        <MdPets size={34} color='white' />
+        <div className='text-white'>Vet MVP</div>
       </Link>
       {
         !role ? "loading"
@@ -53,13 +53,13 @@ export default function NavbarApp({ kookies }: Props) {
               </>) : (
                 <div className="flex gap-5">
                   <Button>
-                    <Link href="/adoptions">Adopciones</Link>
+                    <Link href="/app/adoptions">Adopciones</Link>
                   </Button>
                   <Button>
-                    <Link href="/expenses">Gastos</Link>
+                    <Link href="/app/expenses">Gastos</Link>
                   </Button>
                   <Button>
-                    <Link href="/pets/list">Mis mascotas</Link>
+                    <Link href="/app/pets/list">Mis mascotas</Link>
                   </Button>
                   <LogoutButton></LogoutButton>
                 </div>

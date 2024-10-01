@@ -67,8 +67,7 @@ export default function PetForm() {
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     createPet(data).then((response) => {
-      console.log(response.id);
-      router.push(`/pets/details/${response.id}`);
+      router.push(`/app/pets/details/${response.id}`);
     });
   }
 

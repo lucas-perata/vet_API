@@ -53,6 +53,9 @@ export default function NavbarApp({ kookies }: Props) {
               </>) : (
                 <div className="flex gap-5">
                   <Button>
+                    <Link href="/app/vets">Buscar veterinarios</Link>
+                  </Button>
+                  <Button>
                     <Link href="/app/adoptions">Adopciones</Link>
                   </Button>
                   <Button>

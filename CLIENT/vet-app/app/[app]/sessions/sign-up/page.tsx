@@ -3,11 +3,20 @@ import React, { useState, FormEvent } from 'react';
 import { useToast } from "@/components/ui/use-toast"
 import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+
+import Input from '@/components/forms/Input';
+
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { registerOwner, registerVet } from '@/utils/auth';
-
+import { SelectAdoptions } from '@/components/forms/SelectAdoptions';
+import { ProvincesList } from '@/utils/lists';
+import { useForm } from 'react-hook-form';
+import { Form } from "@/components/ui/form";
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getAreasByProvince } from '@/utils/filterProvincesZones';
+import InputForm from '@/components/forms/Input';
 
 
 
@@ -17,95 +26,102 @@ const page: React.FC = () => {
   const handleSwitchChange = () => {
     setSwitchOn(!isSwitchOn);
   };
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [areas, setAreaList] = useState([]);
 
   // TODO: add z to this form
+  const { formState: { isSubmitting, isValid, isDirty, errors }, } = useForm();
+  const formSchema = z.object({
+    area: z.string(),
+    province: z.string(),
+    email: z.string().email(),
+    displayName: z.string(),
+    password: z.string(),
+  })
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [displayName, setDisplayName] = useState<string>("");
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
+
+  async function onSubmit(data: z.infer<typeof formSchema>, event: React.BaseSyntheticEvent) {
+    const formData = new FormData();
+
+    formData.append("displayName", data.displayName);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    formData.append("province", data.province);
+    formData.append("area", data.area);
+
+    console.log([...formData]);
+    if (isSwitchOn) {
+
+      try {
+        const user = await registerOwner(formData);
+        toast({
+          title: "Ingresaste"
+        });
+        window.location.href = "/app/dashboard"
+      } catch (err: any) {
+        setError(err.message);
+        console.log(error);
+        toast({
+          title: "Error owner"
+        })
+      }
+
+    }
+    else {
+      try {
+        const user = await registerVet(formData);
+        toast({
+          title: "Ingresaste"
+        });
+        window.location.href = "/app/dashboard"
+      } catch (err: any) {
+        setError(err.message);
+        console.log(error);
+        toast({
+          title: "Error vet"
+        })
+      }
+    };
+
+  }
+
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast()
-
-
-  const handleSubmitOwner = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const user = await registerOwner({ email, password, displayName });
-      toast({
-        title: "Ingresaste"
-      });
-      window.location.href = "/app/dashboard"
-    } catch (err: any) {
-      setError(err.message);
-      console.log(error);
-      toast({
-        title: "Error"
-      })
-    }
-  };
-
-  const handleSubmitVet = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const user = await registerVet({ email, password, displayName });
-      toast({
-        title: "Ingresaste"
-      });
-      window.location.href = "/app/dashboard"
-    } catch (err: any) {
-      setError(err.message);
-      console.log(error);
-      toast({
-        title: "Error"
-      })
-    }
-  };
 
   return (
     <>
       <p>{isSwitchOn ? 'Switch is ON' : 'Switch is OFF'}</p>
+      <Switch id="registrate como veterinario" onClick={handleSwitchChange} />
+      <Label htmlFor="registrate como veterinario">Registrate como veterinario</Label>
 
-      <form onSubmit={isSwitchOn ? handleSubmitVet : handleSubmitOwner}>
-        <Card className="mx-auto max-w-sm">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Crea tu cuenta</CardTitle>
-            <div className='flex justify-center align-middle'>
-              <Switch id="registrate como veterinario" onClick={handleSwitchChange} />
-              <Label htmlFor="registrate como veterinario">Registrate como veterinario</Label>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="string">Username</Label>
-                <Input type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  id="displayName" placeholder="juan" required />
+      <Form {...form} >
+        <form onSubmit={form.handleSubmit(onSubmit)} >
+          <Card className="mx-auto max-w-sm">
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-bold">Crea tu cuenta</CardTitle>
+              <div className='flex justify-center align-middle'>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  id="email" placeholder="m@example.com" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" required type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password" />
-              </div>
-              {error && <p className="text-red-500">{error}</p>}
-
+            </CardHeader>
+            <CardContent>
+              <InputForm form={form} label="displayName" name="displayName" />
+              <InputForm form={form} label="email" name="email" />
+              <InputForm form={form} label="password" name="password" />
+              <SelectAdoptions label='Provincia' name="province" form={form} selection={ProvincesList} onValueChange={(value) => {
+                setSelectedProvince(value);
+                setAreaList(getAreasByProvince(value));
+              }} />
+              <SelectAdoptions label='Partido' name='area' form={form} selection={areas}
+              />
               <Button className="w-full" type="submit">
                 Crear cuenta
               </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </form>
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
     </>
   );
 };

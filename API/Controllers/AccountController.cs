@@ -54,6 +54,8 @@ namespace API.Controllers
             {
                 Id = user.Id,
                 Email = user.Email,
+                Province = user.Province,
+                Area = user.Area,
                 Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };
@@ -114,19 +116,23 @@ namespace API.Controllers
             return new UserDto
             {
                 Email = user.Email,
+                Area = user.Area,
+                Province = user.Province,
                 Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
         }
 
         [HttpPost("register-owner")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register([FromForm] RegisterDto registerDto)
         {
             var user = new AppUser
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
-                UserName = registerDto.Email
+                UserName = registerDto.Email,
+                Province = registerDto.Province,
+                Area = registerDto.Area,
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -142,20 +148,25 @@ namespace API.Controllers
 
             return new UserDto
             {
+                Id = user.Id,
                 Email = user.Email,
+                Area = user.Area,
+                Province = user.Province,
                 Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };
         }
 
         [HttpPost("register-vet")]
-        public async Task<ActionResult<UserDto>> RegisterVet([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> RegisterVet([FromForm] RegisterDto registerDto)
         {
             var user = new AppUser
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
-                UserName = registerDto.Email
+                UserName = registerDto.Email,
+                Province = registerDto.Province,
+                Area = registerDto.Area,
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -174,7 +185,10 @@ namespace API.Controllers
 
             return new UserDto
             {
+                Id = user.Id,
                 Email = user.Email,
+                Area = user.Area,
+                Province = user.Province,
                 Token = await _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName,
             };

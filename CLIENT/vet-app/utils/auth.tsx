@@ -30,15 +30,12 @@ export async function login({ email, password }: LoginData) {
   }
 }
 
-export async function registerOwner({
-  email,
-  password,
-  displayName,
-}: RegisterData) {
+export async function registerOwner(formData) {
+  const setToken = useStore.getState().setToken;
+
   const res = await fetch("http://localhost:5193/register-owner", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, displayName }),
+    body: formData,
   });
 
   if (res.ok) {
@@ -49,21 +46,18 @@ export async function registerOwner({
       maxAge: 3600,
       path: "/app/dashboard",
     });
+    setToken(data.token);
     return data;
   } else {
     throw new Error("Registration failed");
   }
 }
 
-export async function registerVet({
-  email,
-  password,
-  displayName,
-}: RegisterData) {
+export async function registerVet(formData) {
+  const setToken = useStore.getState().setToken;
   const res = await fetch("http://localhost:5193/register-vet", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, displayName }),
+    body: formData,
   });
 
   if (res.ok) {
@@ -74,6 +68,7 @@ export async function registerVet({
       maxAge: 3600,
       path: "/app/dashboard",
     });
+    setToken(data.token);
     return data;
   } else {
     throw new Error("Registration failed");

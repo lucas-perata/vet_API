@@ -17,7 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox"
 import { z } from 'zod';
 import { getAreasByProvince } from '@/utils/filterProvincesZones';
 import CheckboxForm from '@/components/forms/Checkbox';

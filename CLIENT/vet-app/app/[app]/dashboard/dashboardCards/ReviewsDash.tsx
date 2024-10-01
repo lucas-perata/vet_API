@@ -15,7 +15,7 @@ function ReviewsDash(data) {
   return (
     <Card className="h-[35vh] w-[35vw]">
       <CardHeader>
-        <CardTitle>Últimas reseñas</CardTitle>
+        <CardTitle className="text-xl">Últimas reseñas</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -24,15 +24,18 @@ function ReviewsDash(data) {
               <TableHead>Fecha</TableHead>
               <TableHead>Estrellas</TableHead>
               <TableHead>Descripción</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {
               data.data.map((review: Review) => (
                 <TableRow>
-                  <TableCell>01/01/2024</TableCell>
+                  <TableCell>{review.date}</TableCell>
                   <TableCell>{review.stars}</TableCell>
                   <TableCell>{review.body}</TableCell>
+                  {/* TODO: Status API */}
+                  <TableCell>Pending</TableCell>
                 </TableRow>
               ))
             }

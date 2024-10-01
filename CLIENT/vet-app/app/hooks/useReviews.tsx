@@ -1,8 +1,6 @@
 "use client"
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosInstance } from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { headers } from "next/headers";
 
 interface Params {
   id?: number;

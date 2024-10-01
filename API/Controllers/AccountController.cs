@@ -5,11 +5,14 @@ using API.Dtos.Photo;
 using API.Entities;
 using API.Entities.Identity;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -224,6 +227,40 @@ namespace API.Controllers
                 return _mapper.Map<PhotoDto>(photo);
 
             return BadRequest("Problem adding photo");
+        }
+
+        [Authorize]
+        [HttpGet("all-vets")]
+        public async Task<ActionResult<List<VetDto>>> GetVets([FromQuery] UserParams userParams)
+        {
+
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+                return Unauthorized();
+
+            // TODO: Interfaces + Repository
+
+            var nearVets = _context.Vets
+              .Where(v => v.User.Area == user.Area)
+              .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
+              .AsNoTracking();
+
+            var generalVets = _context.Vets
+              .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
+              .AsNoTracking();
+
+            if (nearVets.Count() == 0)
+            {
+                return await PagedList<VetDto>.CreateAsync(generalVets, userParams.PageNumber, userParams.PageSize);
+            }
+
+            return await PagedList<VetDto>.CreateAsync(nearVets, userParams.PageNumber, userParams.PageSize);
+
+
+
+
         }
     }
 }

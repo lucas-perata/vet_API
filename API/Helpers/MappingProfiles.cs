@@ -82,6 +82,11 @@ namespace API.Helpers
             CreateMap<Follower, FollowDto>();
             CreateMap<FollowerDto, Follower>();
             CreateMap<FollowDto, Follower>();
+
+            // Users 
+            CreateMap<Vet, UserDto>();
+            CreateMap<UserDto, Vet>();
+            CreateMap<Vet, VetDto>();
         }
     }
 }

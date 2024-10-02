@@ -242,24 +242,23 @@ namespace API.Controllers
 
             // TODO: Interfaces + Repository
 
-            var nearVets = _context.Vets
-              .Where(v => v.User.Area == user.Area)
-              .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
-              .AsNoTracking();
+            var nearVetsQuery = _context.Vets
+         .Include(v => v.User)
+         .Where(v => v.User.Area == user.Area)
+         .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
+         .AsNoTracking();
 
-            var generalVets = _context.Vets
-              .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
-              .AsNoTracking();
-
-            if (nearVets.Count() == 0)
+            if (!await nearVetsQuery.AnyAsync())
             {
-                return await PagedList<VetDto>.CreateAsync(generalVets, userParams.PageNumber, userParams.PageSize);
+                var generalVetsQuery = _context.Vets
+                  .Include(v => v.User)
+                    .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
+                    .AsNoTracking();
+
+                return await PagedList<VetDto>.CreateAsync(generalVetsQuery, userParams.PageNumber, userParams.PageSize);
             }
 
-            return await PagedList<VetDto>.CreateAsync(nearVets, userParams.PageNumber, userParams.PageSize);
-
-
-
+            return await PagedList<VetDto>.CreateAsync(nearVetsQuery, userParams.PageNumber, userParams.PageSize);
 
         }
     }

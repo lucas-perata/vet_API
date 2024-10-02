@@ -86,7 +86,15 @@ namespace API.Helpers
             // Users 
             CreateMap<Vet, UserDto>();
             CreateMap<UserDto, Vet>();
-            CreateMap<Vet, VetDto>();
+            CreateMap<Vet, VetDto>()
+            .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.User.Province))
+            .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.User.Area))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+            .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.User.DisplayName));
+
+
+
         }
     }
 }

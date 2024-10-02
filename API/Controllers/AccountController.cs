@@ -229,37 +229,41 @@ namespace API.Controllers
             return BadRequest("Problem adding photo");
         }
 
-        [Authorize]
-        [HttpGet("all-vets")]
-        public async Task<ActionResult<List<VetDto>>> GetVets([FromQuery] UserParams userParams)
-        {
-
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var user = await _userManager.FindByEmailAsync(email);
-
-            if (user is null)
-                return Unauthorized();
-
-            // TODO: Interfaces + Repository
-
-            var nearVetsQuery = _context.Vets
-         .Include(v => v.User)
-         .Where(v => v.User.Area == user.Area)
-         .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
-         .AsNoTracking();
-
-            if (!await nearVetsQuery.AnyAsync())
-            {
-                var generalVetsQuery = _context.Vets
-                  .Include(v => v.User)
-                    .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
-                    .AsNoTracking();
-
-                return await PagedList<VetDto>.CreateAsync(generalVetsQuery, userParams.PageNumber, userParams.PageSize);
-            }
-
-            return await PagedList<VetDto>.CreateAsync(nearVetsQuery, userParams.PageNumber, userParams.PageSize);
-
-        }
+        // [Authorize]
+        // [HttpGet("all-vets")]
+        // public async Task<ActionResult<List<VetDto>>> GetVets([FromQuery] UserParams userParams)
+        // {
+        //
+        //     var email = User.FindFirstValue(ClaimTypes.Email);
+        //     var user = await _userManager.FindByEmailAsync(email);
+        //
+        //     if (user is null)
+        //         return Unauthorized();
+        //
+        //     // TODO: Interfaces + Repository
+        //
+        //     var nearVetsQuery = _context.Vets
+        //  .Include(v => v.User)
+        //  .Where(v => v.User.Area == user.Area)
+        //  .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
+        //  .AsNoTracking();
+        //
+        //
+        //
+        //
+        //     if (!await nearVetsQuery.AnyAsync())
+        //     {
+        //         var generalVetsQuery = _context.Vets
+        //           .Include(v => v.User)
+        //             .ProjectTo<VetDto>(_mapper.ConfigurationProvider)
+        //             .AsNoTracking();
+        //
+        //         await PagedList<VetDto>.CreateAsync(generalVetsQuery, userParams.PageNumber, userParams.PageSize);
+        //
+        //     }
+        //
+        //     return await PagedList<VetDto>.CreateAsync(nearVetsQuery, userParams.PageNumber, userParams.PageSize);
+        //
+        // }
     }
 }

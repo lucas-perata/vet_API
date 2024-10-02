@@ -6,28 +6,33 @@ interface Params {
   instance?: AxiosInstance;
 }
 
-export function useFetchVets({ pageParam, instance }: Params) {
 
+export function useFetchVets({ instance, pageParam }: Params) {
   if (pageParam == null) {
     pageParam = 1;
   }
-
   if (instance == undefined) {
     return;
   }
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ["vetList", pageParam],
     queryFn: async () => {
       const response = await instance.get(
-        `all-vets?PageNumber=${pageParam}`,
+        `all-vets?PageSize=1&PageNumber=${pageParam}`,
         {
           responseType: "json",
           headers: { "Content-Type": "application/json" },
         },
       );
-      return { data: response.data, headers: response.headers }
+
+      if (!response || !response.headers) {
+        console.log("Error: Response or headers are undefined.");
+        return;
+      }
+
+      return { data: response.data, headers: response.headers };
     },
-  })
+  });
   return { data, isLoading, isError };
 }
+

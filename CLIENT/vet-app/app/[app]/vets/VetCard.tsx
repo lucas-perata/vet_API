@@ -4,7 +4,7 @@ import React from 'react'
 
 function VetCard(props: Vet) {
   return (
-    <Card className="w-[350px] bg-green-50">
+    <Card key={props.id} className="w-[350px] bg-green-50">
       <CardHeader>
         <CardTitle>{props.displayName}</CardTitle>
       </CardHeader>

@@ -56,6 +56,7 @@ builder.Services.AddScoped<VaccineRepository>();
 builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<ExpenseVetRepository>();
 builder.Services.AddScoped<FollowerRepository>();
+builder.Services.AddScoped<VetsRepository>();
 
 // CLoudinary
 builder.Services.Configure<CloudinarySettings>(

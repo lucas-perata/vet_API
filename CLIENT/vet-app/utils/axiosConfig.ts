@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const createInstance = (token: string) => {
+export const createInstance = (token: string | undefined) => {
   const instance = axios.create({
     baseURL: "http://localhost:5193",
   });

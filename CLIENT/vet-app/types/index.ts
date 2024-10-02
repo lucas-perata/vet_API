@@ -98,5 +98,14 @@ export type Review = {
   date: Date;
 }
 
+export type Vet = {
+  id: string;
+  phoneNumber: string;
+  area: string;
+  province: string;
+  displayName: string;
+  email: string;
+}
+
 export type List = { id: number; name: string }[]
 export type ListB = { label: string; value: string }[]
